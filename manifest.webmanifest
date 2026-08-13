@@ -1,0 +1,10 @@
+{
+  "name": "Баскетбольный клуб «5х5»",
+  "short_name": "5х5",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#08101f",
+  "theme_color": "#0b1220",
+  "lang": "ru",
+  "description": "Общее приложение баскетбольного клуба 5х5"
+}
