@@ -111,7 +111,6 @@ h2{
   font-size:12px;
 }
 
-/* ===== НАВИГАЦИЯ — ГОРИЗОНТАЛЬНЫЙ СКРОЛЛ ===== */
 .nav-scroll{
   display:flex;
   gap:6px;
@@ -151,7 +150,6 @@ h2{
   transform:scale(.95);
 }
 
-/* ===== КНОПКИ В КАРТОЧКАХ ===== */
 .btn{
   border:1px solid var(--line);
   background:#121c31;
@@ -526,7 +524,6 @@ td .btn.small{
     </div>
   </div>
 
-  <!-- НАВИГАЦИЯ — ГОРИЗОНТАЛЬНЫЙ СКРОЛЛ -->
   <nav class="nav-scroll" id="nav"></nav>
 </header>
 
@@ -864,11 +861,19 @@ td .btn.small{
 
 <script>
 
-const SUPABASE_URL =
-  "https://sihixudkoxmksxgziary.supabase.co";
+// ============================================
+// ПОДКЛЮЧЕНИЕ К ТВОЕЙ БАЗЕ ДАННЫХ НА VDSKA
+// ============================================
 
-const SUPABASE_KEY =
-  "sb_publishable_LKWMnwcogf1c-hGQyjKuZg_LuHl9LR8";
+const SUPABASE_URL = "https://sihixudkoxmksxgziary.supabase.co";
+const SUPABASE_KEY = "sb_publishable_LKWMnwcogf1c-hGQyjKuZg_LuHl9LR8";
+
+// ВНИМАНИЕ! PostgreSQL на VDSka пока НЕ ПОДКЛЮЧЁН напрямую.
+// Сейчас используется Supabase (как временное решение).
+// После того как ты скажешь "готово" и откроешь порт 5432,
+// я заменю эти настройки на прямое подключение к твоему серверу.
+
+// ============================================
 
 const sb =
   supabase.createClient(
