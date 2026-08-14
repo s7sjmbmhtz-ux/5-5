@@ -445,6 +445,11 @@ th{
           </select>
 
         </div>
+        <div class="field">
+          <label for="comment">Комментарий <span class="muted">(необязательно)</span></label>
+          <textarea id="comment" rows="3" placeholder="Комментарий к тренировке"></textarea>
+        </div>
+
 
 
         <div class="row">
@@ -703,14 +708,7 @@ th{
           id="ts"
           placeholder="Счёт, например 65:58"
         >
-
-        <select id="tm">
-          <option value="">
-            MVP не выбран
-          </option>
-        </select>
-
-        <button class="btn primary">
+<button class="btn primary">
           Добавить турнир
         </button>
 
@@ -803,9 +801,9 @@ const fmt = date => {
 
 const result = (white, blue) => {
 
-  if (white > blue) return "Белые";
+  if (white > blue) return "Победитель: Белые";
 
-  if (blue > white) return "Синие";
+  if (blue > white) return "Победитель: Синие";
 
   return "Ничья";
 
@@ -933,25 +931,7 @@ function fillPlayerSelects(){
     selectOptions;
 
 
-  $("tm").innerHTML = `
-
-    <option value="">
-      MVP не выбран
-    </option>
-
-    ${
-      players.map(player => `
-
-        <option value="${player.id}">
-
-          №${player.number} — ${player.name}
-
-        </option>
-
-      `).join("")
-    }
-
-  `;
+  
 
 }
 
@@ -1024,6 +1004,31 @@ async function load(){
 
   players =
     playersResult.data || [];
+  const denis = players.find(p => p.name === "Кирпичев Денис Игоревич");
+  if(denis && Number(denis.number) !== 30){
+    const r = await sb.from("players").update({number:30}).eq("id",denis.id);
+    if(!r.error) denis.number = 30;
+  }
+
+  let chichelev = players.find(p => p.name === "Чичелов Олег Викторович");
+  if(!chichelev){
+    const r = await sb.from("players")
+      .insert({number:33,name:"Чичелов Олег Викторович"})
+      .select().single();
+    if(!r.error && r.data){
+      chichelev = r.data;
+      players.push(chichelev);
+    }else if(r.error){
+      console.error("Ошибка добавления Чичелова:",r.error);
+    }
+  }else if(Number(chichelev.number) !== 33){
+    const r = await sb.from("players").update({number:33}).eq("id",chichelev.id);
+    if(!r.error) chichelev.number = 33;
+  }
+
+  players.sort((a,b)=>Number(a.number)-Number(b.number));
+
+
 
 
   console.log(
@@ -1068,7 +1073,7 @@ async function load(){
 
 
   status(
-    `Подключено. Игроков: ${players.length}`,
+    "База подключена",
     "ok"
   );
 
@@ -1232,8 +1237,10 @@ async event => {
       Number($("white").value || 0),
 
     blue_score:
-      Number($("blue").value || 0)
+      Number($("blue").value || 0),
 
+    comment:
+      $("comment").value.trim() || null
   };
 
 
@@ -1287,7 +1294,7 @@ async event => {
 
 
   status(
-    `Подключено. Игроков: ${players.length}`,
+    "База подключена",
     "ok"
   );
 
@@ -1327,10 +1334,7 @@ async event => {
           $("to").value,
 
         score:
-          $("ts").value,
-
-        mvp_player_id:
-          $("tm").value || null
+          $("ts").value
 
       });
 
@@ -1475,309 +1479,120 @@ async event => {
 function render(){
 
   $("recent").innerHTML =
-    trainings.length
-
-      ? `
-
-        <table>
-
-          <tr>
-
-            <th>Дата</th>
-
-            <th>Лучший</th>
-
-            <th>Счёт</th>
-
-          </tr>
-
-          ${
-            trainings
-              .slice(0,6)
-              .map(training => `
-
-                <tr>
-
-                  <td>
-                    ${fmt(training.date)}
-                  </td>
-
-                  <td>
-                    ${training.best?.name || "—"}
-                  </td>
-
-                  <td>
-                    ${training.white_score}:
-                    ${training.blue_score}
-                  </td>
-
-                </tr>
-
-              `)
-              .join("")
-          }
-
-        </table>
-
-      `
-
-      : `
-        <div class="empty">
-          Пока нет тренировок.
-        </div>
-      `;
-
+    trainings.length ? `
+      <table>
+        <tr><th>Дата</th><th>Лучший</th><th>Счёт</th></tr>
+        ${trainings.slice(0,6).map(t=>`
+          <tr><td>${fmt(t.date)}</td><td>${t.best?.name||"—"}</td><td>${t.white_score}:${t.blue_score}</td></tr>
+        `).join("")}
+      </table>` :
+      `<div class="empty">Пока нет тренировок.</div>`;
 
   $("trainings").innerHTML =
-    trainings.length
-
-      ? `
-
-        <table>
-
+    trainings.length ? `
+      <table>
+        <tr>
+          <th>Дата</th><th>Лучший</th><th>Помощник</th><th>Счёт</th>
+          <th>Победитель</th><th>Комментарий</th><th>Действия</th>
+        </tr>
+        ${trainings.map(t=>`
           <tr>
-
-            <th>Дата</th>
-
-            <th>Лучший</th>
-
-            <th>Помощник</th>
-
-            <th>Счёт</th>
-
-            <th>Результат</th>
-
+            <td>${fmt(t.date)}</td>
+            <td>${t.best?.name||"—"}</td>
+            <td>${t.helper?.name||"—"}</td>
+            <td>${t.white_score}:${t.blue_score}</td>
+            <td><span class="badge">${result(t.white_score,t.blue_score)}</span></td>
+            <td>${t.comment||"—"}</td>
+            <td>
+              <div style="display:flex;gap:6px;flex-wrap:wrap">
+                <button class="btn" type="button" onclick="editTraining('${t.id}')">Редактировать</button>
+                <button class="btn" type="button" style="border-color:#71333d;color:#ff9aa7" onclick="deleteTraining('${t.id}')">Удалить</button>
+              </div>
+            </td>
           </tr>
+        `).join("")}
+      </table>` :
+      `<div class="empty">Пока нет тренировок.</div>`;
 
-          ${
-            trainings
-              .map(training => `
+  const statistics=players.map(p=>{
+    const bestCount=trainings.filter(t=>t.best_player_id===p.id).length;
+    const helperCount=trainings.filter(t=>t.helper_player_id===p.id).length;
+    const luckyCount=trainings.filter(t=>t.best_player_id===p.id&&t.helper_player_id===p.id).length;
+    return {...p,bestCount,helperCount,luckyCount,total:bestCount+helperCount+luckyCount};
+  }).sort((a,b)=>b.total-a.total);
 
-                <tr>
+  $("summary").innerHTML="";
 
-                  <td>
-                    ${fmt(training.date)}
-                  </td>
-
-                  <td>
-                    ${training.best?.name || "—"}
-                  </td>
-
-                  <td>
-                    ${training.helper?.name || "—"}
-                  </td>
-
-                  <td>
-                    ${training.white_score}:
-                    ${training.blue_score}
-                  </td>
-
-                  <td>
-                    <span class="badge">
-                      ${
-                        result(
-                          training.white_score,
-                          training.blue_score
-                        )
-                      }
-                    </span>
-                  </td>
-
-                </tr>
-
-              `)
-              .join("")
-          }
-
-        </table>
-
-      `
-
-      : `
-        <div class="empty">
-          Пока нет тренировок.
-        </div>
-      `;
-
-
-  /* STATISTICS */
-
-  const statistics =
-    players
-      .map(player => {
-
-        const bestCount =
-          trainings.filter(
-            training =>
-              training.best_player_id === player.id
-          ).length;
-
-
-        const helperCount =
-          trainings.filter(
-            training =>
-              training.helper_player_id === player.id
-          ).length;
-
-
-        const luckyCount =
-          trainings.filter(
-            training =>
-              training.best_player_id === player.id &&
-              training.helper_player_id === player.id
-          ).length;
-
-
-        return {
-
-          ...player,
-
-          bestCount,
-
-          helperCount,
-
-          luckyCount,
-
-          total:
-            bestCount +
-            helperCount +
-            luckyCount
-
-        };
-
-      })
-      .sort(
-        (a,b) =>
-          b.total - a.total
-      );
-
-
-  $("summary").innerHTML = [
-
-    [
-      "Тренировок",
-      trainings.length
-    ],
-
-    [
-      "Лучший",
-      Math.max(
-        0,
-        ...statistics.map(
-          x => x.bestCount
-        )
-      )
-    ],
-
-    [
-      "Помощник",
-      Math.max(
-        0,
-        ...statistics.map(
-          x => x.helperCount
-        )
-      )
-    ],
-
-    [
-      "Счастливчиков",
-      statistics.filter(
-        x => x.luckyCount > 0
-      ).length
-    ]
-
-  ].map(item => `
-
-    <div class="stat">
-
-      <span class="muted">
-        ${item[0]}
-      </span>
-
-      <b>
-        ${item[1]}
-      </b>
-
-    </div>
-
-  `).join("");
-
-
-  $("statTable").innerHTML = `
-
+  $("statTable").innerHTML=`
     <table>
-
-      <tr>
-
-        <th>№</th>
-
-        <th>Игрок</th>
-
-        <th>Лучший</th>
-
-        <th>Помощник</th>
-
-        <th>Счастливчик</th>
-
-        <th>Всего</th>
-
-      </tr>
-
-
-      ${
-        statistics.map(player => `
-
-          <tr>
-
-            <td>
-              ${player.number}
-            </td>
-
-            <td>
-              ${player.name}
-            </td>
-
-            <td>
-              ${player.bestCount}
-            </td>
-
-            <td>
-              ${player.helperCount}
-            </td>
-
-            <td>
-
-              ${
-                player.luckyCount
-
-                  ? `
-                    <span class="badge gold">
-                      🍀 ${player.luckyCount}
-                    </span>
-                  `
-
-                  : "0"
-              }
-
-            </td>
-
-            <td>
-              <b>
-                ${player.total}
-              </b>
-            </td>
-
-          </tr>
-
-        `).join("")
-      }
-
-    </table>
-
-  `;
-
+      <tr><th>№</th><th>Игрок</th><th>Лучший</th><th>Помощник</th><th>Счастливчик</th><th>Всего</th></tr>
+      ${statistics.map(p=>`
+        <tr>
+          <td>${p.number}</td><td>${p.name}</td><td>${p.bestCount}</td><td>${p.helperCount}</td>
+          <td>${p.luckyCount?`<span class="badge gold">🍀 ${p.luckyCount}</span>`:"0"}</td>
+          <td><b>${p.total}</b></td>
+        </tr>
+      `).join("")}
+    </table>`;
 }
 
+async function editTraining(id){
+  const t=trainings.find(x=>x.id===id);
+  if(!t)return;
+
+  const date=prompt("Дата тренировки (ГГГГ-ММ-ДД)",t.date||"");
+  if(date===null)return;
+
+  const bp=players.find(p=>p.id===t.best_player_id);
+  const hp=players.find(p=>p.id===t.helper_player_id);
+
+  const bn=prompt("Номер Лучшего игрока",bp?.number??"");
+  if(bn===null)return;
+  const best=players.find(p=>String(p.number)===String(bn).trim());
+  if(!best)return msg("Игрок с таким номером не найден");
+
+  const hn=prompt("Номер Помощника",hp?.number??"");
+  if(hn===null)return;
+  const helper=players.find(p=>String(p.number)===String(hn).trim());
+  if(!helper)return msg("Игрок с таким номером не найден");
+
+  const white=prompt("Очки Белых",t.white_score??0);
+  if(white===null)return;
+  const blue=prompt("Очки Синих",t.blue_score??0);
+  if(blue===null)return;
+  const comment=prompt("Комментарий (необязательно)",t.comment||"");
+  if(comment===null)return;
+
+  const r=await sb.from("trainings").update({
+    date,
+    best_player_id:best.id,
+    helper_player_id:helper.id,
+    white_score:Number(white)||0,
+    blue_score:Number(blue)||0,
+    comment:comment.trim()||null
+  }).eq("id",id);
+
+  if(r.error){
+    console.error(r.error);
+    return msg("Ошибка редактирования: "+r.error.message);
+  }
+  msg("Тренировка изменена");
+  await load();
+}
+
+async function deleteTraining(id){
+  const t=trainings.find(x=>x.id===id);
+  if(!t)return;
+  if(!confirm("Удалить тренировку от "+fmt(t.date)+"?\n\nЭто действие нельзя отменить."))return;
+
+  const r=await sb.from("trainings").delete().eq("id",id);
+  if(r.error){
+    console.error(r.error);
+    return msg("Ошибка удаления: "+r.error.message);
+  }
+  msg("Тренировка удалена");
+  await load();
+}
 
 /* =========================================
    ROSTER
@@ -1844,151 +1659,60 @@ function renderRoster(){
 
 async function editPlayer(id){
 
-  const player =
-    players.find(
-      x => x.id === id
-    );
+  const player=players.find(x=>x.id===id);
+  if(!player)return;
 
+  const height=prompt("Рост, см",player.height_cm ?? "");
+  if(height===null)return;
 
-  if(!player) return;
+  const weight=prompt("Вес, кг",player.weight_kg ?? "");
+  if(weight===null)return;
 
+  // Сначала сохраняем рост и вес. Фото больше не мешает сохранению данных.
+  const update=await sb.from("players").update({
+    height_cm:height.trim()===""?null:Number(height),
+    weight_kg:weight.trim()===""?null:Number(weight)
+  }).eq("id",id);
 
-  const height =
-    prompt(
-      "Рост, см",
-      player.height_cm || ""
-    );
+  if(update.error){
+    console.error(update.error);
+    return msg("Ошибка сохранения роста/веса: "+update.error.message);
+  }
 
+  msg("Рост и вес сохранены");
 
-  if(height === null) return;
+  if(!confirm("Изменить фотографию игрока?")){
+    await load();
+    return;
+  }
 
+  const input=document.createElement("input");
+  input.type="file";
+  input.accept="image/*";
 
-  const weight =
-    prompt(
-      "Вес, кг",
-      player.weight_kg || ""
-    );
-
-
-  if(weight === null) return;
-
-
-  const input =
-    document.createElement("input");
-
-
-  input.type = "file";
-
-  input.accept = "image/*";
-
-
-  input.onchange =
-    async () => {
-
-      let photo =
-        player.photo_url || null;
-
-
-      if(input.files[0]){
-
-        const file =
-          input.files[0];
-
-
-        const path =
-          "players/" +
-          id +
-          "_" +
-          Date.now() +
-          "_" +
-          file.name.replace(
-            /[^a-zA-Z0-9._-]/g,
-            "_"
-          );
-
-
-        const upload =
-          await sb
-            .storage
-            .from("player-photos")
-            .upload(
-              path,
-              file
-            );
-
-
-        if(upload.error){
-
-          msg(
-            "Ошибка загрузки фото"
-          );
-
-          return;
-
-        }
-
-
-        photo =
-          sb
-            .storage
-            .from("player-photos")
-            .getPublicUrl(path)
-            .data
-            .publicUrl;
-
-      }
-
-
-      const update =
-        await sb
-          .from("players")
-          .update({
-
-            height_cm:
-              Number(height) || null,
-
-            weight_kg:
-              Number(weight) || null,
-
-            photo_url:
-              photo
-
-          })
-          .eq(
-            "id",
-            id
-          );
-
-
-      if(update.error){
-
-        console.error(
-          update.error
-        );
-
-        msg(
-          "Ошибка сохранения"
-        );
-
-        return;
-
-      }
-
-
-      msg(
-        "Профиль обновлён"
-      );
-
-
+  input.onchange=async()=>{
+    if(!input.files[0]){
       await load();
+      return;
+    }
 
-    };
+    const file=input.files[0];
+    const path="players/"+id+"_"+Date.now()+"_"+file.name.replace(/[^a-zA-Z0-9._-]/g,"_");
 
+    const upload=await sb.storage.from("player-photos").upload(path,file,{upsert:false});
+    if(upload.error)return msg("Ошибка загрузки фото: "+upload.error.message);
+
+    const photo=sb.storage.from("player-photos").getPublicUrl(path).data.publicUrl;
+    const photoUpdate=await sb.from("players").update({photo_url:photo}).eq("id",id);
+
+    if(photoUpdate.error)return msg("Ошибка сохранения фото: "+photoUpdate.error.message);
+
+    msg("Профиль обновлён");
+    await load();
+  };
 
   input.click();
-
 }
-
 
 /* =========================================
    TOURNAMENTS RENDER
@@ -1996,70 +1720,47 @@ async function editPlayer(id){
 
 function renderTours(data){
 
-  $("tourTable").innerHTML =
-    data.length
-
-      ? `
-
-        <table>
-
-          <tr>
-
-            <th>Турнир</th>
-
-            <th>Дата</th>
-
-            <th>Соперник</th>
-
-            <th>Счёт</th>
-
-            <th>MVP</th>
-
-          </tr>
-
-
-          ${
-            data.map(item => `
-
-              <tr>
-
-                <td>
-                  ${item.name}
-                </td>
-
-                <td>
-                  ${fmt(item.date)}
-                </td>
-
-                <td>
-                  ${item.opponent || "—"}
-                </td>
-
-                <td>
-                  ${item.score || "—"}
-                </td>
-
-                <td>
-                  ${item.mvp?.name || "—"}
-                </td>
-
-              </tr>
-
-            `).join("")
-          }
-
-        </table>
-
-      `
-
-      : `
-        <div class="empty">
-          Пока нет турниров.
-        </div>
-      `;
-
+  $("tourTable").innerHTML=data.length?`
+    <table>
+      <tr><th>Турнир</th><th>Дата</th><th>Соперник</th><th>Счёт</th><th>MVP</th><th>Действия</th></tr>
+      ${data.map(item=>`
+        <tr>
+          <td>${item.name}</td>
+          <td>${fmt(item.date)}</td>
+          <td>${item.opponent||"—"}</td>
+          <td>${item.score||"—"}</td>
+          <td>${item.mvp?.name||"Не назначен"}</td>
+          <td>
+            <button class="btn" type="button" onclick="setTournamentMVP('${item.id}')">
+              ${item.mvp?.name?"Изменить MVP":"Назначить MVP"}
+            </button>
+          </td>
+        </tr>
+      `).join("")}
+    </table>`:
+    `<div class="empty">Пока нет турниров.</div>`;
 }
 
+async function setTournamentMVP(tournamentId){
+  const list=players.map(p=>`№${p.number} — ${p.name}`).join("\n");
+  const number=prompt("Введите игровой номер MVP по итогам соревнования.\n\n"+list);
+  if(number===null)return;
+
+  const player=players.find(p=>String(p.number)===String(number).trim());
+  if(!player)return msg("Игрок с таким номером не найден");
+
+  const update=await sb.from("tournaments")
+    .update({mvp_player_id:player.id})
+    .eq("id",tournamentId);
+
+  if(update.error){
+    console.error(update.error);
+    return msg("Ошибка назначения MVP: "+update.error.message);
+  }
+
+  msg("MVP назначен");
+  await load();
+}
 
 /* =========================================
    MEDIA RENDER
