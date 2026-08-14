@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="viewport"content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no,viewport-fit=cover">
 <meta name="theme-color" content="#0b1220">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -43,7 +43,7 @@ body{
   margin:0;
   background:linear-gradient(135deg,#080d18,#111a2d);
   color:var(--text);
-  font:15px -apple-system, BlinkMacSystemFont, Arial, sans-serif;
+  font:18px -apple-system, BlinkMacSystemFont, Arial, sans-serif;
   min-height:100vh;
   min-height:100dvh;
   padding-top: env(safe-area-inset-top, 20px);
@@ -62,35 +62,35 @@ textarea{
 }
 
 .app{
-  max-width:600px;
+  max-width:700px;
   margin:auto;
-  padding:12px 12px 80px 12px;
-  padding-top: calc(env(safe-area-inset-top, 20px) + 6px);
+  padding:16px 14px 100px 14px;
+  padding-top: calc(env(safe-area-inset-top, 20px) + 10px);
 }
 
 .top{
   display:flex;
   justify-content:space-between;
-  gap:10px;
+  gap:12px;
   align-items:center;
-  margin-bottom:14px;
-  padding-top: 6px;
+  margin-bottom:20px;
+  padding-top: 8px;
 }
 
 .brand{
   display:flex;
-  gap:10px;
+  gap:14px;
   align-items:center;
 }
 
 .logo{
-  width:42px;
-  height:42px;
-  border-radius:12px;
+  width:56px;
+  height:56px;
+  border-radius:16px;
   background:linear-gradient(135deg,var(--a),var(--a2));
   display:grid;
   place-items:center;
-  font-size:22px;
+  font-size:28px;
   flex:none;
 }
 
@@ -99,17 +99,22 @@ h1,h2,h3{
 }
 
 h1{
-  font-size:20px;
+  font-size:26px;
+}
+
+h2{
+  font-size:22px;
+  margin-bottom:10px;
 }
 
 .muted{
   color:var(--muted);
-  font-size:13px;
+  font-size:16px;
 }
 
 nav{
   display:flex;
-  gap:5px;
+  gap:6px;
   flex-wrap:wrap;
 }
 
@@ -118,10 +123,12 @@ nav{
   border:1px solid var(--line);
   background:#121c31;
   color:var(--text);
-  padding:8px 12px;
-  border-radius:8px;
+  padding:12px 18px;
+  border-radius:12px;
   cursor:pointer;
-  font-size:13px;
+  font-size:16px;
+  font-weight:600;
+  min-height:48px;
 }
 
 .navbtn.active,
@@ -142,26 +149,27 @@ nav{
 .grid{
   display:grid;
   grid-template-columns:1fr 1fr;
-  gap:12px;
+  gap:16px;
 }
 
 .card{
   background:rgba(17,26,45,.96);
   border:1px solid var(--line);
-  border-radius:14px;
-  padding:14px;
+  border-radius:18px;
+  padding:18px 20px;
 }
 
 .form{
   display:grid;
-  gap:10px;
+  gap:14px;
 }
 
 .field label{
   display:block;
   color:var(--muted);
-  font-size:12px;
-  margin-bottom:4px;
+  font-size:15px;
+  margin-bottom:6px;
+  font-weight:600;
 }
 
 input,
@@ -171,17 +179,17 @@ textarea{
   background:#0c1426;
   color:var(--text);
   border:1px solid #30405f;
-  border-radius:8px;
-  padding:10px 12px;
+  border-radius:12px;
+  padding:14px 16px;
   outline:none;
-  min-height:40px;
-  font-size:15px;
+  min-height:54px;
+  font-size:18px;
 }
 
 input[type="date"]{
-  min-height:40px;
-  padding:10px 12px;
-  font-size:15px;
+  min-height:54px;
+  padding:14px 16px;
+  font-size:18px;
   -webkit-appearance:none;
   appearance:none;
 }
@@ -189,13 +197,15 @@ input[type="date"]{
 input[type="date"]::-webkit-calendar-picker-indicator {
   filter: invert(1);
   opacity:0.6;
-  padding:4px;
+  padding:6px;
 }
 
 select{
   cursor:pointer;
   -webkit-appearance:auto;
   appearance:auto;
+  font-size:18px;
+  min-height:54px;
 }
 
 input:focus,
@@ -204,10 +214,15 @@ textarea:focus{
   border-color:var(--a);
 }
 
+textarea{
+  min-height:80px;
+  font-size:18px;
+}
+
 .row{
   display:grid;
   grid-template-columns:1fr 1fr;
-  gap:8px;
+  gap:12px;
 }
 
 .hidden{
@@ -224,14 +239,14 @@ textarea:focus{
 
 table{
   width:100%;
-  min-width:600px;
+  min-width:700px;
   border-collapse:collapse;
-  font-size:13px;
+  font-size:16px;
 }
 
 th,
 td{
-  padding:10px 8px;
+  padding:14px 12px;
   border-bottom:1px solid var(--line);
   text-align:left;
   vertical-align:middle;
@@ -239,28 +254,32 @@ td{
 
 th{
   color:var(--muted);
-  font-size:11px;
+  font-size:14px;
   text-transform:uppercase;
   letter-spacing:0.5px;
   white-space:nowrap;
+  font-weight:700;
 }
 
 td{
   white-space:nowrap;
+  font-size:16px;
 }
 
 td .btn{
-  font-size:11px;
-  padding:4px 8px;
+  font-size:15px;
+  padding:8px 14px;
+  min-height:44px;
 }
 
 .badge{
-  padding:3px 8px;
+  padding:6px 14px;
   border-radius:99px;
   background:#22304c;
-  font-size:12px;
+  font-size:15px;
   display:inline-block;
   white-space:nowrap;
+  font-weight:600;
 }
 
 .badge.blue{
@@ -286,56 +305,72 @@ td .btn{
 .stats{
   display:grid;
   grid-template-columns:repeat(4,1fr);
-  gap:8px;
-  margin-bottom:12px;
+  gap:12px;
+  margin-bottom:16px;
 }
 
 .stat{
   background:var(--card);
   border:1px solid var(--line);
-  border-radius:12px;
-  padding:10px 12px;
+  border-radius:14px;
+  padding:14px 16px;
   text-align:center;
 }
 
 .stat b{
-  font-size:22px;
+  font-size:28px;
   display:block;
-  margin-top:4px;
+  margin-top:6px;
 }
 
 .stat .label{
-  font-size:11px;
+  font-size:14px;
   color:var(--muted);
+  font-weight:600;
 }
 
 .roster{
   display:grid;
   grid-template-columns:repeat(2,1fr);
-  gap:10px;
+  gap:14px;
 }
 
 .person{
   background:var(--card);
   border:1px solid var(--line);
-  border-radius:12px;
-  padding:12px;
+  border-radius:14px;
+  padding:16px;
 }
 
 .avatar{
-  width:60px;
-  height:60px;
+  width:72px;
+  height:72px;
   border-radius:50%;
   object-fit:cover;
   background:#263452;
   display:block;
-  margin-bottom:8px;
+  margin-bottom:10px;
+}
+
+.person b{
+  font-size:17px;
+}
+
+.person .muted{
+  font-size:15px;
+}
+
+.person .btn{
+  font-size:15px;
+  padding:8px 16px;
+  min-height:44px;
+  margin-top:6px;
 }
 
 .media{
   display:grid;
   grid-template-columns:repeat(2,1fr);
-  gap:8px;
+  gap:10px;
 }
 
 .media img,
@@ -343,20 +378,22 @@ td .btn{
   width:100%;
   aspect-ratio:1;
   object-fit:cover;
-  border-radius:10px;
+  border-radius:12px;
 }
 
 .toast{
   position:fixed;
-  right:16px;
-  bottom:16px;
-  max-width:calc(100vw - 32px);
+  right:20px;
+  bottom:20px;
+  max-width:calc(100vw - 40px);
   background:#18243d;
   border:1px solid var(--line);
-  padding:12px 16px;
-  border-radius:12px;
+  padding:16px 20px;
+  border-radius:14px;
   display:none;
   z-index:9999;
+  font-size:17px;
+  font-weight:600;
 }
 
 .toast.show{
@@ -364,12 +401,12 @@ td .btn{
 }
 
 .status{
-  margin-top:10px;
-  padding:8px 12px;
-  border-radius:8px;
+  margin-top:12px;
+  padding:12px 16px;
+  border-radius:10px;
   background:#0c1426;
   border:1px solid var(--line);
-  font-size:12px;
+  font-size:15px;
   display:none;
 }
 
@@ -392,14 +429,14 @@ td .btn{
 }
 
 .empty{
-  padding:12px;
+  padding:20px;
   color:var(--muted);
   text-align:center;
-  font-size:13px;
+  font-size:16px;
 }
 
 /* ===== Мобильные ===== */
-@media(max-width:700px){
+@media(max-width:768px){
   .grid{
     grid-template-columns:1fr;
   }
@@ -424,38 +461,40 @@ td .btn{
   .navbtn{
     flex:1;
     text-align:center;
-    font-size:12px;
-    padding:6px 8px;
+    font-size:15px;
+    padding:10px 12px;
+    min-height:44px;
   }
 
   .table-wrap{
-    margin:0 -8px;
-    padding:0 8px;
+    margin:0 -10px;
+    padding:0 10px;
   }
 
   table{
-    font-size:12px;
-    min-width:520px;
+    font-size:15px;
+    min-width:620px;
   }
 
   th, td{
-    padding:8px 6px;
+    padding:12px 10px;
   }
 
   th{
-    font-size:10px;
+    font-size:13px;
   }
 
   td .btn{
-    font-size:10px;
-    padding:3px 6px;
+    font-size:14px;
+    padding:6px 12px;
+    min-height:38px;
   }
 }
 
 @media(max-width:480px){
   .app{
-    padding:8px 8px 70px 8px;
-    padding-top: calc(env(safe-area-inset-top, 20px) + 4px);
+    padding:12px 10px 80px 10px;
+    padding-top: calc(env(safe-area-inset-top, 20px) + 8px);
   }
 
   .row{
@@ -471,29 +510,33 @@ td .btn{
   }
 
   h1{
-    font-size:17px;
+    font-size:22px;
+  }
+
+  h2{
+    font-size:19px;
   }
 
   .card{
-    padding:10px 12px;
+    padding:14px 14px;
   }
 
   .table-wrap{
-    margin:0 -12px;
-    padding:0 12px;
+    margin:0 -14px;
+    padding:0 14px;
   }
 
   table{
-    font-size:11px;
-    min-width:450px;
+    font-size:14px;
+    min-width:520px;
   }
 
   th, td{
-    padding:6px 4px;
+    padding:10px 8px;
   }
 
   th{
-    font-size:9px;
+    font-size:12px;
   }
 
   .stats{
@@ -501,43 +544,68 @@ td .btn{
   }
 
   .stat b{
-    font-size:18px;
+    font-size:24px;
   }
 
   input, select, textarea{
-    font-size:14px;
-    padding:8px 10px;
-    min-height:36px;
+    font-size:17px;
+    padding:12px 14px;
+    min-height:48px;
   }
 
   input[type="date"]{
-    font-size:14px;
-    min-height:36px;
+    font-size:17px;
+    min-height:48px;
   }
 
   .logo{
-    width:36px;
-    height:36px;
-    font-size:18px;
+    width:48px;
+    height:48px;
+    font-size:24px;
   }
 
   .brand{
-    gap:8px;
+    gap:10px;
   }
 
   .navbtn{
-    font-size:11px;
-    padding:5px 6px;
+    font-size:13px;
+    padding:8px 8px;
+    min-height:38px;
   }
 
   td .btn{
-    font-size:9px;
-    padding:2px 5px;
+    font-size:13px;
+    padding:5px 10px;
+    min-height:34px;
   }
 
   .badge{
-    font-size:10px;
-    padding:2px 6px;
+    font-size:13px;
+    padding:4px 10px;
+  }
+
+  .muted{
+    font-size:14px;
+  }
+
+  .toast{
+    font-size:15px;
+    padding:14px 16px;
+  }
+
+  .person b{
+    font-size:15px;
+  }
+
+  .person .muted{
+    font-size:14px;
+  }
+
+  .person .btn{
+    font-size:14px;
+    padding:6px 14px;
+    min-height:38px;
   }
 }
 </style>
@@ -568,16 +636,16 @@ td .btn{
 
     <div class="card">
 
-      <h2>Добавить тренировку</h2>
+      <h2>➕ Добавить тренировку</h2>
 
-      <p class="muted" style="font-size:12px;">
+      <p class="muted">
         Вход свободный — аккаунт не требуется.
       </p>
 
-      <form id="form" class="form" style="margin-top:12px">
+      <form id="form" class="form" style="margin-top:16px">
 
         <div class="field">
-          <label for="date">Дата</label>
+          <label for="date">📅 Дата</label>
           <input id="date" type="date" required>
         </div>
 
@@ -585,7 +653,7 @@ td .btn{
         <div class="field">
 
           <label for="bestSelect">
-            Лучший игрок
+            ⭐ Лучший игрок
           </label>
 
           <select id="bestSelect" required>
@@ -602,7 +670,7 @@ td .btn{
         <div class="field">
 
           <label for="helperSelect">
-            Помощник
+            🤝 Помощник
           </label>
 
           <select id="helperSelect" required>
@@ -615,7 +683,7 @@ td .btn{
 
         </div>
         <div class="field">
-          <label for="comment">Комментарий <span class="muted">(необязательно)</span></label>
+          <label for="comment">💬 Комментарий <span class="muted">(необязательно)</span></label>
           <textarea id="comment" rows="2" placeholder="Комментарий к тренировке"></textarea>
         </div>
 
@@ -626,7 +694,7 @@ td .btn{
           <div class="field">
 
             <label for="white">
-              Белые
+              ⚪ Белые
             </label>
 
             <input
@@ -643,7 +711,7 @@ td .btn{
           <div class="field">
 
             <label for="blue">
-              Синие
+              🔵 Синие
             </label>
 
             <input
@@ -664,7 +732,7 @@ td .btn{
           class="btn primary"
           id="saveTrainingBtn"
         >
-          Добавить тренировку
+          ✅ Добавить тренировку
         </button>
 
       </form>
@@ -675,10 +743,10 @@ td .btn{
 
       <p
         class="muted"
-        style="font-size:11px;margin-top:8px;"
+        style="font-size:14px;margin-top:10px;"
       >
         Если Лучший и Помощник совпали —
-        автоматически считается «Счастливчик».
+        автоматически считается «Счастливчик» 🍀
       </p>
 
     </div>
@@ -686,7 +754,7 @@ td .btn{
 
     <div class="card">
 
-      <h2>Последние тренировки</h2>
+      <h2>📋 Последние тренировки</h2>
 
       <div id="recent"></div>
 
@@ -706,11 +774,11 @@ td .btn{
 
   <div class="card">
 
-    <h2>Тренировки</h2>
+    <h2>📊 Все тренировки</h2>
 
     <div
       id="trainings"
-      style="margin-top:10px"
+      style="margin-top:14px"
     ></div>
 
   </div>
@@ -734,12 +802,12 @@ td .btn{
   <div class="card">
 
     <h2>
-      Лучшие / Помощники / Счастливчики
+      🏆 Лучшие / Помощники / Счастливчики
     </h2>
 
     <div
       id="statTable"
-      style="margin-top:10px"
+      style="margin-top:14px"
     ></div>
 
   </div>
@@ -756,9 +824,9 @@ td .btn{
 
   <div class="card">
 
-    <h2>Состав команды</h2>
+    <h2>👥 Состав команды</h2>
 
-    <p class="muted" style="font-size:12px;">
+    <p class="muted">
       У каждого игрока можно заполнить рост,
       вес и фотографию.
     </p>
@@ -766,7 +834,7 @@ td .btn{
     <div
       id="roster"
       class="roster"
-      style="margin-top:12px"
+      style="margin-top:14px"
     ></div>
 
   </div>
@@ -785,16 +853,16 @@ td .btn{
 
     <div class="card">
 
-      <h2>Добавить медиа</h2>
+      <h2>📸 Добавить медиа</h2>
 
-      <p class="muted" style="font-size:12px;">
+      <p class="muted">
         Фото и видео команды в общей ленте.
       </p>
 
       <form
         id="mediaForm"
         class="form"
-        style="margin-top:12px"
+        style="margin-top:14px"
       >
 
         <input
@@ -810,7 +878,7 @@ td .btn{
         >
 
         <button class="btn primary">
-          Опубликовать
+          📤 Опубликовать
         </button>
 
       </form>
@@ -820,12 +888,12 @@ td .btn{
 
     <div class="card">
 
-      <h2>Медиа клуба</h2>
+      <h2>🖼️ Медиа клуба</h2>
 
       <div
         id="mediaGrid"
         class="media"
-        style="margin-top:12px"
+        style="margin-top:14px"
       ></div>
 
     </div>
@@ -846,12 +914,12 @@ td .btn{
 
     <div class="card">
 
-      <h2>Участие в турнирах</h2>
+      <h2>🏀 Участие в турнирах</h2>
 
       <form
         id="tourForm"
         class="form"
-        style="margin-top:12px"
+        style="margin-top:14px"
       >
 
         <input
@@ -876,7 +944,7 @@ td .btn{
           placeholder="Счёт, например 65:58"
         >
 <button class="btn primary">
-          Добавить турнир
+          ✅ Добавить турнир
         </button>
 
       </form>
@@ -886,7 +954,7 @@ td .btn{
 
     <div class="card">
 
-      <h2>Турниры</h2>
+      <h2>📋 Турниры</h2>
 
       <div id="tourTable"></div>
 
@@ -1000,17 +1068,17 @@ function nav(){
 
   const items = [
 
-    ["input","Добавить"],
+    ["input","➕ Добавить"],
 
-    ["training","Тренировки"],
+    ["training","📊 Тренировки"],
 
-    ["stats","Лучшие"],
+    ["stats","🏆 Лучшие"],
 
-    ["players","Состав"],
+    ["players","👥 Состав"],
 
-    ["media","Медиа"],
+    ["media","📸 Медиа"],
 
-    ["tournaments","Турниры"]
+    ["tournaments","🏀 Турниры"]
 
   ];
 
@@ -1073,7 +1141,7 @@ function fillPlayerSelects(){
   const selectOptions = `
 
     <option value="">
-      Выберите игрока
+      👤 Выберите игрока
     </option>
 
     ${
@@ -1113,10 +1181,10 @@ async function load(){
 
 
   $("bestSelect").innerHTML =
-    `<option value="">Загрузка...</option>`;
+    `<option value="">⏳ Загрузка...</option>`;
 
   $("helperSelect").innerHTML =
-    `<option value="">Загрузка...</option>`;
+    `<option value="">⏳ Загрузка...</option>`;
 
 
   /* PLAYERS */
@@ -1140,13 +1208,13 @@ async function load(){
 
     $("bestSelect").innerHTML =
       `<option value="">
-        Ошибка загрузки
+        ❌ Ошибка загрузки
       </option>`;
 
 
     $("helperSelect").innerHTML =
       `<option value="">
-        Ошибка загрузки
+        ❌ Ошибка загрузки
       </option>`;
 
 
@@ -1206,13 +1274,13 @@ async function load(){
 
     $("bestSelect").innerHTML =
       `<option value="">
-        Игроков нет в базе
+        ⚠️ Игроков нет в базе
       </option>`;
 
 
     $("helperSelect").innerHTML =
       `<option value="">
-        Игроков нет в базе
+        ⚠️ Игроков нет в базе
       </option>`;
 
 
@@ -1358,7 +1426,7 @@ async event => {
   if(!best){
 
     msg(
-      "Выберите Лучшего игрока"
+      "⚠️ Выберите Лучшего игрока"
     );
 
     $("bestSelect").focus();
@@ -1371,7 +1439,7 @@ async event => {
   if(!helper){
 
     msg(
-      "Выберите Помощника"
+      "⚠️ Выберите Помощника"
     );
 
     $("helperSelect").focus();
@@ -1404,7 +1472,7 @@ async event => {
 
 
   status(
-    "Сохраняем тренировку...",
+    "⏳ Сохраняем тренировку...",
     "loading"
   );
 
@@ -1424,7 +1492,7 @@ async event => {
 
 
     status(
-      "Ошибка сохранения: " +
+      "❌ Ошибка сохранения: " +
       saveResult.error.message,
       "error"
     );
@@ -1457,7 +1525,7 @@ async event => {
 
 
   msg(
-    "Тренировка добавлена"
+    "✅ Тренировка добавлена"
   );
 
 
@@ -1503,7 +1571,7 @@ async event => {
     );
 
     msg(
-      "Ошибка: " +
+      "❌ Ошибка: " +
       saveResult.error.message
     );
 
@@ -1515,7 +1583,7 @@ async event => {
   event.target.reset();
 
   msg(
-    "Турнир добавлен"
+    "✅ Турнир добавлен"
   );
 
   await load();
@@ -1567,7 +1635,7 @@ async event => {
     );
 
     msg(
-      "Ошибка загрузки медиа"
+      "❌ Ошибка загрузки медиа"
     );
 
     return;
@@ -1610,7 +1678,7 @@ async event => {
     );
 
     msg(
-      "Ошибка публикации"
+      "❌ Ошибка публикации"
     );
 
     return;
@@ -1621,7 +1689,7 @@ async event => {
   event.target.reset();
 
   msg(
-    "Медиа добавлено"
+    "✅ Медиа добавлено"
   );
 
   await load();
@@ -1645,15 +1713,15 @@ function render(){
         `).join("")}
       </table>
       </div>` :
-      `<div class="empty">Пока нет тренировок.</div>`;
+      `<div class="empty">📭 Пока нет тренировок.</div>`;
 
   $("trainings").innerHTML =
     trainings.length ? `
       <div class="table-wrap">
       <table>
         <tr>
-          <th>Дата</th><th>Лучший</th><th>Помощник</th><th>Счёт</th>
-          <th>Победитель</th><th>Комментарий</th><th>Действия</th>
+          <th>📅 Дата</th><th>⭐ Лучший</th><th>🤝 Помощник</th><th>🏆 Счёт</th>
+          <th>🥇 Победитель</th><th>💬 Комментарий</th><th>⚙️ Действия</th>
         </tr>
         ${trainings.map(t=>{
           const win = result(t.white_score,t.blue_score);
@@ -1668,18 +1736,18 @@ function render(){
             <td>${t.helper?.name||"—"}</td>
             <td>${t.white_score}:${t.blue_score}</td>
             <td><span class="${badgeClass}">${win}</span></td>
-            <td style="max-width:80px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${t.comment||"—"}</td>
+            <td style="max-width:100px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${t.comment||"—"}</td>
             <td>
-              <div style="display:flex;gap:4px;flex-wrap:wrap;">
-                <button class="btn" type="button" onclick="editTraining('${t.id}')">✎</button>
-                <button class="btn" type="button" style="border-color:#71333d;color:#ff9aa7;" onclick="deleteTraining('${t.id}')">✕</button>
+              <div style="display:flex;gap:6px;flex-wrap:wrap;">
+                <button class="btn" type="button" onclick="editTraining('${t.id}')">✏️</button>
+                <button class="btn" type="button" style="border-color:#71333d;color:#ff9aa7;" onclick="deleteTraining('${t.id}')">🗑️</button>
               </div>
             </td>
           </tr>`
         }).join("")}
       </table>
       </div>` :
-      `<div class="empty">Пока нет тренировок.</div>`;
+      `<div class="empty">📭 Пока нет тренировок.</div>`;
 
   const statistics=players.map(p=>{
     const bestCount=trainings.filter(t=>t.best_player_id===p.id).length;
@@ -1693,7 +1761,7 @@ function render(){
   $("statTable").innerHTML=`
     <div class="table-wrap">
     <table>
-      <tr><th>№</th><th>Игрок</th><th>Лучший</th><th>Помощник</th><th>Счастливчик</th><th>Всего</th></tr>
+      <tr><th>№</th><th>👤 Игрок</th><th>⭐ Лучший</th><th>🤝 Помощник</th><th>🍀 Счастливчик</th><th>🏆 Всего</th></tr>
       ${statistics.map(p=>`
         <tr>
           <td>${p.number}</td><td>${p.name}</td><td>${p.bestCount}</td><td>${p.helperCount}</td>
@@ -1709,27 +1777,27 @@ async function editTraining(id){
   const t=trainings.find(x=>x.id===id);
   if(!t)return;
 
-  const date=prompt("Дата тренировки (ГГГГ-ММ-ДД)",t.date||"");
+  const date=prompt("📅 Дата тренировки (ГГГГ-ММ-ДД)",t.date||"");
   if(date===null)return;
 
   const bp=players.find(p=>p.id===t.best_player_id);
   const hp=players.find(p=>p.id===t.helper_player_id);
 
-  const bn=prompt("Номер Лучшего игрока",bp?.number??"");
+  const bn=prompt("⭐ Номер Лучшего игрока",bp?.number??"");
   if(bn===null)return;
   const best=players.find(p=>String(p.number)===String(bn).trim());
-  if(!best)return msg("Игрок с таким номером не найден");
+  if(!best)return msg("❌ Игрок с таким номером не найден");
 
-  const hn=prompt("Номер Помощника",hp?.number??"");
+  const hn=prompt("🤝 Номер Помощника",hp?.number??"");
   if(hn===null)return;
   const helper=players.find(p=>String(p.number)===String(hn).trim());
-  if(!helper)return msg("Игрок с таким номером не найден");
+  if(!helper)return msg("❌ Игрок с таким номером не найден");
 
-  const white=prompt("Очки Белых",t.white_score??0);
+  const white=prompt("⚪ Очки Белых",t.white_score??0);
   if(white===null)return;
-  const blue=prompt("Очки Синих",t.blue_score??0);
+  const blue=prompt("🔵 Очки Синих",t.blue_score??0);
   if(blue===null)return;
-  const comment=prompt("Комментарий (необязательно)",t.comment||"");
+  const comment=prompt("💬 Комментарий (необязательно)",t.comment||"");
   if(comment===null)return;
 
   const r=await sb.from("trainings").update({
@@ -1743,9 +1811,9 @@ async function editTraining(id){
 
   if(r.error){
     console.error(r.error);
-    return msg("Ошибка редактирования: "+r.error.message);
+    return msg("❌ Ошибка редактирования: "+r.error.message);
   }
-  msg("Тренировка изменена");
+  msg("✅ Тренировка изменена");
   await load();
 }
 
@@ -1753,20 +1821,20 @@ async function deleteTraining(id){
   console.log("deleteTraining вызвана с id:", id);
   
   if (!id) {
-    msg("Ошибка: идентификатор тренировки не указан");
+    msg("❌ Ошибка: идентификатор тренировки не указан");
     return;
   }
   
   const t = trainings.find(x => x.id === id);
   if (!t) {
-    msg("Тренировка не найдена в списке");
+    msg("❌ Тренировка не найдена в списке");
     return;
   }
   
-  const confirmMessage = "Удалить тренировку от " + fmt(t.date) + "?\n\n" +
-                        "Лучший: " + (t.best?.name || "—") + "\n" +
-                        "Помощник: " + (t.helper?.name || "—") + "\n" +
-                        "Счёт: " + t.white_score + ":" + t.blue_score + "\n\n" +
+  const confirmMessage = "🗑️ Удалить тренировку от " + fmt(t.date) + "?\n\n" +
+                        "⭐ Лучший: " + (t.best?.name || "—") + "\n" +
+                        "🤝 Помощник: " + (t.helper?.name || "—") + "\n" +
+                        "🏆 Счёт: " + t.white_score + ":" + t.blue_score + "\n\n" +
                         "⚠️ Это действие нельзя отменить!";
   
   if (!confirm(confirmMessage)) {
@@ -1784,12 +1852,12 @@ async function deleteTraining(id){
   
   if (error) {
     console.error("Ошибка удаления:", error);
-    msg("Ошибка удаления: " + error.message);
+    msg("❌ Ошибка удаления: " + error.message);
     return;
   }
   
   if (count === 0) {
-    msg("Тренировка не найдена или уже удалена");
+    msg("⚠️ Тренировка не найдена или уже удалена");
     return;
   }
   
@@ -1814,15 +1882,14 @@ function renderRoster(){
           onerror="this.style.visibility='hidden'"
         >
 
-        <b style="font-size:13px;">
-          №${player.number} —
-          ${player.name}
+        <b>
+          №${player.number} — ${player.name}
         </b>
 
 
-        <p class="muted" style="font-size:12px;margin-top:4px;">
+        <p class="muted">
 
-          Рост:
+          📏 Рост:
           ${
             player.height_cm
               ? player.height_cm + " см"
@@ -1831,7 +1898,7 @@ function renderRoster(){
 
           <br>
 
-          Вес:
+          ⚖️ Вес:
           ${
             player.weight_kg
               ? player.weight_kg + " кг"
@@ -1844,10 +1911,9 @@ function renderRoster(){
         <button
           class="btn"
           type="button"
-          style="font-size:12px;padding:4px 10px;"
           onclick="editPlayer('${player.id}')"
         >
-          Изменить
+          ✏️ Изменить
         </button>
 
       </div>
@@ -1866,10 +1932,10 @@ async function editPlayer(id){
   const player=players.find(x=>x.id===id);
   if(!player)return;
 
-  const height=prompt("Рост, см",player.height_cm ?? "");
+  const height=prompt("📏 Рост, см",player.height_cm ?? "");
   if(height===null)return;
 
-  const weight=prompt("Вес, кг",player.weight_kg ?? "");
+  const weight=prompt("⚖️ Вес, кг",player.weight_kg ?? "");
   if(weight===null)return;
 
   const update=await sb.from("players").update({
@@ -1879,12 +1945,12 @@ async function editPlayer(id){
 
   if(update.error){
     console.error(update.error);
-    return msg("Ошибка сохранения роста/веса: "+update.error.message);
+    return msg("❌ Ошибка сохранения роста/веса: "+update.error.message);
   }
 
-  msg("Рост и вес сохранены");
+  msg("✅ Рост и вес сохранены");
 
-  if(!confirm("Изменить фотографию игрока?")){
+  if(!confirm("📸 Изменить фотографию игрока?")){
     await load();
     return;
   }
@@ -1903,14 +1969,14 @@ async function editPlayer(id){
     const path="players/"+id+"_"+Date.now()+"_"+file.name.replace(/[^a-zA-Z0-9._-]/g,"_");
 
     const upload=await sb.storage.from("player-photos").upload(path,file,{upsert:false});
-    if(upload.error)return msg("Ошибка загрузки фото: "+upload.error.message);
+    if(upload.error)return msg("❌ Ошибка загрузки фото: "+upload.error.message);
 
     const photo=sb.storage.from("player-photos").getPublicUrl(path).data.publicUrl;
     const photoUpdate=await sb.from("players").update({photo_url:photo}).eq("id",id);
 
-    if(photoUpdate.error)return msg("Ошибка сохранения фото: "+photoUpdate.error.message);
+    if(photoUpdate.error)return msg("❌ Ошибка сохранения фото: "+photoUpdate.error.message);
 
-    msg("Профиль обновлён");
+    msg("✅ Профиль обновлён");
     await load();
   };
 
@@ -1926,7 +1992,7 @@ function renderTours(data){
   $("tourTable").innerHTML=data.length?`
     <div class="table-wrap">
     <table>
-      <tr><th>Турнир</th><th>Дата</th><th>Соперник</th><th>Счёт</th><th>MVP</th><th>Действия</th></tr>
+      <tr><th>🏀 Турнир</th><th>📅 Дата</th><th>⚔️ Соперник</th><th>🏆 Счёт</th><th>⭐ MVP</th><th>⚙️ Действия</th></tr>
       ${data.map(item=>`
         <tr>
           <td>${item.name}</td>
@@ -1935,24 +2001,24 @@ function renderTours(data){
           <td>${item.score||"—"}</td>
           <td>${item.mvp?.name||"Не назначен"}</td>
           <td>
-            <button class="btn" type="button" style="font-size:11px;padding:4px 8px;" onclick="setTournamentMVP('${item.id}')">
-              ${item.mvp?.name?"Изменить MVP":"Назначить MVP"}
+            <button class="btn" type="button" onclick="setTournamentMVP('${item.id}')">
+              ${item.mvp?.name?"✏️ Изменить MVP":"⭐ Назначить MVP"}
             </button>
           </td>
         </tr>
       `).join("")}
     </table>
     </div>`:
-    `<div class="empty">Пока нет турниров.</div>`;
+    `<div class="empty">📭 Пока нет турниров.</div>`;
 }
 
 async function setTournamentMVP(tournamentId){
   const list=players.map(p=>`№${p.number} — ${p.name}`).join("\n");
-  const number=prompt("Введите игровой номер MVP по итогам соревнования.\n\n"+list);
+  const number=prompt("⭐ Введите игровой номер MVP по итогам соревнования.\n\n"+list);
   if(number===null)return;
 
   const player=players.find(p=>String(p.number)===String(number).trim());
-  if(!player)return msg("Игрок с таким номером не найден");
+  if(!player)return msg("❌ Игрок с таким номером не найден");
 
   const update=await sb.from("tournaments")
     .update({mvp_player_id:player.id})
@@ -1960,10 +2026,10 @@ async function setTournamentMVP(tournamentId){
 
   if(update.error){
     console.error(update.error);
-    return msg("Ошибка назначения MVP: "+update.error.message);
+    return msg("❌ Ошибка назначения MVP: "+update.error.message);
   }
 
-  msg("MVP назначен");
+  msg("✅ MVP назначен");
   await load();
 }
 
@@ -1987,7 +2053,7 @@ function renderMedia(data){
                 controls
                 style="
                   width:100%;
-                  border-radius:10px;
+                  border-radius:12px;
                   aspect-ratio:1;
                   object-fit:cover;
                 "
@@ -2000,7 +2066,7 @@ function renderMedia(data){
               <img
                 src="${item.url}"
                 alt="${item.caption || "Фото"}"
-                style="width:100%;aspect-ratio:1;object-fit:cover;border-radius:10px;"
+                style="width:100%;aspect-ratio:1;object-fit:cover;border-radius:12px;"
               >
 
             `
@@ -2009,7 +2075,7 @@ function renderMedia(data){
 
       : `
         <div class="empty">
-          Медиа пока нет.
+          📭 Медиа пока нет.
         </div>
       `;
 
