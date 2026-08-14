@@ -18,8 +18,8 @@ self.addEventListener("activate", e => {
 
 self.addEventListener("fetch", e => {
   // Пропускаем запросы к API и внешним ресурсам
-  if (e.request.url.includes("5x5-api.onrender.com") || 
-      e.request.url.includes("supabase.co") ||
+  if (e.request.url.includes("5x5-api") || 
+      e.request.url.includes("supabase") ||
       e.request.method !== "GET") {
     return;
   }
