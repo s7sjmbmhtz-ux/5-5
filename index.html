@@ -1,7 +1,8 @@
 <!doctype html>
 <html lang="ru">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#0b1220">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -9,47 +10,2148 @@
 <meta name="apple-mobile-web-app-title" content="5х5">
 <link rel="manifest" href="manifest.webmanifest">
 <title>5х5 — баскетбольный клуб</title>
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <style>
-:root{--bg:#08101f;--card:#111a2d;--card2:#17223a;--line:#293858;--text:#f5f7fb;--muted:#9eabc2;--a:#5b8cff;--a2:#7a5cff;--green:#36d49a;--gold:#f4c451}
-*{box-sizing:border-box}body{margin:0;background:linear-gradient(135deg,#080d18,#111a2d);color:var(--text);font:15px Arial,sans-serif}.app{max-width:1400px;margin:auto;padding:16px}.top{display:flex;justify-content:space-between;gap:15px;align-items:center;margin-bottom:18px}.brand{display:flex;gap:12px;align-items:center}.logo{width:48px;height:48px;border-radius:14px;background:linear-gradient(135deg,var(--a),var(--a2));display:grid;place-items:center;font-size:25px}h1,h2,h3{margin:0}.muted{color:var(--muted)}nav{display:flex;gap:7px;flex-wrap:wrap}.navbtn,.btn{border:1px solid var(--line);background:#121c31;color:var(--text);padding:10px 14px;border-radius:10px;cursor:pointer}.navbtn.active,.btn.primary{background:linear-gradient(135deg,var(--a),var(--a2));border:0}.page.hidden{display:none}.grid{display:grid;grid-template-columns:360px 1fr;gap:16px}.card{background:rgba(17,26,45,.96);border:1px solid var(--line);border-radius:17px;padding:18px}.form{display:grid;gap:13px}.field label{display:block;color:var(--muted);font-size:13px;margin-bottom:6px}input,select,textarea{width:100%;background:#0c1426;color:var(--text);border:1px solid #30405f;border-radius:10px;padding:12px;outline:none}.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}.player{width:100%;text-align:left;background:#0c1426;color:var(--text);border:1px solid #30405f;border-radius:10px;padding:12px;cursor:pointer}.playerlist{display:grid;gap:6px;margin-top:7px;max-height:250px;overflow:auto}.hidden{display:none!important}table{width:100%;border-collapse:collapse}th,td{padding:11px 9px;border-bottom:1px solid var(--line);text-align:left}th{color:var(--muted);font-size:12px}.badge{padding:5px 8px;border-radius:99px;background:#22304c}.gold{color:var(--gold);background:#3a3119}.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px}.stat{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px}.stat b{font-size:25px;display:block;margin-top:5px}.roster{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.person{background:var(--card);border:1px solid var(--line);border-radius:15px;padding:14px}.avatar{width:72px;height:72px;border-radius:50%;object-fit:cover;background:#263452;display:block;margin-bottom:10px}.media{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.media img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:12px}.toast{position:fixed;right:16px;bottom:16px;background:#18243d;border:1px solid var(--line);padding:13px 16px;border-radius:12px;display:none}.toast.show{display:block}@media(max-width:900px){.grid{grid-template-columns:1fr}.stats{grid-template-columns:1fr 1fr}.roster,.media{grid-template-columns:1fr 1fr}.top{align-items:flex-start;flex-direction:column}}@media(max-width:600px){.app{padding:11px}.row{grid-template-columns:1fr}.roster,.media{grid-template-columns:1fr}}
+:root{
+  --bg:#08101f;
+  --card:#111a2d;
+  --card2:#17223a;
+  --line:#293858;
+  --text:#f5f7fb;
+  --muted:#9eabc2;
+  --a:#5b8cff;
+  --a2:#7a5cff;
+  --green:#36d49a;
+  --gold:#f4c451;
+  --danger:#ff6678;
+}
+
+*{
+  box-sizing:border-box;
+}
+
+html{
+  -webkit-text-size-adjust:100%;
+}
+
+body{
+  margin:0;
+  background:linear-gradient(135deg,#080d18,#111a2d);
+  color:var(--text);
+  font:15px Arial,sans-serif;
+  min-height:100vh;
+}
+
+button,
+input,
+select,
+textarea{
+  font:inherit;
+}
+
+.app{
+  max-width:1400px;
+  margin:auto;
+  padding:16px;
+}
+
+.top{
+  display:flex;
+  justify-content:space-between;
+  gap:15px;
+  align-items:center;
+  margin-bottom:18px;
+}
+
+.brand{
+  display:flex;
+  gap:12px;
+  align-items:center;
+}
+
+.logo{
+  width:48px;
+  height:48px;
+  border-radius:14px;
+  background:linear-gradient(135deg,var(--a),var(--a2));
+  display:grid;
+  place-items:center;
+  font-size:25px;
+  flex:none;
+}
+
+h1,h2,h3{
+  margin:0;
+}
+
+h1{
+  font-size:24px;
+}
+
+.muted{
+  color:var(--muted);
+}
+
+nav{
+  display:flex;
+  gap:7px;
+  flex-wrap:wrap;
+}
+
+.navbtn,
+.btn{
+  border:1px solid var(--line);
+  background:#121c31;
+  color:var(--text);
+  padding:10px 14px;
+  border-radius:10px;
+  cursor:pointer;
+}
+
+.navbtn.active,
+.btn.primary{
+  background:linear-gradient(135deg,var(--a),var(--a2));
+  border:0;
+}
+
+.navbtn:active,
+.btn:active{
+  transform:scale(.98);
+}
+
+.page.hidden{
+  display:none;
+}
+
+.grid{
+  display:grid;
+  grid-template-columns:360px 1fr;
+  gap:16px;
+}
+
+.card{
+  background:rgba(17,26,45,.96);
+  border:1px solid var(--line);
+  border-radius:17px;
+  padding:18px;
+}
+
+.form{
+  display:grid;
+  gap:13px;
+}
+
+.field label{
+  display:block;
+  color:var(--muted);
+  font-size:13px;
+  margin-bottom:6px;
+}
+
+input,
+select,
+textarea{
+  width:100%;
+  background:#0c1426;
+  color:var(--text);
+  border:1px solid #30405f;
+  border-radius:10px;
+  padding:12px;
+  outline:none;
+  min-height:46px;
+  font-size:16px;
+}
+
+select{
+  cursor:pointer;
+  -webkit-appearance:auto;
+  appearance:auto;
+}
+
+input:focus,
+select:focus,
+textarea:focus{
+  border-color:var(--a);
+}
+
+.row{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+}
+
+.hidden{
+  display:none!important;
+}
+
+table{
+  width:100%;
+  border-collapse:collapse;
+}
+
+th,
+td{
+  padding:11px 9px;
+  border-bottom:1px solid var(--line);
+  text-align:left;
+}
+
+th{
+  color:var(--muted);
+  font-size:12px;
+}
+
+.badge{
+  padding:5px 8px;
+  border-radius:99px;
+  background:#22304c;
+}
+
+.gold{
+  color:var(--gold);
+  background:#3a3119;
+}
+
+.stats{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:10px;
+  margin-bottom:16px;
+}
+
+.stat{
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:14px;
+  padding:14px;
+}
+
+.stat b{
+  font-size:25px;
+  display:block;
+  margin-top:5px;
+}
+
+.roster{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:12px;
+}
+
+.person{
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:15px;
+  padding:14px;
+}
+
+.avatar{
+  width:72px;
+  height:72px;
+  border-radius:50%;
+  object-fit:cover;
+  background:#263452;
+  display:block;
+  margin-bottom:10px;
+}
+
+.media{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:12px;
+}
+
+.media img{
+  width:100%;
+  aspect-ratio:1;
+  object-fit:cover;
+  border-radius:12px;
+}
+
+.toast{
+  position:fixed;
+  right:16px;
+  bottom:16px;
+  max-width:calc(100vw - 32px);
+  background:#18243d;
+  border:1px solid var(--line);
+  padding:13px 16px;
+  border-radius:12px;
+  display:none;
+  z-index:9999;
+}
+
+.toast.show{
+  display:block;
+}
+
+.status{
+  margin-top:12px;
+  padding:10px 12px;
+  border-radius:10px;
+  background:#0c1426;
+  border:1px solid var(--line);
+  font-size:13px;
+}
+
+.status.ok{
+  border-color:#276e59;
+  color:#8ce5c5;
+}
+
+.status.error{
+  border-color:#71333d;
+  color:#ff9aa7;
+}
+
+.empty{
+  padding:15px;
+  color:var(--muted);
+}
+
+@media(max-width:900px){
+  .grid{
+    grid-template-columns:1fr;
+  }
+
+  .stats{
+    grid-template-columns:1fr 1fr;
+  }
+
+  .roster,
+  .media{
+    grid-template-columns:1fr 1fr;
+  }
+
+  .top{
+    align-items:flex-start;
+    flex-direction:column;
+  }
+
+  nav{
+    width:100%;
+  }
+
+  .navbtn{
+    flex:1;
+  }
+}
+
+@media(max-width:600px){
+  .app{
+    padding:11px;
+  }
+
+  .row{
+    grid-template-columns:1fr;
+  }
+
+  .roster,
+  .media{
+    grid-template-columns:1fr;
+  }
+
+  h1{
+    font-size:20px;
+  }
+
+  .card{
+    padding:14px;
+  }
+
+  table{
+    display:block;
+    overflow-x:auto;
+    white-space:nowrap;
+  }
+
+  .stats{
+    grid-template-columns:1fr 1fr;
+  }
+}
 </style>
 </head>
+
 <body>
+
 <div class="app">
-<header class="top"><div class="brand"><div class="logo">🏀</div><div><h1>Баскетбольный клуб «5х5»</h1><div class="muted">Открытый клубный профиль и общая статистика</div></div></div><nav id="nav"></nav></header>
 
-<section id="input" class="page"><div class="grid"><div class="card"><h2>Добавить тренировку</h2><p class="muted">Вход свободный — аккаунт не требуется.</p><form id="form" class="form" style="margin-top:16px"><div class="field"><label>Дата</label><input id="date" type="date" required></div><div class="field"><label>Лучший игрок</label><button type="button" class="player" id="bestBtn">Выберите игрока</button><div id="bestList" class="playerlist hidden"></div></div><div class="field"><label>Помощник</label><button type="button" class="player" id="helperBtn">Выберите игрока</button><div id="helperList" class="playerlist hidden"></div></div><div class="row"><div class="field"><label>Белые</label><input id="white" type="number" min="0" value="0"></div><div class="field"><label>Синие</label><input id="blue" type="number" min="0" value="0"></div></div><button class="btn primary">Добавить тренировку</button></form><p class="muted" style="font-size:12px">Если Лучший и Помощник совпали — автоматически +1 «Счастливчик».</p></div><div class="card"><h2>Последние тренировки</h2><div id="recent"></div></div></div></section>
+<header class="top">
+  <div class="brand">
+    <div class="logo">🏀</div>
+    <div>
+      <h1>Баскетбольный клуб «5х5»</h1>
+      <div class="muted">Общий клубный профиль и статистика</div>
+    </div>
+  </div>
 
-<section id="training" class="page hidden"><div class="card"><h2>Тренировки</h2><div id="trainings" style="margin-top:14px"></div></div></section>
-<section id="stats" class="page hidden"><div class="stats" id="summary"></div><div class="card"><h2>Лучшие / Помощники / Счастливчики</h2><div id="statTable" style="margin-top:14px"></div></div></section>
+  <nav id="nav"></nav>
+</header>
 
-<section id="players" class="page hidden"><div class="card"><h2>Состав команды</h2><p class="muted">У каждого игрока можно заполнить рост, вес и фотографию.</p><div id="roster" class="roster" style="margin-top:15px"></div></div></section>
 
-<section id="media" class="page hidden"><div class="grid"><div class="card"><h2>Добавить медиа</h2><p class="muted">Фото и видео команды в общей ленте.</p><form id="mediaForm" class="form" style="margin-top:15px"><input id="mediaFile" type="file" accept="image/*,video/*" required><input id="mediaCaption" placeholder="Подпись (необязательно)"><button class="btn primary">Опубликовать</button></form></div><div class="card"><h2>Медиа клуба</h2><div id="mediaGrid" class="media" style="margin-top:15px"></div></div></div></section>
+<!-- ДОБАВИТЬ ТРЕНИРОВКУ -->
 
-<section id="tournaments" class="page hidden"><div class="grid"><div class="card"><h2>Участие в турнирах</h2><form id="tourForm" class="form" style="margin-top:15px"><input id="tn" placeholder="Название турнира" required><input id="td" type="date" required><input id="to" placeholder="Соперник"><input id="ts" placeholder="Счёт, например 65:58"><select id="tm"></select><button class="btn primary">Добавить турнир</button></form></div><div class="card"><h2>Турниры</h2><div id="tourTable"></div></div></div></section>
-</div><div id="toast" class="toast"></div>
+<section id="input" class="page">
+
+  <div class="grid">
+
+    <div class="card">
+
+      <h2>Добавить тренировку</h2>
+
+      <p class="muted">
+        Вход свободный — аккаунт не требуется.
+      </p>
+
+      <form id="form" class="form" style="margin-top:16px">
+
+        <div class="field">
+          <label for="date">Дата</label>
+          <input id="date" type="date" required>
+        </div>
+
+
+        <div class="field">
+
+          <label for="bestSelect">
+            Лучший игрок
+          </label>
+
+          <select id="bestSelect" required>
+
+            <option value="">
+              Загрузка игроков...
+            </option>
+
+          </select>
+
+        </div>
+
+
+        <div class="field">
+
+          <label for="helperSelect">
+            Помощник
+          </label>
+
+          <select id="helperSelect" required>
+
+            <option value="">
+              Загрузка игроков...
+            </option>
+
+          </select>
+
+        </div>
+
+
+        <div class="row">
+
+          <div class="field">
+
+            <label for="white">
+              Белые
+            </label>
+
+            <input
+              id="white"
+              type="number"
+              min="0"
+              value="0"
+              inputmode="numeric"
+            >
+
+          </div>
+
+
+          <div class="field">
+
+            <label for="blue">
+              Синие
+            </label>
+
+            <input
+              id="blue"
+              type="number"
+              min="0"
+              value="0"
+              inputmode="numeric"
+            >
+
+          </div>
+
+        </div>
+
+
+        <button
+          type="submit"
+          class="btn primary"
+          id="saveTrainingBtn"
+        >
+          Добавить тренировку
+        </button>
+
+      </form>
+
+
+      <div class="status" id="dbStatus">
+        Подключение к базе...
+      </div>
+
+
+      <p
+        class="muted"
+        style="font-size:12px"
+      >
+        Если Лучший и Помощник совпали —
+        автоматически считается «Счастливчик».
+      </p>
+
+    </div>
+
+
+    <div class="card">
+
+      <h2>Последние тренировки</h2>
+
+      <div id="recent"></div>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- ТРЕНИРОВКИ -->
+
+<section
+  id="training"
+  class="page hidden"
+>
+
+  <div class="card">
+
+    <h2>Тренировки</h2>
+
+    <div
+      id="trainings"
+      style="margin-top:14px"
+    ></div>
+
+  </div>
+
+</section>
+
+
+<!-- СТАТИСТИКА -->
+
+<section
+  id="stats"
+  class="page hidden"
+>
+
+  <div
+    class="stats"
+    id="summary"
+  ></div>
+
+
+  <div class="card">
+
+    <h2>
+      Лучшие / Помощники / Счастливчики
+    </h2>
+
+    <div
+      id="statTable"
+      style="margin-top:14px"
+    ></div>
+
+  </div>
+
+</section>
+
+
+<!-- СОСТАВ -->
+
+<section
+  id="players"
+  class="page hidden"
+>
+
+  <div class="card">
+
+    <h2>Состав команды</h2>
+
+    <p class="muted">
+      У каждого игрока можно заполнить рост,
+      вес и фотографию.
+    </p>
+
+    <div
+      id="roster"
+      class="roster"
+      style="margin-top:15px"
+    ></div>
+
+  </div>
+
+</section>
+
+
+<!-- МЕДИА -->
+
+<section
+  id="media"
+  class="page hidden"
+>
+
+  <div class="grid">
+
+    <div class="card">
+
+      <h2>Добавить медиа</h2>
+
+      <p class="muted">
+        Фото и видео команды в общей ленте.
+      </p>
+
+      <form
+        id="mediaForm"
+        class="form"
+        style="margin-top:15px"
+      >
+
+        <input
+          id="mediaFile"
+          type="file"
+          accept="image/*,video/*"
+          required
+        >
+
+        <input
+          id="mediaCaption"
+          placeholder="Подпись (необязательно)"
+        >
+
+        <button class="btn primary">
+          Опубликовать
+        </button>
+
+      </form>
+
+    </div>
+
+
+    <div class="card">
+
+      <h2>Медиа клуба</h2>
+
+      <div
+        id="mediaGrid"
+        class="media"
+        style="margin-top:15px"
+      ></div>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- ТУРНИРЫ -->
+
+<section
+  id="tournaments"
+  class="page hidden"
+>
+
+  <div class="grid">
+
+    <div class="card">
+
+      <h2>Участие в турнирах</h2>
+
+      <form
+        id="tourForm"
+        class="form"
+        style="margin-top:15px"
+      >
+
+        <input
+          id="tn"
+          placeholder="Название турнира"
+          required
+        >
+
+        <input
+          id="td"
+          type="date"
+          required
+        >
+
+        <input
+          id="to"
+          placeholder="Соперник"
+        >
+
+        <input
+          id="ts"
+          placeholder="Счёт, например 65:58"
+        >
+
+        <select id="tm">
+          <option value="">
+            MVP не выбран
+          </option>
+        </select>
+
+        <button class="btn primary">
+          Добавить турнир
+        </button>
+
+      </form>
+
+    </div>
+
+
+    <div class="card">
+
+      <h2>Турниры</h2>
+
+      <div id="tourTable"></div>
+
+    </div>
+
+  </div>
+
+</section>
+
+</div>
+
+
+<div
+  id="toast"
+  class="toast"
+></div>
+
 
 <script>
-const SUPABASE_URL="https://sihixudkoxmksxgziary.supabase.co",SUPABASE_KEY="sb_publishable_LKWMnwcogf1c-hGQyjKuZg_LuHl9LR8";
-const sb=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);let players=[],trainings=[];
-const $=x=>document.getElementById(x),msg=x=>{let t=$("toast");t.textContent=x;t.classList.add("show");setTimeout(()=>t.classList.remove("show"),2500)},fmt=d=>d?new Date(d+"T00:00:00").toLocaleDateString("ru-RU"):"—",res=(a,b)=>a>b?"Белые":b>a?"Синие":"Ничья";
-function nav(){let items=[["input","Добавить"],["training","Тренировки"],["stats","Лучшие"],["players","Состав"],["media","Медиа"],["tournaments","Турниры"]];$("nav").innerHTML=items.map((x,i)=>`<button class="navbtn ${i?"":"active"}" data-p="${x[0]}">${x[1]}</button>`).join("");document.querySelectorAll(".navbtn").forEach(b=>b.onclick=()=>{document.querySelectorAll(".navbtn").forEach(x=>x.classList.remove("active"));b.classList.add("active");document.querySelectorAll(".page").forEach(x=>x.classList.add("hidden"));$(b.dataset.p).classList.remove("hidden")})}
-function pickers(){[["best","Лучший"],["helper","Помощник"]].forEach(([type,label])=>{let list=$(type+"List");list.innerHTML=players.map(p=>`<button type="button" class="player" data-id="${p.id}">№${p.number} — ${p.name}</button>`).join("");list.querySelectorAll("button").forEach(b=>b.onclick=()=>{let p=players.find(x=>x.id===b.dataset.id);$(type+"Btn").textContent=`№${p.number} — ${p.name}`;$(type+"Btn").dataset.id=p.id;list.classList.add("hidden")});$(type+"Btn").onclick=()=>list.classList.toggle("hidden")});$("tm").innerHTML='<option value="">MVP не выбран</option>'+players.map(p=>`<option value="${p.id}">№${p.number} — ${p.name}</option>`).join("")}
-async function load(){let p=await sb.from("players").select("*").order("number");if(p.error){msg("Проверьте подключение к базе");return}players=p.data||[];pickers();renderRoster();let t=await sb.from("trainings").select("*,best:players!best_player_id(name),helper:players!helper_player_id(name)").order("date",{ascending:false});trainings=t.data||[];render();let tr=await sb.from("tournaments").select("*,mvp:players!mvp_player_id(name)").order("date",{ascending:false});renderTours(tr.data||[]);let m=await sb.from("media").select("*").order("created_at",{ascending:false});renderMedia(m.data||[])}
-$("form#form").onsubmit=async e=>{e.preventDefault();let best=$("bestBtn").dataset.id,helper=$("helperBtn").dataset.id;if(!best||!helper)return msg("Выберите Лучшего и Помощника");let {error}=await sb.from("trainings").insert({date:$("date").value,best_player_id:best,helper_player_id:helper,white_score:+$("white").value,blue_score:+$("blue").value});if(error)msg("Ошибка сохранения");else{e.target.reset();$("bestBtn").textContent="Выберите игрока";$("helperBtn").textContent="Выберите игрока";delete $("bestBtn").dataset.id;delete $("helperBtn").dataset.id;msg("Тренировка добавлена");load()}};
-$("tourForm").onsubmit=async e=>{e.preventDefault();let {error}=await sb.from("tournaments").insert({name:$("tn").value,date:$("td").value,opponent:$("to").value,score:$("ts").value,mvp_player_id:$("tm").value||null});if(error)msg("Ошибка");else{e.target.reset();msg("Турнир добавлен");load()}};
-$("mediaForm").onsubmit=async e=>{e.preventDefault();let f=$("mediaFile").files[0];if(!f)return;let path=Date.now()+"_"+f.name.replace(/[^a-zA-Z0-9._-]/g,"_");let up=await sb.storage.from("club-media").upload(path,f,{upsert:false});if(up.error)return msg("Ошибка загрузки медиа");let url=sb.storage.from("club-media").getPublicUrl(path).data.publicUrl;let {error}=await sb.from("media").insert({url,caption:$("mediaCaption").value,type:f.type.startsWith("video")?"video":"image"});if(error)msg("Ошибка публикации");else{e.target.reset();msg("Медиа добавлено");load()}};
-function render(){ $("recent").innerHTML=trainings.length?`<table><tr><th>Дата</th><th>Лучший</th><th>Счёт</th></tr>${trainings.slice(0,6).map(x=>`<tr><td>${fmt(x.date)}</td><td>${x.best?.name}</td><td>${x.white_score}:${x.blue_score}</td></tr>`).join("")}</table>`:'<p class="muted">Пока нет тренировок.</p>'; $("trainings").innerHTML=trainings.length?`<table><tr><th>Дата</th><th>Лучший</th><th>Помощник</th><th>Счёт</th><th>Результат</th></tr>${trainings.map(x=>`<tr><td>${fmt(x.date)}</td><td>${x.best?.name}</td><td>${x.helper?.name}</td><td>${x.white_score}:${x.blue_score}</td><td><span class="badge">${res(x.white_score,x.blue_score)}</span></td></tr>`).join("")}</table>`:'<p class="muted">Пока нет тренировок.</p>';let st=players.map(p=>{let b=trainings.filter(x=>x.best_player_id===p.id).length,h=trainings.filter(x=>x.helper_player_id===p.id).length,l=trainings.filter(x=>x.best_player_id===p.id&&x.helper_player_id===p.id).length;return{...p,b,h,l,total:b+h+l}}).sort((a,b)=>b.total-a.total);$("summary").innerHTML=[["Тренировок",trainings.length],["Лучший",Math.max(0,...st.map(x=>x.b))],["Помощник",Math.max(0,...st.map(x=>x.h))],["Счастливчиков",st.filter(x=>x.l).length]].map(x=>`<div class="stat"><span class="muted">${x[0]}</span><b>${x[1]}</b></div>`).join("");$("statTable").innerHTML=`<table><tr><th>№</th><th>Игрок</th><th>Лучший</th><th>Помощник</th><th>Счастливчик</th><th>Всего</th></tr>${st.map(x=>`<tr><td>${x.number}</td><td>${x.name}</td><td>${x.b}</td><td>${x.h}</td><td>${x.l?`<span class="badge gold">🍀 ${x.l}</span>`:0}</td><td><b>${x.total}</b></td></tr>`).join("")}</table>`}
-function renderRoster(){$("roster").innerHTML=players.map(p=>`<div class="person"><img class="avatar" src="${p.photo_url||''}" onerror="this.style.visibility='hidden'"><b>№${p.number} — ${p.name}</b><p class="muted">Рост: ${p.height_cm? p.height_cm+" см":"не указан"}<br>Вес: ${p.weight_kg? p.weight_kg+" кг":"не указан"}</p><button class="btn" onclick="editPlayer('${p.id}')">Изменить</button></div>`).join("")}
-async function editPlayer(id){let p=players.find(x=>x.id===id);let h=prompt("Рост, см",p.height_cm||"");if(h===null)return;let w=prompt("Вес, кг",p.weight_kg||"");if(w===null)return;let fileInput=document.createElement("input");fileInput.type="file";fileInput.accept="image/*";fileInput.onchange=async()=>{let photo=p.photo_url;if(fileInput.files[0]){let f=fileInput.files[0],path="players/"+id+"_"+Date.now()+"_"+f.name.replace(/[^a-zA-Z0-9._-]/g,"_");let up=await sb.storage.from("player-photos").upload(path,f);if(up.error)return msg("Ошибка фото");photo=sb.storage.from("player-photos").getPublicUrl(path).data.publicUrl}let {error}=await sb.from("players").update({height_cm:+h||null,weight_kg:+w||null,photo_url:photo}).eq("id",id);if(error)msg("Ошибка сохранения");else{msg("Профиль обновлён");load()}};fileInput.click()}
-function renderTours(d){$("tourTable").innerHTML=d.length?`<table><tr><th>Турнир</th><th>Дата</th><th>Соперник</th><th>Счёт</th><th>MVP</th></tr>${d.map(x=>`<tr><td>${x.name}</td><td>${fmt(x.date)}</td><td>${x.opponent||"—"}</td><td>${x.score||"—"}</td><td>${x.mvp?.name||"—"}</td></tr>`).join("")}</table>`:'<p class="muted">Пока нет турниров.</p>'}
-function renderMedia(d){$("mediaGrid").innerHTML=d.length?d.map(x=>x.type==="video"?`<video src="${x.url}" controls style="width:100%;border-radius:12px"></video>`:`<img src="${x.url}" alt="${x.caption||"Фото"}">`).join(""):'<p class="muted">Медиа пока нет.</p>'}
-nav();load();
-</script><script>
-if ("serviceWorker" in navigator) {
-  window.addEventListener("load", () => navigator.serviceWorker.register("./sw.js").catch(console.error));
+
+/* =========================================
+   SUPABASE
+========================================= */
+
+const SUPABASE_URL =
+  "https://sihixudkoxmksxgziary.supabase.co";
+
+const SUPABASE_KEY =
+  "sb_publishable_LKWMnwcogf1c-hGQyjKuZg_LuHl9LR8";
+
+const sb =
+  supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+  );
+
+
+/* =========================================
+   DATA
+========================================= */
+
+let players = [];
+let trainings = [];
+
+
+/* =========================================
+   HELPERS
+========================================= */
+
+const $ = id =>
+  document.getElementById(id);
+
+
+const msg = text => {
+
+  const toast = $("toast");
+
+  toast.textContent = text;
+
+  toast.classList.add("show");
+
+  setTimeout(
+    () => toast.classList.remove("show"),
+    3500
+  );
+};
+
+
+const fmt = date => {
+
+  if (!date) return "—";
+
+  return new Date(
+    date + "T00:00:00"
+  ).toLocaleDateString("ru-RU");
+
+};
+
+
+const result = (white, blue) => {
+
+  if (white > blue) return "Белые";
+
+  if (blue > white) return "Синие";
+
+  return "Ничья";
+
+};
+
+
+/* =========================================
+   STATUS
+========================================= */
+
+function status(text, type = "") {
+
+  const el = $("dbStatus");
+
+  el.textContent = text;
+
+  el.className = "status " + type;
+
 }
+
+
+/* =========================================
+   NAVIGATION
+========================================= */
+
+function nav(){
+
+  const items = [
+
+    ["input","Добавить"],
+
+    ["training","Тренировки"],
+
+    ["stats","Лучшие"],
+
+    ["players","Состав"],
+
+    ["media","Медиа"],
+
+    ["tournaments","Турниры"]
+
+  ];
+
+
+  $("nav").innerHTML = items.map(
+
+    (item,index) => `
+
+      <button
+        class="navbtn ${index === 0 ? "active" : ""}"
+        data-p="${item[0]}"
+        type="button"
+      >
+        ${item[1]}
+      </button>
+
+    `
+
+  ).join("");
+
+
+  document
+    .querySelectorAll(".navbtn")
+    .forEach(button => {
+
+      button.onclick = () => {
+
+        document
+          .querySelectorAll(".navbtn")
+          .forEach(x =>
+            x.classList.remove("active")
+          );
+
+        button.classList.add("active");
+
+
+        document
+          .querySelectorAll(".page")
+          .forEach(page =>
+            page.classList.add("hidden")
+          );
+
+
+        $(button.dataset.p)
+          .classList.remove("hidden");
+
+      };
+
+    });
+
+}
+
+
+/* =========================================
+   PLAYERS SELECT
+========================================= */
+
+function fillPlayerSelects(){
+
+  const selectOptions = `
+
+    <option value="">
+      Выберите игрока
+    </option>
+
+    ${
+      players.map(player => `
+
+        <option value="${player.id}">
+
+          №${player.number} — ${player.name}
+
+        </option>
+
+      `).join("")
+    }
+
+  `;
+
+
+  $("bestSelect").innerHTML =
+    selectOptions;
+
+  $("helperSelect").innerHTML =
+    selectOptions;
+
+
+  $("tm").innerHTML = `
+
+    <option value="">
+      MVP не выбран
+    </option>
+
+    ${
+      players.map(player => `
+
+        <option value="${player.id}">
+
+          №${player.number} — ${player.name}
+
+        </option>
+
+      `).join("")
+    }
+
+  `;
+
+}
+
+
+/* =========================================
+   LOAD ALL DATA
+========================================= */
+
+async function load(){
+
+  status(
+    "Загружаем игроков из Supabase..."
+  );
+
+
+  $("bestSelect").innerHTML =
+    `<option value="">Загрузка...</option>`;
+
+  $("helperSelect").innerHTML =
+    `<option value="">Загрузка...</option>`;
+
+
+  /* PLAYERS */
+
+  const playersResult =
+    await sb
+      .from("players")
+      .select("*")
+      .order("number", {
+        ascending:true
+      });
+
+
+  if(playersResult.error){
+
+    console.error(
+      "PLAYERS ERROR:",
+      playersResult.error
+    );
+
+
+    $("bestSelect").innerHTML =
+      `<option value="">
+        Ошибка загрузки
+      </option>`;
+
+
+    $("helperSelect").innerHTML =
+      `<option value="">
+        Ошибка загрузки
+      </option>`;
+
+
+    status(
+      "Ошибка players: " +
+      playersResult.error.message,
+      "error"
+    );
+
+
+    msg(
+      "Не удалось загрузить игроков"
+    );
+
+
+    return;
+
+  }
+
+
+  players =
+    playersResult.data || [];
+
+
+  console.log(
+    "Игроки загружены:",
+    players
+  );
+
+
+  if(!players.length){
+
+    $("bestSelect").innerHTML =
+      `<option value="">
+        Игроков нет в базе
+      </option>`;
+
+
+    $("helperSelect").innerHTML =
+      `<option value="">
+        Игроков нет в базе
+      </option>`;
+
+
+    status(
+      "Таблица players пустая",
+      "error"
+    );
+
+
+    msg(
+      "В таблице players нет игроков"
+    );
+
+
+    return;
+
+  }
+
+
+  fillPlayerSelects();
+
+  renderRoster();
+
+
+  status(
+    `Подключено. Игроков: ${players.length}`,
+    "ok"
+  );
+
+
+  /* TRAININGS */
+
+  const trainingsResult =
+    await sb
+      .from("trainings")
+      .select(`
+        *,
+        best:players!best_player_id(name),
+        helper:players!helper_player_id(name)
+      `)
+      .order(
+        "date",
+        {ascending:false}
+      );
+
+
+  if(trainingsResult.error){
+
+    console.error(
+      "TRAININGS ERROR:",
+      trainingsResult.error
+    );
+
+    trainings = [];
+
+  }else{
+
+    trainings =
+      trainingsResult.data || [];
+
+  }
+
+
+  render();
+
+
+  /* TOURNAMENTS */
+
+  const tournamentsResult =
+    await sb
+      .from("tournaments")
+      .select(`
+        *,
+        mvp:players!mvp_player_id(name)
+      `)
+      .order(
+        "date",
+        {ascending:false}
+      );
+
+
+  if(tournamentsResult.error){
+
+    console.error(
+      "TOURNAMENTS ERROR:",
+      tournamentsResult.error
+    );
+
+    renderTours([]);
+
+  }else{
+
+    renderTours(
+      tournamentsResult.data || []
+    );
+
+  }
+
+
+  /* MEDIA */
+
+  const mediaResult =
+    await sb
+      .from("media")
+      .select("*")
+      .order(
+        "created_at",
+        {ascending:false}
+      );
+
+
+  if(mediaResult.error){
+
+    console.error(
+      "MEDIA ERROR:",
+      mediaResult.error
+    );
+
+    renderMedia([]);
+
+  }else{
+
+    renderMedia(
+      mediaResult.data || []
+    );
+
+  }
+
+}
+
+
+/* =========================================
+   ADD TRAINING
+========================================= */
+
+$("form").onsubmit =
+async event => {
+
+  event.preventDefault();
+
+
+  const best =
+    $("bestSelect").value;
+
+  const helper =
+    $("helperSelect").value;
+
+
+  if(!best){
+
+    msg(
+      "Выберите Лучшего игрока"
+    );
+
+    $("bestSelect").focus();
+
+    return;
+
+  }
+
+
+  if(!helper){
+
+    msg(
+      "Выберите Помощника"
+    );
+
+    $("helperSelect").focus();
+
+    return;
+
+  }
+
+
+  const payload = {
+
+    date:
+      $("date").value,
+
+    best_player_id:
+      best,
+
+    helper_player_id:
+      helper,
+
+    white_score:
+      Number($("white").value || 0),
+
+    blue_score:
+      Number($("blue").value || 0)
+
+  };
+
+
+  status(
+    "Сохраняем тренировку..."
+  );
+
+
+  const saveResult =
+    await sb
+      .from("trainings")
+      .insert(payload);
+
+
+  if(saveResult.error){
+
+    console.error(
+      "SAVE TRAINING ERROR:",
+      saveResult.error
+    );
+
+
+    status(
+      "Ошибка сохранения: " +
+      saveResult.error.message,
+      "error"
+    );
+
+
+    msg(
+      "Ошибка сохранения тренировки"
+    );
+
+
+    return;
+
+  }
+
+
+  event.target.reset();
+
+
+  $("bestSelect").value = "";
+
+  $("helperSelect").value = "";
+
+
+  $("white").value = 0;
+
+  $("blue").value = 0;
+
+
+  status(
+    `Подключено. Игроков: ${players.length}`,
+    "ok"
+  );
+
+
+  msg(
+    "Тренировка добавлена"
+  );
+
+
+  await load();
+
+};
+
+
+/* =========================================
+   TOURNAMENT
+========================================= */
+
+$("tourForm").onsubmit =
+async event => {
+
+  event.preventDefault();
+
+
+  const saveResult =
+    await sb
+      .from("tournaments")
+      .insert({
+
+        name:
+          $("tn").value,
+
+        date:
+          $("td").value,
+
+        opponent:
+          $("to").value,
+
+        score:
+          $("ts").value,
+
+        mvp_player_id:
+          $("tm").value || null
+
+      });
+
+
+  if(saveResult.error){
+
+    console.error(
+      saveResult.error
+    );
+
+    msg(
+      "Ошибка: " +
+      saveResult.error.message
+    );
+
+    return;
+
+  }
+
+
+  event.target.reset();
+
+  msg(
+    "Турнир добавлен"
+  );
+
+  await load();
+
+};
+
+
+/* =========================================
+   MEDIA
+========================================= */
+
+$("mediaForm").onsubmit =
+async event => {
+
+  event.preventDefault();
+
+
+  const file =
+    $("mediaFile").files[0];
+
+
+  if(!file) return;
+
+
+  const path =
+    Date.now() +
+    "_" +
+    file.name.replace(
+      /[^a-zA-Z0-9._-]/g,
+      "_"
+    );
+
+
+  const upload =
+    await sb
+      .storage
+      .from("club-media")
+      .upload(
+        path,
+        file,
+        {upsert:false}
+      );
+
+
+  if(upload.error){
+
+    console.error(
+      upload.error
+    );
+
+    msg(
+      "Ошибка загрузки медиа"
+    );
+
+    return;
+
+  }
+
+
+  const publicUrl =
+    sb
+      .storage
+      .from("club-media")
+      .getPublicUrl(path)
+      .data
+      .publicUrl;
+
+
+  const insert =
+    await sb
+      .from("media")
+      .insert({
+
+        url:
+          publicUrl,
+
+        caption:
+          $("mediaCaption").value,
+
+        type:
+          file.type.startsWith("video")
+            ? "video"
+            : "image"
+
+      });
+
+
+  if(insert.error){
+
+    console.error(
+      insert.error
+    );
+
+    msg(
+      "Ошибка публикации"
+    );
+
+    return;
+
+  }
+
+
+  event.target.reset();
+
+  msg(
+    "Медиа добавлено"
+  );
+
+  await load();
+
+};
+
+
+/* =========================================
+   RENDER TRAININGS
+========================================= */
+
+function render(){
+
+  $("recent").innerHTML =
+    trainings.length
+
+      ? `
+
+        <table>
+
+          <tr>
+
+            <th>Дата</th>
+
+            <th>Лучший</th>
+
+            <th>Счёт</th>
+
+          </tr>
+
+          ${
+            trainings
+              .slice(0,6)
+              .map(training => `
+
+                <tr>
+
+                  <td>
+                    ${fmt(training.date)}
+                  </td>
+
+                  <td>
+                    ${training.best?.name || "—"}
+                  </td>
+
+                  <td>
+                    ${training.white_score}:
+                    ${training.blue_score}
+                  </td>
+
+                </tr>
+
+              `)
+              .join("")
+          }
+
+        </table>
+
+      `
+
+      : `
+        <div class="empty">
+          Пока нет тренировок.
+        </div>
+      `;
+
+
+  $("trainings").innerHTML =
+    trainings.length
+
+      ? `
+
+        <table>
+
+          <tr>
+
+            <th>Дата</th>
+
+            <th>Лучший</th>
+
+            <th>Помощник</th>
+
+            <th>Счёт</th>
+
+            <th>Результат</th>
+
+          </tr>
+
+          ${
+            trainings
+              .map(training => `
+
+                <tr>
+
+                  <td>
+                    ${fmt(training.date)}
+                  </td>
+
+                  <td>
+                    ${training.best?.name || "—"}
+                  </td>
+
+                  <td>
+                    ${training.helper?.name || "—"}
+                  </td>
+
+                  <td>
+                    ${training.white_score}:
+                    ${training.blue_score}
+                  </td>
+
+                  <td>
+                    <span class="badge">
+                      ${
+                        result(
+                          training.white_score,
+                          training.blue_score
+                        )
+                      }
+                    </span>
+                  </td>
+
+                </tr>
+
+              `)
+              .join("")
+          }
+
+        </table>
+
+      `
+
+      : `
+        <div class="empty">
+          Пока нет тренировок.
+        </div>
+      `;
+
+
+  /* STATISTICS */
+
+  const statistics =
+    players
+      .map(player => {
+
+        const bestCount =
+          trainings.filter(
+            training =>
+              training.best_player_id === player.id
+          ).length;
+
+
+        const helperCount =
+          trainings.filter(
+            training =>
+              training.helper_player_id === player.id
+          ).length;
+
+
+        const luckyCount =
+          trainings.filter(
+            training =>
+              training.best_player_id === player.id &&
+              training.helper_player_id === player.id
+          ).length;
+
+
+        return {
+
+          ...player,
+
+          bestCount,
+
+          helperCount,
+
+          luckyCount,
+
+          total:
+            bestCount +
+            helperCount +
+            luckyCount
+
+        };
+
+      })
+      .sort(
+        (a,b) =>
+          b.total - a.total
+      );
+
+
+  $("summary").innerHTML = [
+
+    [
+      "Тренировок",
+      trainings.length
+    ],
+
+    [
+      "Лучший",
+      Math.max(
+        0,
+        ...statistics.map(
+          x => x.bestCount
+        )
+      )
+    ],
+
+    [
+      "Помощник",
+      Math.max(
+        0,
+        ...statistics.map(
+          x => x.helperCount
+        )
+      )
+    ],
+
+    [
+      "Счастливчиков",
+      statistics.filter(
+        x => x.luckyCount > 0
+      ).length
+    ]
+
+  ].map(item => `
+
+    <div class="stat">
+
+      <span class="muted">
+        ${item[0]}
+      </span>
+
+      <b>
+        ${item[1]}
+      </b>
+
+    </div>
+
+  `).join("");
+
+
+  $("statTable").innerHTML = `
+
+    <table>
+
+      <tr>
+
+        <th>№</th>
+
+        <th>Игрок</th>
+
+        <th>Лучший</th>
+
+        <th>Помощник</th>
+
+        <th>Счастливчик</th>
+
+        <th>Всего</th>
+
+      </tr>
+
+
+      ${
+        statistics.map(player => `
+
+          <tr>
+
+            <td>
+              ${player.number}
+            </td>
+
+            <td>
+              ${player.name}
+            </td>
+
+            <td>
+              ${player.bestCount}
+            </td>
+
+            <td>
+              ${player.helperCount}
+            </td>
+
+            <td>
+
+              ${
+                player.luckyCount
+
+                  ? `
+                    <span class="badge gold">
+                      🍀 ${player.luckyCount}
+                    </span>
+                  `
+
+                  : "0"
+              }
+
+            </td>
+
+            <td>
+              <b>
+                ${player.total}
+              </b>
+            </td>
+
+          </tr>
+
+        `).join("")
+      }
+
+    </table>
+
+  `;
+
+}
+
+
+/* =========================================
+   ROSTER
+========================================= */
+
+function renderRoster(){
+
+  $("roster").innerHTML =
+    players.map(player => `
+
+      <div class="person">
+
+        <img
+          class="avatar"
+          src="${player.photo_url || ""}"
+          onerror="this.style.visibility='hidden'"
+        >
+
+        <b>
+          №${player.number} —
+          ${player.name}
+        </b>
+
+
+        <p class="muted">
+
+          Рост:
+          ${
+            player.height_cm
+              ? player.height_cm + " см"
+              : "не указан"
+          }
+
+          <br>
+
+          Вес:
+          ${
+            player.weight_kg
+              ? player.weight_kg + " кг"
+              : "не указан"
+          }
+
+        </p>
+
+
+        <button
+          class="btn"
+          type="button"
+          onclick="editPlayer('${player.id}')"
+        >
+          Изменить
+        </button>
+
+      </div>
+
+    `).join("");
+
+}
+
+
+/* =========================================
+   EDIT PLAYER
+========================================= */
+
+async function editPlayer(id){
+
+  const player =
+    players.find(
+      x => x.id === id
+    );
+
+
+  if(!player) return;
+
+
+  const height =
+    prompt(
+      "Рост, см",
+      player.height_cm || ""
+    );
+
+
+  if(height === null) return;
+
+
+  const weight =
+    prompt(
+      "Вес, кг",
+      player.weight_kg || ""
+    );
+
+
+  if(weight === null) return;
+
+
+  const input =
+    document.createElement("input");
+
+
+  input.type = "file";
+
+  input.accept = "image/*";
+
+
+  input.onchange =
+    async () => {
+
+      let photo =
+        player.photo_url || null;
+
+
+      if(input.files[0]){
+
+        const file =
+          input.files[0];
+
+
+        const path =
+          "players/" +
+          id +
+          "_" +
+          Date.now() +
+          "_" +
+          file.name.replace(
+            /[^a-zA-Z0-9._-]/g,
+            "_"
+          );
+
+
+        const upload =
+          await sb
+            .storage
+            .from("player-photos")
+            .upload(
+              path,
+              file
+            );
+
+
+        if(upload.error){
+
+          msg(
+            "Ошибка загрузки фото"
+          );
+
+          return;
+
+        }
+
+
+        photo =
+          sb
+            .storage
+            .from("player-photos")
+            .getPublicUrl(path)
+            .data
+            .publicUrl;
+
+      }
+
+
+      const update =
+        await sb
+          .from("players")
+          .update({
+
+            height_cm:
+              Number(height) || null,
+
+            weight_kg:
+              Number(weight) || null,
+
+            photo_url:
+              photo
+
+          })
+          .eq(
+            "id",
+            id
+          );
+
+
+      if(update.error){
+
+        console.error(
+          update.error
+        );
+
+        msg(
+          "Ошибка сохранения"
+        );
+
+        return;
+
+      }
+
+
+      msg(
+        "Профиль обновлён"
+      );
+
+
+      await load();
+
+    };
+
+
+  input.click();
+
+}
+
+
+/* =========================================
+   TOURNAMENTS RENDER
+========================================= */
+
+function renderTours(data){
+
+  $("tourTable").innerHTML =
+    data.length
+
+      ? `
+
+        <table>
+
+          <tr>
+
+            <th>Турнир</th>
+
+            <th>Дата</th>
+
+            <th>Соперник</th>
+
+            <th>Счёт</th>
+
+            <th>MVP</th>
+
+          </tr>
+
+
+          ${
+            data.map(item => `
+
+              <tr>
+
+                <td>
+                  ${item.name}
+                </td>
+
+                <td>
+                  ${fmt(item.date)}
+                </td>
+
+                <td>
+                  ${item.opponent || "—"}
+                </td>
+
+                <td>
+                  ${item.score || "—"}
+                </td>
+
+                <td>
+                  ${item.mvp?.name || "—"}
+                </td>
+
+              </tr>
+
+            `).join("")
+          }
+
+        </table>
+
+      `
+
+      : `
+        <div class="empty">
+          Пока нет турниров.
+        </div>
+      `;
+
+}
+
+
+/* =========================================
+   MEDIA RENDER
+========================================= */
+
+function renderMedia(data){
+
+  $("mediaGrid").innerHTML =
+    data.length
+
+      ? data.map(item =>
+
+          item.type === "video"
+
+            ? `
+
+              <video
+                src="${item.url}"
+                controls
+                style="
+                  width:100%;
+                  border-radius:12px
+                "
+              ></video>
+
+            `
+
+            : `
+
+              <img
+                src="${item.url}"
+                alt="${item.caption || "Фото"}"
+              >
+
+            `
+
+        ).join("")
+
+      : `
+        <div class="empty">
+          Медиа пока нет.
+        </div>
+      `;
+
+}
+
+
+/* =========================================
+   START
+========================================= */
+
+nav();
+
+
+$("date").value =
+  new Date()
+    .toISOString()
+    .slice(0,10);
+
+
+$("td").value =
+  new Date()
+    .toISOString()
+    .slice(0,10);
+
+
+load();
+
 </script>
-</body></html>
+
+
+<script>
+
+if("serviceWorker" in navigator){
+
+  window.addEventListener(
+    "load",
+    () => {
+
+      navigator
+        .serviceWorker
+        .register("./sw.js")
+        .catch(
+          console.error
+        );
+
+    }
+  );
+
+}
+
+</script>
+
+</body>
+</html>
