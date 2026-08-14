@@ -42,6 +42,10 @@ body{
   color:var(--text);
   font:15px Arial,sans-serif;
   min-height:100vh;
+  padding-top: env(safe-area-inset-top, 20px);
+  padding-bottom: env(safe-area-inset-bottom, 20px);
+  padding-left: env(safe-area-inset-left, 0px);
+  padding-right: env(safe-area-inset-right, 0px);
 }
 
 button,
@@ -383,7 +387,7 @@ th{
     <div class="logo">🏀</div>
     <div>
       <h1>Баскетбольный клуб «5х5»</h1>
-      <div class="muted">Общий клубный профиль и статистика</div>
+      <div class="muted">Мастерство не пропьёшь!</div>
     </div>
   </div>
 
@@ -1581,16 +1585,50 @@ async function editTraining(id){
 }
 
 async function deleteTraining(id){
-  const t=trainings.find(x=>x.id===id);
-  if(!t)return;
-  if(!confirm("Удалить тренировку от "+fmt(t.date)+"?\n\nЭто действие нельзя отменить."))return;
-
-  const r=await sb.from("trainings").delete().eq("id",id);
-  if(r.error){
-    console.error(r.error);
-    return msg("Ошибка удаления: "+r.error.message);
+  console.log("deleteTraining вызвана с id:", id);
+  
+  if (!id) {
+    msg("Ошибка: идентификатор тренировки не указан");
+    return;
   }
-  msg("Тренировка удалена");
+  
+  const t = trainings.find(x => x.id === id);
+  if (!t) {
+    msg("Тренировка не найдена в списке");
+    return;
+  }
+  
+  const confirmMessage = "Удалить тренировку от " + fmt(t.date) + "?\n\n" +
+                        "Лучший: " + (t.best?.name || "—") + "\n" +
+                        "Помощник: " + (t.helper?.name || "—") + "\n" +
+                        "Счёт: " + t.white_score + ":" + t.blue_score + "\n\n" +
+                        "⚠️ Это действие нельзя отменить!";
+  
+  if (!confirm(confirmMessage)) {
+    return;
+  }
+
+  console.log("Отправляем DELETE запрос для id:", id);
+  
+  const { error, count, data } = await sb
+    .from("trainings")
+    .delete({ count: 'exact' })
+    .eq("id", id);
+  
+  console.log("Результат удаления:", { error, count, data });
+  
+  if (error) {
+    console.error("Ошибка удаления:", error);
+    msg("Ошибка удаления: " + error.message);
+    return;
+  }
+  
+  if (count === 0) {
+    msg("Тренировка не найдена или уже удалена");
+    return;
+  }
+  
+  msg("✅ Тренировка удалена");
   await load();
 }
 
@@ -1668,7 +1706,6 @@ async function editPlayer(id){
   const weight=prompt("Вес, кг",player.weight_kg ?? "");
   if(weight===null)return;
 
-  // Сначала сохраняем рост и вес. Фото больше не мешает сохранению данных.
   const update=await sb.from("players").update({
     height_cm:height.trim()===""?null:Number(height),
     weight_kg:weight.trim()===""?null:Number(weight)
