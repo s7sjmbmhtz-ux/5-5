@@ -214,17 +214,27 @@ textarea:focus{
   display:none!important;
 }
 
+/* ===== ТАБЛИЦА ===== */
+.table-wrap{
+  overflow-x:auto;
+  -webkit-overflow-scrolling:touch;
+  margin:0 -4px;
+  padding:0 4px;
+}
+
 table{
   width:100%;
+  min-width:600px;
   border-collapse:collapse;
   font-size:13px;
 }
 
 th,
 td{
-  padding:8px 6px;
+  padding:10px 8px;
   border-bottom:1px solid var(--line);
   text-align:left;
+  vertical-align:middle;
 }
 
 th{
@@ -232,6 +242,16 @@ th{
   font-size:11px;
   text-transform:uppercase;
   letter-spacing:0.5px;
+  white-space:nowrap;
+}
+
+td{
+  white-space:nowrap;
+}
+
+td .btn{
+  font-size:11px;
+  padding:4px 8px;
 }
 
 .badge{
@@ -240,6 +260,7 @@ th{
   background:#22304c;
   font-size:12px;
   display:inline-block;
+  white-space:nowrap;
 }
 
 .badge.blue{
@@ -377,6 +398,7 @@ th{
   font-size:13px;
 }
 
+/* ===== Мобильные ===== */
 @media(max-width:700px){
   .grid{
     grid-template-columns:1fr;
@@ -404,6 +426,29 @@ th{
     text-align:center;
     font-size:12px;
     padding:6px 8px;
+  }
+
+  .table-wrap{
+    margin:0 -8px;
+    padding:0 8px;
+  }
+
+  table{
+    font-size:12px;
+    min-width:520px;
+  }
+
+  th, td{
+    padding:8px 6px;
+  }
+
+  th{
+    font-size:10px;
+  }
+
+  td .btn{
+    font-size:10px;
+    padding:3px 6px;
   }
 }
 
@@ -433,12 +478,22 @@ th{
     padding:10px 12px;
   }
 
+  .table-wrap{
+    margin:0 -12px;
+    padding:0 12px;
+  }
+
   table{
-    font-size:12px;
+    font-size:11px;
+    min-width:450px;
   }
 
   th, td{
     padding:6px 4px;
+  }
+
+  th{
+    font-size:9px;
   }
 
   .stats{
@@ -473,6 +528,16 @@ th{
   .navbtn{
     font-size:11px;
     padding:5px 6px;
+  }
+
+  td .btn{
+    font-size:9px;
+    padding:2px 5px;
+  }
+
+  .badge{
+    font-size:10px;
+    padding:2px 6px;
   }
 }
 </style>
@@ -1572,16 +1637,19 @@ function render(){
 
   $("recent").innerHTML =
     trainings.length ? `
+      <div class="table-wrap">
       <table>
         <tr><th>Дата</th><th>Лучший</th><th>Счёт</th></tr>
         ${trainings.slice(0,6).map(t=>`
           <tr><td>${fmt(t.date)}</td><td>${t.best?.name||"—"}</td><td>${t.white_score}:${t.blue_score}</td></tr>
         `).join("")}
-      </table>` :
+      </table>
+      </div>` :
       `<div class="empty">Пока нет тренировок.</div>`;
 
   $("trainings").innerHTML =
     trainings.length ? `
+      <div class="table-wrap">
       <table>
         <tr>
           <th>Дата</th><th>Лучший</th><th>Помощник</th><th>Счёт</th>
@@ -1600,16 +1668,17 @@ function render(){
             <td>${t.helper?.name||"—"}</td>
             <td>${t.white_score}:${t.blue_score}</td>
             <td><span class="${badgeClass}">${win}</span></td>
-            <td>${t.comment||"—"}</td>
+            <td style="max-width:80px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${t.comment||"—"}</td>
             <td>
-              <div style="display:flex;gap:4px;flex-wrap:wrap">
-                <button class="btn" type="button" style="font-size:11px;padding:4px 8px;" onclick="editTraining('${t.id}')">✎</button>
-                <button class="btn" type="button" style="font-size:11px;padding:4px 8px;border-color:#71333d;color:#ff9aa7;" onclick="deleteTraining('${t.id}')">✕</button>
+              <div style="display:flex;gap:4px;flex-wrap:wrap;">
+                <button class="btn" type="button" onclick="editTraining('${t.id}')">✎</button>
+                <button class="btn" type="button" style="border-color:#71333d;color:#ff9aa7;" onclick="deleteTraining('${t.id}')">✕</button>
               </div>
             </td>
           </tr>`
         }).join("")}
-      </table>` :
+      </table>
+      </div>` :
       `<div class="empty">Пока нет тренировок.</div>`;
 
   const statistics=players.map(p=>{
@@ -1622,6 +1691,7 @@ function render(){
   $("summary").innerHTML="";
 
   $("statTable").innerHTML=`
+    <div class="table-wrap">
     <table>
       <tr><th>№</th><th>Игрок</th><th>Лучший</th><th>Помощник</th><th>Счастливчик</th><th>Всего</th></tr>
       ${statistics.map(p=>`
@@ -1631,7 +1701,8 @@ function render(){
           <td><b>${p.total}</b></td>
         </tr>
       `).join("")}
-    </table>`;
+    </table>
+    </div>`;
 }
 
 async function editTraining(id){
@@ -1853,6 +1924,7 @@ async function editPlayer(id){
 function renderTours(data){
 
   $("tourTable").innerHTML=data.length?`
+    <div class="table-wrap">
     <table>
       <tr><th>Турнир</th><th>Дата</th><th>Соперник</th><th>Счёт</th><th>MVP</th><th>Действия</th></tr>
       ${data.map(item=>`
@@ -1869,7 +1941,8 @@ function renderTours(data){
           </td>
         </tr>
       `).join("")}
-    </table>`:
+    </table>
+    </div>`:
     `<div class="empty">Пока нет турниров.</div>`;
 }
 
