@@ -43,13 +43,13 @@ body{
   margin:0;
   background:linear-gradient(135deg,#080d18,#111a2d);
   color:var(--text);
-  font:18px -apple-system, BlinkMacSystemFont, Arial, sans-serif;
+  font:16px -apple-system, BlinkMacSystemFont, Arial, sans-serif;
   min-height:100vh;
   min-height:100dvh;
-  padding-top: env(safe-area-inset-top, 20px);
-  padding-bottom: env(safe-area-inset-bottom, 20px);
-  padding-left: env(safe-area-inset-left, 0px);
-  padding-right: env(safe-area-inset-right, 0px);
+  padding-top: env(safe-area-inset-top, 16px);
+  padding-bottom: env(safe-area-inset-bottom, 16px);
+  padding-left: env(safe-area-inset-left, 8px);
+  padding-right: env(safe-area-inset-right, 8px);
 }
 
 button,
@@ -62,35 +62,34 @@ textarea{
 }
 
 .app{
-  max-width:700px;
-  margin:auto;
-  padding:16px 14px 100px 14px;
-  padding-top: calc(env(safe-area-inset-top, 20px) + 10px);
+  max-width:480px;
+  margin:0 auto;
+  padding:10px 10px 80px 10px;
+  padding-top: calc(env(safe-area-inset-top, 16px) + 4px);
 }
 
 .top{
   display:flex;
-  justify-content:space-between;
-  gap:12px;
-  align-items:center;
-  margin-bottom:20px;
-  padding-top: 8px;
+  flex-direction:column;
+  gap:8px;
+  margin-bottom:12px;
+  padding-top: 4px;
 }
 
 .brand{
   display:flex;
-  gap:14px;
+  gap:10px;
   align-items:center;
 }
 
 .logo{
-  width:56px;
-  height:56px;
-  border-radius:16px;
+  width:40px;
+  height:40px;
+  border-radius:12px;
   background:linear-gradient(135deg,var(--a),var(--a2));
   display:grid;
   place-items:center;
-  font-size:28px;
+  font-size:20px;
   flex:none;
 }
 
@@ -99,23 +98,24 @@ h1,h2,h3{
 }
 
 h1{
-  font-size:26px;
+  font-size:18px;
 }
 
 h2{
-  font-size:22px;
-  margin-bottom:10px;
+  font-size:16px;
+  margin-bottom:8px;
 }
 
 .muted{
   color:var(--muted);
-  font-size:16px;
+  font-size:12px;
 }
 
 nav{
   display:flex;
-  gap:6px;
+  gap:4px;
   flex-wrap:wrap;
+  width:100%;
 }
 
 .navbtn,
@@ -123,12 +123,15 @@ nav{
   border:1px solid var(--line);
   background:#121c31;
   color:var(--text);
-  padding:12px 18px;
-  border-radius:12px;
+  padding:6px 10px;
+  border-radius:8px;
   cursor:pointer;
-  font-size:16px;
+  font-size:12px;
   font-weight:600;
-  min-height:48px;
+  min-height:34px;
+  flex:1;
+  text-align:center;
+  min-width:0;
 }
 
 .navbtn.active,
@@ -148,27 +151,27 @@ nav{
 
 .grid{
   display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:16px;
+  grid-template-columns:1fr;
+  gap:10px;
 }
 
 .card{
   background:rgba(17,26,45,.96);
   border:1px solid var(--line);
-  border-radius:18px;
-  padding:18px 20px;
+  border-radius:12px;
+  padding:12px 14px;
 }
 
 .form{
   display:grid;
-  gap:14px;
+  gap:8px;
 }
 
 .field label{
   display:block;
   color:var(--muted);
-  font-size:15px;
-  margin-bottom:6px;
+  font-size:11px;
+  margin-bottom:3px;
   font-weight:600;
 }
 
@@ -179,17 +182,17 @@ textarea{
   background:#0c1426;
   color:var(--text);
   border:1px solid #30405f;
-  border-radius:12px;
-  padding:14px 16px;
+  border-radius:8px;
+  padding:8px 10px;
   outline:none;
-  min-height:54px;
-  font-size:18px;
+  min-height:38px;
+  font-size:15px;
 }
 
 input[type="date"]{
-  min-height:54px;
-  padding:14px 16px;
-  font-size:18px;
+  min-height:38px;
+  padding:8px 10px;
+  font-size:15px;
   -webkit-appearance:none;
   appearance:none;
 }
@@ -197,15 +200,15 @@ input[type="date"]{
 input[type="date"]::-webkit-calendar-picker-indicator {
   filter: invert(1);
   opacity:0.6;
-  padding:6px;
+  padding:4px;
 }
 
 select{
   cursor:pointer;
   -webkit-appearance:auto;
   appearance:auto;
-  font-size:18px;
-  min-height:54px;
+  font-size:15px;
+  min-height:38px;
 }
 
 input:focus,
@@ -215,14 +218,14 @@ textarea:focus{
 }
 
 textarea{
-  min-height:80px;
-  font-size:18px;
+  min-height:60px;
+  font-size:15px;
 }
 
 .row{
   display:grid;
   grid-template-columns:1fr 1fr;
-  gap:12px;
+  gap:8px;
 }
 
 .hidden{
@@ -238,14 +241,14 @@ textarea{
 
 table{
   width:100%;
-  min-width:700px;
+  min-width:480px;
   border-collapse:collapse;
-  font-size:16px;
+  font-size:12px;
 }
 
 th,
 td{
-  padding:14px 12px;
+  padding:6px 6px;
   border-bottom:1px solid var(--line);
   text-align:left;
   vertical-align:middle;
@@ -253,29 +256,30 @@ td{
 
 th{
   color:var(--muted);
-  font-size:14px;
+  font-size:10px;
   text-transform:uppercase;
-  letter-spacing:0.5px;
+  letter-spacing:0.3px;
   white-space:nowrap;
   font-weight:700;
 }
 
 td{
   white-space:nowrap;
-  font-size:16px;
+  font-size:12px;
 }
 
 td .btn{
-  font-size:15px;
-  padding:8px 14px;
-  min-height:44px;
+  font-size:10px;
+  padding:3px 6px;
+  min-height:28px;
+  flex:none;
 }
 
 .badge{
-  padding:6px 14px;
+  padding:3px 8px;
   border-radius:99px;
   background:#22304c;
-  font-size:15px;
+  font-size:11px;
   display:inline-block;
   white-space:nowrap;
   font-weight:600;
@@ -303,73 +307,74 @@ td .btn{
 
 .stats{
   display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:12px;
-  margin-bottom:16px;
+  grid-template-columns:1fr 1fr 1fr 1fr;
+  gap:6px;
+  margin-bottom:10px;
 }
 
 .stat{
   background:var(--card);
   border:1px solid var(--line);
-  border-radius:14px;
-  padding:14px 16px;
+  border-radius:10px;
+  padding:8px 6px;
   text-align:center;
 }
 
 .stat b{
-  font-size:28px;
+  font-size:18px;
   display:block;
-  margin-top:6px;
+  margin-top:2px;
 }
 
 .stat .label{
-  font-size:14px;
+  font-size:9px;
   color:var(--muted);
   font-weight:600;
+  text-transform:uppercase;
 }
 
 .roster{
   display:grid;
-  grid-template-columns:repeat(2,1fr);
-  gap:14px;
+  grid-template-columns:1fr 1fr;
+  gap:8px;
 }
 
 .person{
   background:var(--card);
   border:1px solid var(--line);
-  border-radius:14px;
-  padding:16px;
+  border-radius:10px;
+  padding:10px;
 }
 
 .avatar{
-  width:72px;
-  height:72px;
+  width:48px;
+  height:48px;
   border-radius:50%;
   object-fit:cover;
   background:#263452;
   display:block;
-  margin-bottom:10px;
+  margin-bottom:6px;
 }
 
 .person b{
-  font-size:17px;
+  font-size:12px;
 }
 
 .person .muted{
-  font-size:15px;
+  font-size:11px;
 }
 
 .person .btn{
-  font-size:15px;
-  padding:8px 16px;
-  min-height:44px;
-  margin-top:6px;
+  font-size:11px;
+  padding:4px 10px;
+  min-height:30px;
+  margin-top:4px;
 }
 
 .media{
   display:grid;
-  grid-template-columns:repeat(2,1fr);
-  gap:10px;
+  grid-template-columns:1fr 1fr;
+  gap:6px;
 }
 
 .media img,
@@ -377,21 +382,21 @@ td .btn{
   width:100%;
   aspect-ratio:1;
   object-fit:cover;
-  border-radius:12px;
+  border-radius:8px;
 }
 
 .toast{
   position:fixed;
-  right:20px;
-  bottom:20px;
-  max-width:calc(100vw - 40px);
+  right:12px;
+  bottom:12px;
+  max-width:calc(100vw - 24px);
   background:#18243d;
   border:1px solid var(--line);
-  padding:16px 20px;
-  border-radius:14px;
+  padding:10px 14px;
+  border-radius:10px;
   display:none;
   z-index:9999;
-  font-size:17px;
+  font-size:14px;
   font-weight:600;
 }
 
@@ -400,12 +405,12 @@ td .btn{
 }
 
 .status{
-  margin-top:12px;
-  padding:12px 16px;
-  border-radius:10px;
+  margin-top:8px;
+  padding:6px 10px;
+  border-radius:8px;
   background:#0c1426;
   border:1px solid var(--line);
-  font-size:15px;
+  font-size:11px;
   display:none;
 }
 
@@ -428,182 +433,37 @@ td .btn{
 }
 
 .empty{
-  padding:20px;
+  padding:12px;
   color:var(--muted);
   text-align:center;
-  font-size:16px;
+  font-size:12px;
 }
 
-@media(max-width:768px){
-  .grid{
-    grid-template-columns:1fr;
-  }
-
-  .stats{
-    grid-template-columns:1fr 1fr;
-  }
-
-  .roster{
-    grid-template-columns:1fr 1fr;
-  }
-
-  .top{
-    align-items:flex-start;
-    flex-direction:column;
-  }
-
-  nav{
-    width:100%;
-  }
-
-  .navbtn{
-    flex:1;
-    text-align:center;
-    font-size:15px;
-    padding:10px 12px;
-    min-height:44px;
-  }
-
-  .table-wrap{
-    margin:0 -10px;
-    padding:0 10px;
-  }
-
-  table{
-    font-size:15px;
-    min-width:620px;
-  }
-
-  th, td{
-    padding:12px 10px;
-  }
-
-  th{
-    font-size:13px;
-  }
-
-  td .btn{
-    font-size:14px;
-    padding:6px 12px;
-    min-height:38px;
-  }
-}
-
-@media(max-width:480px){
+@media(max-width:400px){
   .app{
-    padding:12px 10px 80px 10px;
-    padding-top: calc(env(safe-area-inset-top, 20px) + 8px);
+    padding:6px 6px 70px 6px;
+    padding-top: calc(env(safe-area-inset-top, 12px) + 4px);
   }
-
-  .row{
-    grid-template-columns:1fr;
-  }
-
-  .roster{
-    grid-template-columns:1fr;
-  }
-
-  .media{
-    grid-template-columns:1fr 1fr;
-  }
-
-  h1{
-    font-size:22px;
-  }
-
-  h2{
-    font-size:19px;
-  }
-
   .card{
-    padding:14px 14px;
+    padding:8px 10px;
   }
-
-  .table-wrap{
-    margin:0 -14px;
-    padding:0 14px;
-  }
-
   table{
-    font-size:14px;
-    min-width:520px;
+    min-width:380px;
+    font-size:11px;
   }
-
   th, td{
-    padding:10px 8px;
+    padding:4px 4px;
   }
-
-  th{
-    font-size:12px;
+  .navbtn{
+    font-size:10px;
+    padding:4px 6px;
+    min-height:30px;
   }
-
   .stats{
     grid-template-columns:1fr 1fr;
   }
-
-  .stat b{
-    font-size:24px;
-  }
-
-  input, select, textarea{
-    font-size:17px;
-    padding:12px 14px;
-    min-height:48px;
-  }
-
-  input[type="date"]{
-    font-size:17px;
-    min-height:48px;
-  }
-
-  .logo{
-    width:48px;
-    height:48px;
-    font-size:24px;
-  }
-
-  .brand{
-    gap:10px;
-  }
-
-  .navbtn{
-    font-size:13px;
-    padding:8px 8px;
-    min-height:38px;
-  }
-
-  td .btn{
-    font-size:13px;
-    padding:5px 10px;
-    min-height:34px;
-  }
-
-  .badge{
-    font-size:13px;
-    padding:4px 10px;
-  }
-
-  .muted{
-    font-size:14px;
-  }
-
-  .toast{
-    font-size:15px;
-    padding:14px 16px;
-  }
-
-  .person b{
-    font-size:15px;
-  }
-
-  .person .muted{
-    font-size:14px;
-  }
-
-  .person .btn{
-    font-size:14px;
-    padding:6px 14px;
-    min-height:38px;
+  .roster{
+    grid-template-columns:1fr;
   }
 }
 </style>
@@ -638,7 +498,7 @@ td .btn{
         Вход свободный — аккаунт не требуется.
       </p>
 
-      <form id="form" class="form" style="margin-top:16px">
+      <form id="form" class="form" style="margin-top:10px">
 
         <div class="field">
           <label for="date">Дата</label>
@@ -739,10 +599,9 @@ td .btn{
 
       <p
         class="muted"
-        style="font-size:14px;margin-top:10px;"
+        style="font-size:10px;margin-top:6px;"
       >
-        Если Лучший и Помощник совпали —
-        автоматически считается Счастливчик
+        Если Лучший и Помощник совпали — Счастливчик 🍀
       </p>
 
     </div>
@@ -772,7 +631,7 @@ td .btn{
 
     <div
       id="trainings"
-      style="margin-top:14px"
+      style="margin-top:8px"
     ></div>
 
   </div>
@@ -799,7 +658,7 @@ td .btn{
 
     <div
       id="statTable"
-      style="margin-top:14px"
+      style="margin-top:8px"
     ></div>
 
   </div>
@@ -817,14 +676,13 @@ td .btn{
     <h2>Состав команды</h2>
 
     <p class="muted">
-      У каждого игрока можно заполнить рост,
-      вес и фотографию.
+      Рост, вес и фото.
     </p>
 
     <div
       id="roster"
       class="roster"
-      style="margin-top:14px"
+      style="margin-top:8px"
     ></div>
 
   </div>
@@ -844,13 +702,13 @@ td .btn{
       <h2>Добавить медиа</h2>
 
       <p class="muted">
-        Фото и видео команды в общей ленте.
+        Фото и видео.
       </p>
 
       <form
         id="mediaForm"
         class="form"
-        style="margin-top:14px"
+        style="margin-top:8px"
       >
 
         <input
@@ -862,7 +720,7 @@ td .btn{
 
         <input
           id="mediaCaption"
-          placeholder="Подпись (необязательно)"
+          placeholder="Подпись"
         >
 
         <button class="btn primary">
@@ -881,7 +739,7 @@ td .btn{
       <div
         id="mediaGrid"
         class="media"
-        style="margin-top:14px"
+        style="margin-top:8px"
       ></div>
 
     </div>
@@ -905,7 +763,7 @@ td .btn{
       <form
         id="tourForm"
         class="form"
-        style="margin-top:14px"
+        style="margin-top:8px"
       >
 
         <input
@@ -1273,7 +1131,7 @@ async event => {
   };
 
   status(
-    "Сохраняем тренировку...",
+    "Сохраняем...",
     "loading"
   );
 
@@ -1288,12 +1146,12 @@ async event => {
       saveResult.error
     );
     status(
-      "Ошибка сохранения: " +
+      "Ошибка: " +
       saveResult.error.message,
       "error"
     );
     msg(
-      "Ошибка сохранения тренировки"
+      "Ошибка сохранения"
     );
     return;
   }
@@ -1378,7 +1236,7 @@ async event => {
       upload.error
     );
     msg(
-      "Ошибка загрузки медиа"
+      "Ошибка загрузки"
     );
     return;
   }
@@ -1456,11 +1314,11 @@ function render(){
             <td>${t.helper?.name||"—"}</td>
             <td>${t.white_score}:${t.blue_score}</td>
             <td><span class="${badgeClass}">${win}</span></td>
-            <td style="max-width:100px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${t.comment||"—"}</td>
+            <td style="max-width:60px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${t.comment||"—"}</td>
             <td>
-              <div style="display:flex;gap:6px;flex-wrap:wrap;">
-                <button class="btn" type="button" onclick="editTraining('${t.id}')">Редакт.</button>
-                <button class="btn" type="button" style="border-color:#71333d;color:#ff9aa7;" onclick="deleteTraining('${t.id}')">Удалить</button>
+              <div style="display:flex;gap:3px;flex-wrap:wrap;">
+                <button class="btn" type="button" onclick="editTraining('${t.id}')">✎</button>
+                <button class="btn" type="button" style="border-color:#71333d;color:#ff9aa7;" onclick="deleteTraining('${t.id}')">✕</button>
               </div>
             </td>
           </tr>`
@@ -1481,7 +1339,7 @@ function render(){
   $("statTable").innerHTML=`
     <div class="table-wrap">
     <table>
-      <tr><th>№</th><th>Игрок</th><th>Лучший</th><th>Помощник</th><th>Счастливчик</th><th>Всего</th></tr>
+      <tr><th>№</th><th>Игрок</th><th>Лучший</th><th>Помощник</th><th>🍀</th><th>Всего</th></tr>
       ${statistics.map(p=>`
         <tr>
           <td>${p.number}</td><td>${p.name}</td><td>${p.bestCount}</td><td>${p.helperCount}</td>
@@ -1497,27 +1355,27 @@ async function editTraining(id){
   const t=trainings.find(x=>x.id===id);
   if(!t)return;
 
-  const date=prompt("Дата тренировки (ГГГГ-ММ-ДД)",t.date||"");
+  const date=prompt("Дата (ГГГГ-ММ-ДД)",t.date||"");
   if(date===null)return;
 
   const bp=players.find(p=>p.id===t.best_player_id);
   const hp=players.find(p=>p.id===t.helper_player_id);
 
-  const bn=prompt("Номер Лучшего игрока",bp?.number??"");
+  const bn=prompt("Номер Лучшего",bp?.number??"");
   if(bn===null)return;
   const best=players.find(p=>String(p.number)===String(bn).trim());
-  if(!best)return msg("Игрок с таким номером не найден");
+  if(!best)return msg("Игрок не найден");
 
   const hn=prompt("Номер Помощника",hp?.number??"");
   if(hn===null)return;
   const helper=players.find(p=>String(p.number)===String(hn).trim());
-  if(!helper)return msg("Игрок с таким номером не найден");
+  if(!helper)return msg("Игрок не найден");
 
   const white=prompt("Очки Белых",t.white_score??0);
   if(white===null)return;
   const blue=prompt("Очки Синих",t.blue_score??0);
   if(blue===null)return;
-  const comment=prompt("Комментарий (необязательно)",t.comment||"");
+  const comment=prompt("Комментарий",t.comment||"");
   if(comment===null)return;
 
   const r=await sb.from("trainings").update({
@@ -1531,29 +1389,29 @@ async function editTraining(id){
 
   if(r.error){
     console.error(r.error);
-    return msg("Ошибка редактирования: "+r.error.message);
+    return msg("Ошибка: "+r.error.message);
   }
-  msg("Тренировка изменена");
+  msg("Изменено");
   await load();
 }
 
 async function deleteTraining(id){
   if (!id) {
-    msg("Ошибка: идентификатор тренировки не указан");
+    msg("Ошибка ID");
     return;
   }
   
   const t = trainings.find(x => x.id === id);
   if (!t) {
-    msg("Тренировка не найдена в списке");
+    msg("Тренировка не найдена");
     return;
   }
   
-  const confirmMessage = "Удалить тренировку от " + fmt(t.date) + "?\n\n" +
+  const confirmMessage = "Удалить от " + fmt(t.date) + "?\n\n" +
                         "Лучший: " + (t.best?.name || "—") + "\n" +
                         "Помощник: " + (t.helper?.name || "—") + "\n" +
                         "Счёт: " + t.white_score + ":" + t.blue_score + "\n\n" +
-                        "Это действие нельзя отменить!";
+                        "⚠️ Без отмены!";
   
   if (!confirm(confirmMessage)) {
     return;
@@ -1566,16 +1424,16 @@ async function deleteTraining(id){
   
   if (error) {
     console.error("Ошибка удаления:", error);
-    msg("Ошибка удаления: " + error.message);
+    msg("Ошибка: " + error.message);
     return;
   }
   
   if (count === 0) {
-    msg("Тренировка не найдена или уже удалена");
+    msg("Уже удалена");
     return;
   }
   
-  msg("Тренировка удалена");
+  msg("Удалено");
   await load();
 }
 
@@ -1589,30 +1447,19 @@ function renderRoster(){
           onerror="this.style.visibility='hidden'"
         >
         <b>
-          №${player.number} —
-          ${player.name}
+          №${player.number} — ${player.name}
         </b>
         <p class="muted">
-          Рост:
-          ${
-            player.height_cm
-              ? player.height_cm + " см"
-              : "не указан"
-          }
+          Рост: ${player.height_cm ? player.height_cm + " см" : "—"}
           <br>
-          Вес:
-          ${
-            player.weight_kg
-              ? player.weight_kg + " кг"
-              : "не указан"
-          }
+          Вес: ${player.weight_kg ? player.weight_kg + " кг" : "—"}
         </p>
         <button
           class="btn"
           type="button"
           onclick="editPlayer('${player.id}')"
         >
-          Изменить
+          ✎
         </button>
       </div>
     `).join("");
@@ -1635,12 +1482,12 @@ async function editPlayer(id){
 
   if(update.error){
     console.error(update.error);
-    return msg("Ошибка сохранения роста/веса: "+update.error.message);
+    return msg("Ошибка: "+update.error.message);
   }
 
-  msg("Рост и вес сохранены");
+  msg("Сохранено");
 
-  if(!confirm("Изменить фотографию игрока?")){
+  if(!confirm("Изменить фото?")){
     await load();
     return;
   }
@@ -1659,12 +1506,12 @@ async function editPlayer(id){
     const path="players/"+id+"_"+Date.now()+"_"+file.name.replace(/[^a-zA-Z0-9._-]/g,"_");
 
     const upload=await sb.storage.from("player-photos").upload(path,file,{upsert:false});
-    if(upload.error)return msg("Ошибка загрузки фото: "+upload.error.message);
+    if(upload.error)return msg("Ошибка фото: "+upload.error.message);
 
     const photo=sb.storage.from("player-photos").getPublicUrl(path).data.publicUrl;
     const photoUpdate=await sb.from("players").update({photo_url:photo}).eq("id",id);
 
-    if(photoUpdate.error)return msg("Ошибка сохранения фото: "+photoUpdate.error.message);
+    if(photoUpdate.error)return msg("Ошибка: "+photoUpdate.error.message);
 
     msg("Профиль обновлён");
     await load();
@@ -1684,10 +1531,10 @@ function renderTours(data){
           <td>${fmt(item.date)}</td>
           <td>${item.opponent||"—"}</td>
           <td>${item.score||"—"}</td>
-          <td>${item.mvp?.name||"Не назначен"}</td>
+          <td>${item.mvp?.name||"—"}</td>
           <td>
             <button class="btn" type="button" onclick="setTournamentMVP('${item.id}')">
-              ${item.mvp?.name?"Изменить MVP":"Назначить MVP"}
+              ${item.mvp?.name?"✎":"+"}
             </button>
           </td>
         </tr>
@@ -1699,11 +1546,11 @@ function renderTours(data){
 
 async function setTournamentMVP(tournamentId){
   const list=players.map(p=>`№${p.number} — ${p.name}`).join("\n");
-  const number=prompt("Введите игровой номер MVP по итогам соревнования.\n\n"+list);
+  const number=prompt("Номер MVP:\n\n"+list);
   if(number===null)return;
 
   const player=players.find(p=>String(p.number)===String(number).trim());
-  if(!player)return msg("Игрок с таким номером не найден");
+  if(!player)return msg("Игрок не найден");
 
   const update=await sb.from("tournaments")
     .update({mvp_player_id:player.id})
@@ -1711,7 +1558,7 @@ async function setTournamentMVP(tournamentId){
 
   if(update.error){
     console.error(update.error);
-    return msg("Ошибка назначения MVP: "+update.error.message);
+    return msg("Ошибка: "+update.error.message);
   }
 
   msg("MVP назначен");
@@ -1729,7 +1576,7 @@ function renderMedia(data){
                 controls
                 style="
                   width:100%;
-                  border-radius:12px;
+                  border-radius:8px;
                   aspect-ratio:1;
                   object-fit:cover;
                 "
@@ -1739,7 +1586,7 @@ function renderMedia(data){
               <img
                 src="${item.url}"
                 alt="${item.caption || "Фото"}"
-                style="width:100%;aspect-ratio:1;object-fit:cover;border-radius:12px;"
+                style="width:100%;aspect-ratio:1;object-fit:cover;border-radius:8px;"
               >
             `
         ).join("")
