@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
 <meta charset="utf-8">
-<meta name="viewport"content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no,viewport-fit=cover">
 <meta name="theme-color" content="#0b1220">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -229,7 +229,6 @@ textarea{
   display:none!important;
 }
 
-/* ===== ТАБЛИЦА ===== */
 .table-wrap{
   overflow-x:auto;
   -webkit-overflow-scrolling:touch;
@@ -435,7 +434,6 @@ td .btn{
   font-size:16px;
 }
 
-/* ===== Мобильные ===== */
 @media(max-width:768px){
   .grid{
     grid-template-columns:1fr;
@@ -628,15 +626,13 @@ td .btn{
 </header>
 
 
-<!-- ДОБАВИТЬ ТРЕНИРОВКУ -->
-
 <section id="input" class="page">
 
   <div class="grid">
 
     <div class="card">
 
-      <h2>➕ Добавить тренировку</h2>
+      <h2>Добавить тренировку</h2>
 
       <p class="muted">
         Вход свободный — аккаунт не требуется.
@@ -645,7 +641,7 @@ td .btn{
       <form id="form" class="form" style="margin-top:16px">
 
         <div class="field">
-          <label for="date">📅 Дата</label>
+          <label for="date">Дата</label>
           <input id="date" type="date" required>
         </div>
 
@@ -653,7 +649,7 @@ td .btn{
         <div class="field">
 
           <label for="bestSelect">
-            ⭐ Лучший игрок
+            Лучший игрок
           </label>
 
           <select id="bestSelect" required>
@@ -670,7 +666,7 @@ td .btn{
         <div class="field">
 
           <label for="helperSelect">
-            🤝 Помощник
+            Помощник
           </label>
 
           <select id="helperSelect" required>
@@ -683,7 +679,7 @@ td .btn{
 
         </div>
         <div class="field">
-          <label for="comment">💬 Комментарий <span class="muted">(необязательно)</span></label>
+          <label for="comment">Комментарий <span class="muted">(необязательно)</span></label>
           <textarea id="comment" rows="2" placeholder="Комментарий к тренировке"></textarea>
         </div>
 
@@ -694,7 +690,7 @@ td .btn{
           <div class="field">
 
             <label for="white">
-              ⚪ Белые
+              Белые
             </label>
 
             <input
@@ -711,7 +707,7 @@ td .btn{
           <div class="field">
 
             <label for="blue">
-              🔵 Синие
+              Синие
             </label>
 
             <input
@@ -732,7 +728,7 @@ td .btn{
           class="btn primary"
           id="saveTrainingBtn"
         >
-          ✅ Добавить тренировку
+          Добавить тренировку
         </button>
 
       </form>
@@ -746,7 +742,7 @@ td .btn{
         style="font-size:14px;margin-top:10px;"
       >
         Если Лучший и Помощник совпали —
-        автоматически считается «Счастливчик» 🍀
+        автоматически считается Счастливчик
       </p>
 
     </div>
@@ -754,7 +750,7 @@ td .btn{
 
     <div class="card">
 
-      <h2>📋 Последние тренировки</h2>
+      <h2>Последние тренировки</h2>
 
       <div id="recent"></div>
 
@@ -765,8 +761,6 @@ td .btn{
 </section>
 
 
-<!-- ТРЕНИРОВКИ -->
-
 <section
   id="training"
   class="page hidden"
@@ -774,7 +768,7 @@ td .btn{
 
   <div class="card">
 
-    <h2>📊 Все тренировки</h2>
+    <h2>Все тренировки</h2>
 
     <div
       id="trainings"
@@ -785,8 +779,6 @@ td .btn{
 
 </section>
 
-
-<!-- СТАТИСТИКА -->
 
 <section
   id="stats"
@@ -802,7 +794,7 @@ td .btn{
   <div class="card">
 
     <h2>
-      🏆 Лучшие / Помощники / Счастливчики
+      Лучшие / Помощники / Счастливчики
     </h2>
 
     <div
@@ -815,8 +807,6 @@ td .btn{
 </section>
 
 
-<!-- СОСТАВ -->
-
 <section
   id="players"
   class="page hidden"
@@ -824,7 +814,7 @@ td .btn{
 
   <div class="card">
 
-    <h2>👥 Состав команды</h2>
+    <h2>Состав команды</h2>
 
     <p class="muted">
       У каждого игрока можно заполнить рост,
@@ -842,8 +832,6 @@ td .btn{
 </section>
 
 
-<!-- МЕДИА -->
-
 <section
   id="media"
   class="page hidden"
@@ -853,7 +841,7 @@ td .btn{
 
     <div class="card">
 
-      <h2>📸 Добавить медиа</h2>
+      <h2>Добавить медиа</h2>
 
       <p class="muted">
         Фото и видео команды в общей ленте.
@@ -878,7 +866,7 @@ td .btn{
         >
 
         <button class="btn primary">
-          📤 Опубликовать
+          Опубликовать
         </button>
 
       </form>
@@ -888,7 +876,7 @@ td .btn{
 
     <div class="card">
 
-      <h2>🖼️ Медиа клуба</h2>
+      <h2>Медиа клуба</h2>
 
       <div
         id="mediaGrid"
@@ -903,8 +891,6 @@ td .btn{
 </section>
 
 
-<!-- ТУРНИРЫ -->
-
 <section
   id="tournaments"
   class="page hidden"
@@ -914,7 +900,7 @@ td .btn{
 
     <div class="card">
 
-      <h2>🏀 Участие в турнирах</h2>
+      <h2>Участие в турнирах</h2>
 
       <form
         id="tourForm"
@@ -944,7 +930,7 @@ td .btn{
           placeholder="Счёт, например 65:58"
         >
 <button class="btn primary">
-          ✅ Добавить турнир
+          Добавить турнир
         </button>
 
       </form>
@@ -954,7 +940,7 @@ td .btn{
 
     <div class="card">
 
-      <h2>📋 Турниры</h2>
+      <h2>Турниры</h2>
 
       <div id="tourTable"></div>
 
@@ -975,10 +961,6 @@ td .btn{
 
 <script>
 
-/* =========================================
-   SUPABASE
-========================================= */
-
 const SUPABASE_URL =
   "https://sihixudkoxmksxgziary.supabase.co";
 
@@ -991,102 +973,53 @@ const sb =
     SUPABASE_KEY
   );
 
-
-/* =========================================
-   DATA
-========================================= */
-
 let players = [];
 let trainings = [];
-
-
-/* =========================================
-   HELPERS
-========================================= */
 
 const $ = id =>
   document.getElementById(id);
 
-
 const msg = text => {
-
   const toast = $("toast");
-
   toast.textContent = text;
-
   toast.classList.add("show");
-
   setTimeout(
     () => toast.classList.remove("show"),
     3500
   );
 };
 
-
 const fmt = date => {
-
   if (!date) return "—";
-
   return new Date(
     date + "T00:00:00"
   ).toLocaleDateString("ru-RU");
-
 };
-
 
 const result = (white, blue) => {
-
   if (white > blue) return "Белые";
-
   if (blue > white) return "Синие";
-
   return "Ничья";
-
 };
 
-
-/* =========================================
-   STATUS
-========================================= */
-
 function status(text, type = "") {
-
   const el = $("dbStatus");
-
   el.textContent = text;
-
   el.className = "status " + type;
-
 }
 
-
-/* =========================================
-   NAVIGATION
-========================================= */
-
 function nav(){
-
   const items = [
-
-    ["input","➕ Добавить"],
-
-    ["training","📊 Тренировки"],
-
-    ["stats","🏆 Лучшие"],
-
-    ["players","👥 Состав"],
-
-    ["media","📸 Медиа"],
-
-    ["tournaments","🏀 Турниры"]
-
+    ["input","Добавить"],
+    ["training","Тренировки"],
+    ["stats","Лучшие"],
+    ["players","Состав"],
+    ["media","Медиа"],
+    ["tournaments","Турниры"]
   ];
 
-
   $("nav").innerHTML = items.map(
-
     (item,index) => `
-
       <button
         class="navbtn ${index === 0 ? "active" : ""}"
         data-p="${item[0]}"
@@ -1094,100 +1027,53 @@ function nav(){
       >
         ${item[1]}
       </button>
-
     `
-
   ).join("");
-
 
   document
     .querySelectorAll(".navbtn")
     .forEach(button => {
-
       button.onclick = () => {
-
         document
           .querySelectorAll(".navbtn")
           .forEach(x =>
             x.classList.remove("active")
           );
-
         button.classList.add("active");
-
-
         document
           .querySelectorAll(".page")
           .forEach(page =>
             page.classList.add("hidden")
           );
-
-
         $(button.dataset.p)
           .classList.remove("hidden");
-
       };
-
     });
-
 }
-
-
-/* =========================================
-   PLAYERS SELECT
-========================================= */
 
 function fillPlayerSelects(){
-
   const selectOptions = `
-
     <option value="">
-      👤 Выберите игрока
+      Выберите игрока
     </option>
-
     ${
       players.map(player => `
-
         <option value="${player.id}">
-
           №${player.number} — ${player.name}
-
         </option>
-
       `).join("")
     }
-
   `;
-
-
-  $("bestSelect").innerHTML =
-    selectOptions;
-
-  $("helperSelect").innerHTML =
-    selectOptions;
-
-
-  
-
+  $("bestSelect").innerHTML = selectOptions;
+  $("helperSelect").innerHTML = selectOptions;
 }
 
-
-/* =========================================
-   LOAD ALL DATA
-========================================= */
-
 async function load(){
-
   status("", "");
-
-
   $("bestSelect").innerHTML =
-    `<option value="">⏳ Загрузка...</option>`;
-
+    `<option value="">Загрузка...</option>`;
   $("helperSelect").innerHTML =
-    `<option value="">⏳ Загрузка...</option>`;
-
-
-  /* PLAYERS */
+    `<option value="">Загрузка...</option>`;
 
   const playersResult =
     await sb
@@ -1197,43 +1083,29 @@ async function load(){
         ascending:true
       });
 
-
   if(playersResult.error){
-
     console.error(
       "PLAYERS ERROR:",
       playersResult.error
     );
-
-
     $("bestSelect").innerHTML =
       `<option value="">
-        ❌ Ошибка загрузки
+        Ошибка загрузки
       </option>`;
-
-
     $("helperSelect").innerHTML =
       `<option value="">
-        ❌ Ошибка загрузки
+        Ошибка загрузки
       </option>`;
-
-
     status(
       "Ошибка players: " +
       playersResult.error.message,
       "error"
     );
-
-
     msg(
       "Не удалось загрузить игроков"
     );
-
-
     return;
-
   }
-
 
   players =
     playersResult.data || [];
@@ -1261,51 +1133,32 @@ async function load(){
 
   players.sort((a,b)=>Number(a.number)-Number(b.number));
 
-
-
-
   console.log(
     "Игроки загружены:",
     players
   );
 
-
   if(!players.length){
-
     $("bestSelect").innerHTML =
       `<option value="">
-        ⚠️ Игроков нет в базе
+        Игроков нет в базе
       </option>`;
-
-
     $("helperSelect").innerHTML =
       `<option value="">
-        ⚠️ Игроков нет в базе
+        Игроков нет в базе
       </option>`;
-
-
     status(
       "Таблица players пустая",
       "error"
     );
-
-
     msg(
       "В таблице players нет игроков"
     );
-
-
     return;
-
   }
 
-
   fillPlayerSelects();
-
   renderRoster();
-
-
-  /* TRAININGS */
 
   const trainingsResult =
     await sb
@@ -1320,28 +1173,18 @@ async function load(){
         {ascending:false}
       );
 
-
   if(trainingsResult.error){
-
     console.error(
       "TRAININGS ERROR:",
       trainingsResult.error
     );
-
     trainings = [];
-
   }else{
-
     trainings =
       trainingsResult.data || [];
-
   }
 
-
   render();
-
-
-  /* TOURNAMENTS */
 
   const tournamentsResult =
     await sb
@@ -1355,26 +1198,17 @@ async function load(){
         {ascending:false}
       );
 
-
   if(tournamentsResult.error){
-
     console.error(
       "TOURNAMENTS ERROR:",
       tournamentsResult.error
     );
-
     renderTours([]);
-
   }else{
-
     renderTours(
       tournamentsResult.data || []
     );
-
   }
-
-
-  /* MEDIA */
 
   const mediaResult =
     await sb
@@ -1385,228 +1219,141 @@ async function load(){
         {ascending:false}
       );
 
-
   if(mediaResult.error){
-
     console.error(
       "MEDIA ERROR:",
       mediaResult.error
     );
-
     renderMedia([]);
-
   }else{
-
     renderMedia(
       mediaResult.data || []
     );
-
   }
-
 }
-
-
-/* =========================================
-   ADD TRAINING
-========================================= */
 
 $("form").onsubmit =
 async event => {
-
   event.preventDefault();
-
 
   const best =
     $("bestSelect").value;
-
   const helper =
     $("helperSelect").value;
 
-
   if(!best){
-
     msg(
-      "⚠️ Выберите Лучшего игрока"
+      "Выберите Лучшего игрока"
     );
-
     $("bestSelect").focus();
-
     return;
-
   }
-
 
   if(!helper){
-
     msg(
-      "⚠️ Выберите Помощника"
+      "Выберите Помощника"
     );
-
     $("helperSelect").focus();
-
     return;
-
   }
 
-
   const payload = {
-
     date:
       $("date").value,
-
     best_player_id:
       best,
-
     helper_player_id:
       helper,
-
     white_score:
       Number($("white").value || 0),
-
     blue_score:
       Number($("blue").value || 0),
-
     comment:
       $("comment").value.trim() || null
   };
 
-
   status(
-    "⏳ Сохраняем тренировку...",
+    "Сохраняем тренировку...",
     "loading"
   );
-
 
   const saveResult =
     await sb
       .from("trainings")
       .insert(payload);
 
-
   if(saveResult.error){
-
     console.error(
       "SAVE TRAINING ERROR:",
       saveResult.error
     );
-
-
     status(
-      "❌ Ошибка сохранения: " +
+      "Ошибка сохранения: " +
       saveResult.error.message,
       "error"
     );
-
-
     msg(
       "Ошибка сохранения тренировки"
     );
-
-
     return;
-
   }
 
-
   event.target.reset();
-
-
   $("bestSelect").value = "";
-
   $("helperSelect").value = "";
-
-
   $("white").value = 0;
-
   $("blue").value = 0;
-
-
   status("", "");
-
-
   msg(
-    "✅ Тренировка добавлена"
+    "Тренировка добавлена"
   );
-
-
   await load();
-
 };
-
-
-/* =========================================
-   TOURNAMENT
-========================================= */
 
 $("tourForm").onsubmit =
 async event => {
-
   event.preventDefault();
-
 
   const saveResult =
     await sb
       .from("tournaments")
       .insert({
-
         name:
           $("tn").value,
-
         date:
           $("td").value,
-
         opponent:
           $("to").value,
-
         score:
           $("ts").value
-
       });
 
-
   if(saveResult.error){
-
     console.error(
       saveResult.error
     );
-
     msg(
-      "❌ Ошибка: " +
+      "Ошибка: " +
       saveResult.error.message
     );
-
     return;
-
   }
 
-
   event.target.reset();
-
   msg(
-    "✅ Турнир добавлен"
+    "Турнир добавлен"
   );
-
   await load();
-
 };
-
-
-/* =========================================
-   MEDIA
-========================================= */
 
 $("mediaForm").onsubmit =
 async event => {
-
   event.preventDefault();
-
 
   const file =
     $("mediaFile").files[0];
 
-
   if(!file) return;
-
 
   const path =
     Date.now() +
@@ -1615,7 +1362,6 @@ async event => {
       /[^a-zA-Z0-9._-]/g,
       "_"
     );
-
 
   const upload =
     await sb
@@ -1627,21 +1373,15 @@ async event => {
         {upsert:false}
       );
 
-
   if(upload.error){
-
     console.error(
       upload.error
     );
-
     msg(
-      "❌ Ошибка загрузки медиа"
+      "Ошибка загрузки медиа"
     );
-
     return;
-
   }
-
 
   const publicUrl =
     sb
@@ -1651,58 +1391,38 @@ async event => {
       .data
       .publicUrl;
 
-
   const insert =
     await sb
       .from("media")
       .insert({
-
         url:
           publicUrl,
-
         caption:
           $("mediaCaption").value,
-
         type:
           file.type.startsWith("video")
             ? "video"
             : "image"
-
       });
 
-
   if(insert.error){
-
     console.error(
       insert.error
     );
-
     msg(
-      "❌ Ошибка публикации"
+      "Ошибка публикации"
     );
-
     return;
-
   }
 
-
   event.target.reset();
-
   msg(
-    "✅ Медиа добавлено"
+    "Медиа добавлено"
   );
-
   await load();
-
 };
 
-
-/* =========================================
-   RENDER TRAININGS
-========================================= */
-
 function render(){
-
   $("recent").innerHTML =
     trainings.length ? `
       <div class="table-wrap">
@@ -1713,15 +1433,15 @@ function render(){
         `).join("")}
       </table>
       </div>` :
-      `<div class="empty">📭 Пока нет тренировок.</div>`;
+      `<div class="empty">Пока нет тренировок.</div>`;
 
   $("trainings").innerHTML =
     trainings.length ? `
       <div class="table-wrap">
       <table>
         <tr>
-          <th>📅 Дата</th><th>⭐ Лучший</th><th>🤝 Помощник</th><th>🏆 Счёт</th>
-          <th>🥇 Победитель</th><th>💬 Комментарий</th><th>⚙️ Действия</th>
+          <th>Дата</th><th>Лучший</th><th>Помощник</th><th>Счёт</th>
+          <th>Победитель</th><th>Комментарий</th><th>Действия</th>
         </tr>
         ${trainings.map(t=>{
           const win = result(t.white_score,t.blue_score);
@@ -1739,15 +1459,15 @@ function render(){
             <td style="max-width:100px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${t.comment||"—"}</td>
             <td>
               <div style="display:flex;gap:6px;flex-wrap:wrap;">
-                <button class="btn" type="button" onclick="editTraining('${t.id}')">✏️</button>
-                <button class="btn" type="button" style="border-color:#71333d;color:#ff9aa7;" onclick="deleteTraining('${t.id}')">🗑️</button>
+                <button class="btn" type="button" onclick="editTraining('${t.id}')">Редакт.</button>
+                <button class="btn" type="button" style="border-color:#71333d;color:#ff9aa7;" onclick="deleteTraining('${t.id}')">Удалить</button>
               </div>
             </td>
           </tr>`
         }).join("")}
       </table>
       </div>` :
-      `<div class="empty">📭 Пока нет тренировок.</div>`;
+      `<div class="empty">Пока нет тренировок.</div>`;
 
   const statistics=players.map(p=>{
     const bestCount=trainings.filter(t=>t.best_player_id===p.id).length;
@@ -1761,7 +1481,7 @@ function render(){
   $("statTable").innerHTML=`
     <div class="table-wrap">
     <table>
-      <tr><th>№</th><th>👤 Игрок</th><th>⭐ Лучший</th><th>🤝 Помощник</th><th>🍀 Счастливчик</th><th>🏆 Всего</th></tr>
+      <tr><th>№</th><th>Игрок</th><th>Лучший</th><th>Помощник</th><th>Счастливчик</th><th>Всего</th></tr>
       ${statistics.map(p=>`
         <tr>
           <td>${p.number}</td><td>${p.name}</td><td>${p.bestCount}</td><td>${p.helperCount}</td>
@@ -1777,27 +1497,27 @@ async function editTraining(id){
   const t=trainings.find(x=>x.id===id);
   if(!t)return;
 
-  const date=prompt("📅 Дата тренировки (ГГГГ-ММ-ДД)",t.date||"");
+  const date=prompt("Дата тренировки (ГГГГ-ММ-ДД)",t.date||"");
   if(date===null)return;
 
   const bp=players.find(p=>p.id===t.best_player_id);
   const hp=players.find(p=>p.id===t.helper_player_id);
 
-  const bn=prompt("⭐ Номер Лучшего игрока",bp?.number??"");
+  const bn=prompt("Номер Лучшего игрока",bp?.number??"");
   if(bn===null)return;
   const best=players.find(p=>String(p.number)===String(bn).trim());
-  if(!best)return msg("❌ Игрок с таким номером не найден");
+  if(!best)return msg("Игрок с таким номером не найден");
 
-  const hn=prompt("🤝 Номер Помощника",hp?.number??"");
+  const hn=prompt("Номер Помощника",hp?.number??"");
   if(hn===null)return;
   const helper=players.find(p=>String(p.number)===String(hn).trim());
-  if(!helper)return msg("❌ Игрок с таким номером не найден");
+  if(!helper)return msg("Игрок с таким номером не найден");
 
-  const white=prompt("⚪ Очки Белых",t.white_score??0);
+  const white=prompt("Очки Белых",t.white_score??0);
   if(white===null)return;
-  const blue=prompt("🔵 Очки Синих",t.blue_score??0);
+  const blue=prompt("Очки Синих",t.blue_score??0);
   if(blue===null)return;
-  const comment=prompt("💬 Комментарий (необязательно)",t.comment||"");
+  const comment=prompt("Комментарий (необязательно)",t.comment||"");
   if(comment===null)return;
 
   const r=await sb.from("trainings").update({
@@ -1811,131 +1531,101 @@ async function editTraining(id){
 
   if(r.error){
     console.error(r.error);
-    return msg("❌ Ошибка редактирования: "+r.error.message);
+    return msg("Ошибка редактирования: "+r.error.message);
   }
-  msg("✅ Тренировка изменена");
+  msg("Тренировка изменена");
   await load();
 }
 
 async function deleteTraining(id){
-  console.log("deleteTraining вызвана с id:", id);
-  
   if (!id) {
-    msg("❌ Ошибка: идентификатор тренировки не указан");
+    msg("Ошибка: идентификатор тренировки не указан");
     return;
   }
   
   const t = trainings.find(x => x.id === id);
   if (!t) {
-    msg("❌ Тренировка не найдена в списке");
+    msg("Тренировка не найдена в списке");
     return;
   }
   
-  const confirmMessage = "🗑️ Удалить тренировку от " + fmt(t.date) + "?\n\n" +
-                        "⭐ Лучший: " + (t.best?.name || "—") + "\n" +
-                        "🤝 Помощник: " + (t.helper?.name || "—") + "\n" +
-                        "🏆 Счёт: " + t.white_score + ":" + t.blue_score + "\n\n" +
-                        "⚠️ Это действие нельзя отменить!";
+  const confirmMessage = "Удалить тренировку от " + fmt(t.date) + "?\n\n" +
+                        "Лучший: " + (t.best?.name || "—") + "\n" +
+                        "Помощник: " + (t.helper?.name || "—") + "\n" +
+                        "Счёт: " + t.white_score + ":" + t.blue_score + "\n\n" +
+                        "Это действие нельзя отменить!";
   
   if (!confirm(confirmMessage)) {
     return;
   }
-
-  console.log("Отправляем DELETE запрос для id:", id);
   
-  const { error, count, data } = await sb
+  const { error, count } = await sb
     .from("trainings")
     .delete({ count: 'exact' })
     .eq("id", id);
   
-  console.log("Результат удаления:", { error, count, data });
-  
   if (error) {
     console.error("Ошибка удаления:", error);
-    msg("❌ Ошибка удаления: " + error.message);
+    msg("Ошибка удаления: " + error.message);
     return;
   }
   
   if (count === 0) {
-    msg("⚠️ Тренировка не найдена или уже удалена");
+    msg("Тренировка не найдена или уже удалена");
     return;
   }
   
-  msg("✅ Тренировка удалена");
+  msg("Тренировка удалена");
   await load();
 }
 
-/* =========================================
-   ROSTER
-========================================= */
-
 function renderRoster(){
-
   $("roster").innerHTML =
     players.map(player => `
-
       <div class="person">
-
         <img
           class="avatar"
           src="${player.photo_url || ""}"
           onerror="this.style.visibility='hidden'"
         >
-
         <b>
-          №${player.number} — ${player.name}
+          №${player.number} —
+          ${player.name}
         </b>
-
-
         <p class="muted">
-
-          📏 Рост:
+          Рост:
           ${
             player.height_cm
               ? player.height_cm + " см"
               : "не указан"
           }
-
           <br>
-
-          ⚖️ Вес:
+          Вес:
           ${
             player.weight_kg
               ? player.weight_kg + " кг"
               : "не указан"
           }
-
         </p>
-
-
         <button
           class="btn"
           type="button"
           onclick="editPlayer('${player.id}')"
         >
-          ✏️ Изменить
+          Изменить
         </button>
-
       </div>
-
     `).join("");
-
 }
 
-
-/* =========================================
-   EDIT PLAYER
-========================================= */
-
 async function editPlayer(id){
-
   const player=players.find(x=>x.id===id);
   if(!player)return;
 
-  const height=prompt("📏 Рост, см",player.height_cm ?? "");
+  const height=prompt("Рост, см",player.height_cm ?? "");
   if(height===null)return;
 
-  const weight=prompt("⚖️ Вес, кг",player.weight_kg ?? "");
+  const weight=prompt("Вес, кг",player.weight_kg ?? "");
   if(weight===null)return;
 
   const update=await sb.from("players").update({
@@ -1945,12 +1635,12 @@ async function editPlayer(id){
 
   if(update.error){
     console.error(update.error);
-    return msg("❌ Ошибка сохранения роста/веса: "+update.error.message);
+    return msg("Ошибка сохранения роста/веса: "+update.error.message);
   }
 
-  msg("✅ Рост и вес сохранены");
+  msg("Рост и вес сохранены");
 
-  if(!confirm("📸 Изменить фотографию игрока?")){
+  if(!confirm("Изменить фотографию игрока?")){
     await load();
     return;
   }
@@ -1969,30 +1659,25 @@ async function editPlayer(id){
     const path="players/"+id+"_"+Date.now()+"_"+file.name.replace(/[^a-zA-Z0-9._-]/g,"_");
 
     const upload=await sb.storage.from("player-photos").upload(path,file,{upsert:false});
-    if(upload.error)return msg("❌ Ошибка загрузки фото: "+upload.error.message);
+    if(upload.error)return msg("Ошибка загрузки фото: "+upload.error.message);
 
     const photo=sb.storage.from("player-photos").getPublicUrl(path).data.publicUrl;
     const photoUpdate=await sb.from("players").update({photo_url:photo}).eq("id",id);
 
-    if(photoUpdate.error)return msg("❌ Ошибка сохранения фото: "+photoUpdate.error.message);
+    if(photoUpdate.error)return msg("Ошибка сохранения фото: "+photoUpdate.error.message);
 
-    msg("✅ Профиль обновлён");
+    msg("Профиль обновлён");
     await load();
   };
 
   input.click();
 }
 
-/* =========================================
-   TOURNAMENTS RENDER
-========================================= */
-
 function renderTours(data){
-
   $("tourTable").innerHTML=data.length?`
     <div class="table-wrap">
     <table>
-      <tr><th>🏀 Турнир</th><th>📅 Дата</th><th>⚔️ Соперник</th><th>🏆 Счёт</th><th>⭐ MVP</th><th>⚙️ Действия</th></tr>
+      <tr><th>Турнир</th><th>Дата</th><th>Соперник</th><th>Счёт</th><th>MVP</th><th>Действия</th></tr>
       ${data.map(item=>`
         <tr>
           <td>${item.name}</td>
@@ -2002,23 +1687,23 @@ function renderTours(data){
           <td>${item.mvp?.name||"Не назначен"}</td>
           <td>
             <button class="btn" type="button" onclick="setTournamentMVP('${item.id}')">
-              ${item.mvp?.name?"✏️ Изменить MVP":"⭐ Назначить MVP"}
+              ${item.mvp?.name?"Изменить MVP":"Назначить MVP"}
             </button>
           </td>
         </tr>
       `).join("")}
     </table>
     </div>`:
-    `<div class="empty">📭 Пока нет турниров.</div>`;
+    `<div class="empty">Пока нет турниров.</div>`;
 }
 
 async function setTournamentMVP(tournamentId){
   const list=players.map(p=>`№${p.number} — ${p.name}`).join("\n");
-  const number=prompt("⭐ Введите игровой номер MVP по итогам соревнования.\n\n"+list);
+  const number=prompt("Введите игровой номер MVP по итогам соревнования.\n\n"+list);
   if(number===null)return;
 
   const player=players.find(p=>String(p.number)===String(number).trim());
-  if(!player)return msg("❌ Игрок с таким номером не найден");
+  if(!player)return msg("Игрок с таким номером не найден");
 
   const update=await sb.from("tournaments")
     .update({mvp_player_id:player.id})
@@ -2026,28 +1711,19 @@ async function setTournamentMVP(tournamentId){
 
   if(update.error){
     console.error(update.error);
-    return msg("❌ Ошибка назначения MVP: "+update.error.message);
+    return msg("Ошибка назначения MVP: "+update.error.message);
   }
 
-  msg("✅ MVP назначен");
+  msg("MVP назначен");
   await load();
 }
 
-/* =========================================
-   MEDIA RENDER
-========================================= */
-
 function renderMedia(data){
-
   $("mediaGrid").innerHTML =
     data.length
-
       ? data.map(item =>
-
           item.type === "video"
-
             ? `
-
               <video
                 src="${item.url}"
                 controls
@@ -2058,74 +1734,49 @@ function renderMedia(data){
                   object-fit:cover;
                 "
               ></video>
-
             `
-
             : `
-
               <img
                 src="${item.url}"
                 alt="${item.caption || "Фото"}"
                 style="width:100%;aspect-ratio:1;object-fit:cover;border-radius:12px;"
               >
-
             `
-
         ).join("")
-
       : `
         <div class="empty">
-          📭 Медиа пока нет.
+          Медиа пока нет.
         </div>
       `;
-
 }
 
-
-/* =========================================
-   START
-========================================= */
-
 nav();
-
-
 $("date").value =
   new Date()
     .toISOString()
     .slice(0,10);
-
-
 $("td").value =
   new Date()
     .toISOString()
     .slice(0,10);
-
-
 load();
 
 </script>
 
-
 <script>
-
 if("serviceWorker" in navigator){
-
   window.addEventListener(
     "load",
     () => {
-
       navigator
         .serviceWorker
         .register("./sw.js")
         .catch(
           console.error
         );
-
     }
   );
-
 }
-
 </script>
 
 </body>
