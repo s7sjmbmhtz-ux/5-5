@@ -11,8 +11,6 @@
 <link rel="manifest" href="manifest.webmanifest">
 <title>5х5 — баскетбольный клуб</title>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
 <style>
 :root{
   --bg:#08101f;
@@ -510,7 +508,6 @@ td .btn.small{
 }
 </style>
 </head>
-
 <body>
 
 <div class="app">
@@ -861,47 +858,37 @@ td .btn.small{
 
 <script>
 
-// ============================================
-// ПОДКЛЮЧЕНИЕ К ТВОЕЙ БАЗЕ ДАННЫХ НА VDSKA
-// ============================================
+// ============================================================
+// ПОДКЛЮЧЕНИЕ К ВАШЕМУ СЕРВЕРУ POSTGRESQL
+// ============================================================
 
-const SUPABASE_URL = "https://sihixudkoxmksxgziary.supabase.co";
-const SUPABASE_KEY = "sb_publishable_LKWMnwcogf1c-hGQyjKuZg_LuHl9LR8";
+// Бэкенд API для работы с PostgreSQL
+const API_URL = 'https://5x5-api.onrender.com'; // Временный API
 
-// ВНИМАНИЕ! PostgreSQL на VDSka пока НЕ ПОДКЛЮЧЁН напрямую.
-// Сейчас используется Supabase (как временное решение).
-// После того как ты скажешь "готово" и откроешь порт 5432,
-// я заменю эти настройки на прямое подключение к твоему серверу.
-
-// ============================================
-
-const sb =
-  supabase.createClient(
-    SUPABASE_URL,
-    SUPABASE_KEY
-  );
+// ============================================================
+// ДАННЫЕ
+// ============================================================
 
 let players = [];
 let trainings = [];
+let tournaments = [];
 
-const $ = id =>
-  document.getElementById(id);
+// ============================================================
+// ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ
+// ============================================================
+
+const $ = id => document.getElementById(id);
 
 const msg = text => {
   const toast = $("toast");
   toast.textContent = text;
   toast.classList.add("show");
-  setTimeout(
-    () => toast.classList.remove("show"),
-    3500
-  );
+  setTimeout(() => toast.classList.remove("show"), 3500);
 };
 
 const fmt = date => {
   if (!date) return "—";
-  return new Date(
-    date + "T00:00:00"
-  ).toLocaleDateString("ru-RU");
+  return new Date(date + "T00:00:00").toLocaleDateString("ru-RU");
 };
 
 const result = (white, blue) => {
@@ -916,484 +903,231 @@ function status(text, type = "") {
   el.className = "status " + type;
 }
 
-function nav(){
+// ============================================================
+// НАВИГАЦИЯ
+// ============================================================
+
+function nav() {
   const items = [
-    ["input","➕ Добавить"],
-    ["training","📋 Тренировки"],
-    ["stats","🏆 Лучшие"],
-    ["players","👥 Состав"],
-    ["media","📸 Медиа"],
-    ["tournaments","🏀 Турниры"]
+    ["input", "➕ Добавить"],
+    ["training", "📋 Тренировки"],
+    ["stats", "🏆 Лучшие"],
+    ["players", "👥 Состав"],
+    ["media", "📸 Медиа"],
+    ["tournaments", "🏀 Турниры"]
   ];
 
-  $("nav").innerHTML = items.map(
-    (item,index) => `
-      <button
-        class="navbtn ${index === 0 ? "active" : ""}"
-        data-p="${item[0]}"
-        type="button"
-      >
-        ${item[1]}
-      </button>
-    `
-  ).join("");
+  $("nav").innerHTML = items.map((item, index) => `
+    <button class="navbtn ${index === 0 ? "active" : ""}" data-p="${item[0]}" type="button">
+      ${item[1]}
+    </button>
+  `).join("");
 
-  document
-    .querySelectorAll(".navbtn")
-    .forEach(button => {
-      button.onclick = () => {
-        document
-          .querySelectorAll(".navbtn")
-          .forEach(x =>
-            x.classList.remove("active")
-          );
-        button.classList.add("active");
-        document
-          .querySelectorAll(".page")
-          .forEach(page =>
-            page.classList.add("hidden")
-          );
-        $(button.dataset.p)
-          .classList.remove("hidden");
-      };
-    });
+  document.querySelectorAll(".navbtn").forEach(button => {
+    button.onclick = () => {
+      document.querySelectorAll(".navbtn").forEach(x => x.classList.remove("active"));
+      button.classList.add("active");
+      document.querySelectorAll(".page").forEach(page => page.classList.add("hidden"));
+      $(button.dataset.p).classList.remove("hidden");
+    };
+  });
 }
 
-function fillPlayerSelects(){
-  const selectOptions = `
-    <option value="">
-      Выберите игрока
-    </option>
-    ${
-      players.map(player => `
-        <option value="${player.id}">
-          №${player.number} — ${player.name}
-        </option>
-      `).join("")
-    }
+// ============================================================
+// ЗАГРУЗКА ДАННЫХ
+// ============================================================
+
+async function load() {
+  status("Загрузка...", "loading");
+  
+  try {
+    // Загружаем игроков
+    const playersRes = await fetch(`${API_URL}/players`);
+    if (!playersRes.ok) throw new Error('Ошибка загрузки игроков');
+    players = await playersRes.json();
+    
+    // Заполняем выпадающие списки
+    fillPlayerSelects();
+    
+    // Загружаем тренировки
+    const trainingsRes = await fetch(`${API_URL}/trainings`);
+    if (!trainingsRes.ok) throw new Error('Ошибка загрузки тренировок');
+    trainings = await trainingsRes.json();
+    
+    // Загружаем турниры
+    const tournamentsRes = await fetch(`${API_URL}/tournaments`);
+    if (!tournamentsRes.ok) throw new Error('Ошибка загрузки турниров');
+    tournaments = await tournamentsRes.json();
+    
+    // Рендерим всё
+    render();
+    renderRoster();
+    renderTours(tournaments);
+    
+    status("", "");
+  } catch (err) {
+    console.error(err);
+    status("Ошибка: " + err.message, "error");
+    msg("Ошибка загрузки данных");
+  }
+}
+
+// ============================================================
+// ЗАПОЛНЕНИЕ СПИСКОВ ИГРОКОВ
+// ============================================================
+
+function fillPlayerSelects() {
+  const options = `
+    <option value="">Выберите игрока</option>
+    ${players.map(p => `<option value="${p.id}">№${p.number} — ${p.name}</option>`).join("")}
   `;
-  $("bestSelect").innerHTML = selectOptions;
-  $("helperSelect").innerHTML = selectOptions;
+  $("bestSelect").innerHTML = options;
+  $("helperSelect").innerHTML = options;
 }
 
-async function load(){
-  status("", "");
-  $("bestSelect").innerHTML =
-    `<option value="">Загрузка...</option>`;
-  $("helperSelect").innerHTML =
-    `<option value="">Загрузка...</option>`;
+// ============================================================
+// ДОБАВЛЕНИЕ ТРЕНИРОВКИ
+// ============================================================
 
-  const playersResult =
-    await sb
-      .from("players")
-      .select("*")
-      .order("number", {
-        ascending:true
-      });
-
-  if(playersResult.error){
-    console.error(
-      "PLAYERS ERROR:",
-      playersResult.error
-    );
-    $("bestSelect").innerHTML =
-      `<option value="">
-        Ошибка загрузки
-      </option>`;
-    $("helperSelect").innerHTML =
-      `<option value="">
-        Ошибка загрузки
-      </option>`;
-    status(
-      "Ошибка players: " +
-      playersResult.error.message,
-      "error"
-    );
-    msg(
-      "Не удалось загрузить игроков"
-    );
-    return;
-  }
-
-  players =
-    playersResult.data || [];
-  const denis = players.find(p => p.name === "Кирпичев Денис Игоревич");
-  if(denis && Number(denis.number) !== 30){
-    const r = await sb.from("players").update({number:30}).eq("id",denis.id);
-    if(!r.error) denis.number = 30;
-  }
-
-  let chichelev = players.find(p => p.name === "Чичелов Олег Викторович");
-  if(!chichelev){
-    const r = await sb.from("players")
-      .insert({number:33,name:"Чичелов Олег Викторович"})
-      .select().single();
-    if(!r.error && r.data){
-      chichelev = r.data;
-      players.push(chichelev);
-    }else if(r.error){
-      console.error("Ошибка добавления Чичелова:",r.error);
-    }
-  }else if(Number(chichelev.number) !== 33){
-    const r = await sb.from("players").update({number:33}).eq("id",chichelev.id);
-    if(!r.error) chichelev.number = 33;
-  }
-
-  players.sort((a,b)=>Number(a.number)-Number(b.number));
-
-  console.log(
-    "Игроки загружены:",
-    players
-  );
-
-  if(!players.length){
-    $("bestSelect").innerHTML =
-      `<option value="">
-        Игроков нет в базе
-      </option>`;
-    $("helperSelect").innerHTML =
-      `<option value="">
-        Игроков нет в базе
-      </option>`;
-    status(
-      "Таблица players пустая",
-      "error"
-    );
-    msg(
-      "В таблице players нет игроков"
-    );
-    return;
-  }
-
-  fillPlayerSelects();
-  renderRoster();
-
-  const trainingsResult =
-    await sb
-      .from("trainings")
-      .select(`
-        *,
-        best:players!best_player_id(name),
-        helper:players!helper_player_id(name)
-      `)
-      .order(
-        "date",
-        {ascending:false}
-      );
-
-  if(trainingsResult.error){
-    console.error(
-      "TRAININGS ERROR:",
-      trainingsResult.error
-    );
-    trainings = [];
-  }else{
-    trainings =
-      trainingsResult.data || [];
-  }
-
-  render();
-
-  const tournamentsResult =
-    await sb
-      .from("tournaments")
-      .select(`
-        *,
-        mvp:players!mvp_player_id(name)
-      `)
-      .order(
-        "date",
-        {ascending:false}
-      );
-
-  if(tournamentsResult.error){
-    console.error(
-      "TOURNAMENTS ERROR:",
-      tournamentsResult.error
-    );
-    renderTours([]);
-  }else{
-    renderTours(
-      tournamentsResult.data || []
-    );
-  }
-
-  const mediaResult =
-    await sb
-      .from("media")
-      .select("*")
-      .order(
-        "created_at",
-        {ascending:false}
-      );
-
-  if(mediaResult.error){
-    console.error(
-      "MEDIA ERROR:",
-      mediaResult.error
-    );
-    renderMedia([]);
-  }else{
-    renderMedia(
-      mediaResult.data || []
-    );
-  }
-}
-
-$("form").onsubmit =
-async event => {
+$("form").onsubmit = async event => {
   event.preventDefault();
 
-  const best =
-    $("bestSelect").value;
-  const helper =
-    $("helperSelect").value;
+  const best = $("bestSelect").value;
+  const helper = $("helperSelect").value;
 
-  if(!best){
-    msg(
-      "Выберите Лучшего игрока"
-    );
-    $("bestSelect").focus();
-    return;
-  }
-
-  if(!helper){
-    msg(
-      "Выберите Помощника"
-    );
-    $("helperSelect").focus();
-    return;
-  }
+  if (!best) { msg("Выберите Лучшего игрока"); return; }
+  if (!helper) { msg("Выберите Помощника"); return; }
 
   const payload = {
-    date:
-      $("date").value,
-    best_player_id:
-      best,
-    helper_player_id:
-      helper,
-    white_score:
-      Number($("white").value || 0),
-    blue_score:
-      Number($("blue").value || 0),
-    comment:
-      $("comment").value.trim() || null
+    date: $("date").value,
+    best_player_id: best,
+    helper_player_id: helper,
+    white_score: Number($("white").value || 0),
+    blue_score: Number($("blue").value || 0),
+    comment: $("comment").value.trim() || null
   };
 
-  status(
-    "Сохраняем...",
-    "loading"
-  );
+  status("Сохраняем...", "loading");
 
-  const saveResult =
-    await sb
-      .from("trainings")
-      .insert(payload);
-
-  if(saveResult.error){
-    console.error(
-      "SAVE TRAINING ERROR:",
-      saveResult.error
-    );
-    status(
-      "Ошибка: " +
-      saveResult.error.message,
-      "error"
-    );
-    msg(
-      "Ошибка сохранения"
-    );
-    return;
+  try {
+    const res = await fetch(`${API_URL}/trainings`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    
+    if (!res.ok) throw new Error('Ошибка сохранения');
+    
+    event.target.reset();
+    $("bestSelect").value = "";
+    $("helperSelect").value = "";
+    $("white").value = 0;
+    $("blue").value = 0;
+    
+    status("", "");
+    msg("Тренировка добавлена");
+    await load();
+  } catch (err) {
+    status("Ошибка: " + err.message, "error");
+    msg("Ошибка сохранения");
   }
-
-  event.target.reset();
-  $("bestSelect").value = "";
-  $("helperSelect").value = "";
-  $("white").value = 0;
-  $("blue").value = 0;
-  status("", "");
-  msg(
-    "Тренировка добавлена"
-  );
-  await load();
 };
 
-$("tourForm").onsubmit =
-async event => {
+// ============================================================
+// ДОБАВЛЕНИЕ ТУРНИРА
+// ============================================================
+
+$("tourForm").onsubmit = async event => {
   event.preventDefault();
 
-  const saveResult =
-    await sb
-      .from("tournaments")
-      .insert({
-        name:
-          $("tn").value,
-        date:
-          $("td").value,
-        opponent:
-          $("to").value,
-        score:
-          $("ts").value
-      });
+  const payload = {
+    name: $("tn").value,
+    date: $("td").value,
+    opponent: $("to").value,
+    score: $("ts").value
+  };
 
-  if(saveResult.error){
-    console.error(
-      saveResult.error
-    );
-    msg(
-      "Ошибка: " +
-      saveResult.error.message
-    );
-    return;
+  try {
+    const res = await fetch(`${API_URL}/tournaments`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    
+    if (!res.ok) throw new Error('Ошибка сохранения');
+    
+    event.target.reset();
+    msg("Турнир добавлен");
+    await load();
+  } catch (err) {
+    msg("Ошибка: " + err.message);
   }
-
-  event.target.reset();
-  msg(
-    "Турнир добавлен"
-  );
-  await load();
 };
 
-$("mediaForm").onsubmit =
-async event => {
-  event.preventDefault();
+// ============================================================
+// РЕНДЕРИНГ
+// ============================================================
 
-  const file =
-    $("mediaFile").files[0];
+function render() {
+  $("recent").innerHTML = trainings.length ? `
+    <div class="table-wrap">
+    <table>
+      <tr><th>Дата</th><th>Лучший</th><th>Счёт</th></tr>
+      ${trainings.slice(0,6).map(t => `
+        <tr><td>${fmt(t.date)}</td><td>${t.best_name || "—"}</td><td>${t.white_score}:${t.blue_score}</td></tr>
+      `).join("")}
+    </table>
+    </div>` :
+    `<div class="empty">Пока нет тренировок.</div>`;
 
-  if(!file) return;
-
-  const path =
-    Date.now() +
-    "_" +
-    file.name.replace(
-      /[^a-zA-Z0-9._-]/g,
-      "_"
-    );
-
-  const upload =
-    await sb
-      .storage
-      .from("club-media")
-      .upload(
-        path,
-        file,
-        {upsert:false}
-      );
-
-  if(upload.error){
-    console.error(
-      upload.error
-    );
-    msg(
-      "Ошибка загрузки"
-    );
-    return;
-  }
-
-  const publicUrl =
-    sb
-      .storage
-      .from("club-media")
-      .getPublicUrl(path)
-      .data
-      .publicUrl;
-
-  const insert =
-    await sb
-      .from("media")
-      .insert({
-        url:
-          publicUrl,
-        caption:
-          $("mediaCaption").value,
-        type:
-          file.type.startsWith("video")
-            ? "video"
-            : "image"
-      });
-
-  if(insert.error){
-    console.error(
-      insert.error
-    );
-    msg(
-      "Ошибка публикации"
-    );
-    return;
-  }
-
-  event.target.reset();
-  msg(
-    "Медиа добавлено"
-  );
-  await load();
-};
-
-function render(){
-  $("recent").innerHTML =
-    trainings.length ? `
-      <div class="table-wrap">
-      <table>
-        <tr><th>Дата</th><th>Лучший</th><th>Счёт</th></tr>
-        ${trainings.slice(0,6).map(t=>`
-          <tr><td>${fmt(t.date)}</td><td>${t.best?.name||"—"}</td><td>${t.white_score}:${t.blue_score}</td></tr>
-        `).join("")}
-      </table>
-      </div>` :
-      `<div class="empty">Пока нет тренировок.</div>`;
-
-  $("trainings").innerHTML =
-    trainings.length ? `
-      <div class="table-wrap">
-      <table>
+  $("trainings").innerHTML = trainings.length ? `
+    <div class="table-wrap">
+    <table>
+      <tr>
+        <th>Дата</th><th>Лучший</th><th>Помощник</th><th>Счёт</th>
+        <th>Победитель</th><th>Комментарий</th><th>Действия</th>
+      </tr>
+      ${trainings.map(t => {
+        const win = result(t.white_score, t.blue_score);
+        let badgeClass = "badge";
+        if (win === "Белые") badgeClass += " white";
+        else if (win === "Синие") badgeClass += " blue";
+        else badgeClass += " draw";
+        return `
         <tr>
-          <th>Дата</th><th>Лучший</th><th>Помощник</th><th>Счёт</th>
-          <th>Победитель</th><th>Комментарий</th><th>Действия</th>
-        </tr>
-        ${trainings.map(t=>{
-          const win = result(t.white_score,t.blue_score);
-          let badgeClass = "badge";
-          if(win === "Белые") badgeClass += " white";
-          else if(win === "Синие") badgeClass += " blue";
-          else badgeClass += " draw";
-          return `
-          <tr>
-            <td>${fmt(t.date)}</td>
-            <td>${t.best?.name||"—"}</td>
-            <td>${t.helper?.name||"—"}</td>
-            <td>${t.white_score}:${t.blue_score}</td>
-            <td><span class="${badgeClass}">${win}</span></td>
-            <td style="max-width:60px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${t.comment||"—"}</td>
-            <td>
-              <div style="display:flex;gap:4px;flex-wrap:wrap;">
-                <button class="btn small" type="button" onclick="editTraining('${t.id}')">✎</button>
-                <button class="btn small" type="button" style="border-color:#71333d;color:#ff9aa7;" onclick="deleteTraining('${t.id}')">✕</button>
-              </div>
-            </td>
-          </tr>`
-        }).join("")}
-      </table>
-      </div>` :
-      `<div class="empty">Пока нет тренировок.</div>`;
+          <td>${fmt(t.date)}</td>
+          <td>${t.best_name || "—"}</td>
+          <td>${t.helper_name || "—"}</td>
+          <td>${t.white_score}:${t.blue_score}</td>
+          <td><span class="${badgeClass}">${win}</span></td>
+          <td style="max-width:60px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${t.comment || "—"}</td>
+          <td>
+            <div style="display:flex;gap:3px;flex-wrap:wrap;">
+              <button class="btn small" type="button" onclick="editTraining('${t.id}')">✎</button>
+              <button class="btn small" type="button" style="border-color:#71333d;color:#ff9aa7;" onclick="deleteTraining('${t.id}')">✕</button>
+            </div>
+          </td>
+        </tr>`;
+      }).join("")}
+    </table>
+    </div>` :
+    `<div class="empty">Пока нет тренировок.</div>`;
 
-  const statistics=players.map(p=>{
-    const bestCount=trainings.filter(t=>t.best_player_id===p.id).length;
-    const helperCount=trainings.filter(t=>t.helper_player_id===p.id).length;
-    const luckyCount=trainings.filter(t=>t.best_player_id===p.id&&t.helper_player_id===p.id).length;
-    return {...p,bestCount,helperCount,luckyCount,total:bestCount+helperCount+luckyCount};
-  }).sort((a,b)=>b.total-a.total);
+  const statistics = players.map(p => {
+    const bestCount = trainings.filter(t => t.best_player_id === p.id).length;
+    const helperCount = trainings.filter(t => t.helper_player_id === p.id).length;
+    const luckyCount = trainings.filter(t => t.best_player_id === p.id && t.helper_player_id === p.id).length;
+    return { ...p, bestCount, helperCount, luckyCount, total: bestCount + helperCount + luckyCount };
+  }).sort((a,b) => b.total - a.total);
 
-  $("summary").innerHTML="";
-
-  $("statTable").innerHTML=`
+  $("statTable").innerHTML = `
     <div class="table-wrap">
     <table>
       <tr><th>№</th><th>Игрок</th><th>Лучший</th><th>Помощник</th><th>🍀</th><th>Всего</th></tr>
-      ${statistics.map(p=>`
+      ${statistics.map(p => `
         <tr>
           <td>${p.number}</td><td>${p.name}</td><td>${p.bestCount}</td><td>${p.helperCount}</td>
-          <td>${p.luckyCount?`<span class="badge gold">🍀 ${p.luckyCount}</span>`:"0"}</td>
+          <td>${p.luckyCount ? `<span class="badge gold">🍀 ${p.luckyCount}</span>` : "0"}</td>
           <td><b>${p.total}</b></td>
         </tr>
       `).join("")}
@@ -1401,278 +1135,231 @@ function render(){
     </div>`;
 }
 
-async function editTraining(id){
-  const t=trainings.find(x=>x.id===id);
-  if(!t)return;
+// ============================================================
+// РЕДАКТИРОВАНИЕ И УДАЛЕНИЕ
+// ============================================================
 
-  const date=prompt("Дата (ГГГГ-ММ-ДД)",t.date||"");
-  if(date===null)return;
+async function editTraining(id) {
+  const t = trainings.find(x => x.id === id);
+  if (!t) return;
 
-  const bp=players.find(p=>p.id===t.best_player_id);
-  const hp=players.find(p=>p.id===t.helper_player_id);
+  const date = prompt("Дата (ГГГГ-ММ-ДД)", t.date || "");
+  if (date === null) return;
 
-  const bn=prompt("Номер Лучшего",bp?.number??"");
-  if(bn===null)return;
-  const best=players.find(p=>String(p.number)===String(bn).trim());
-  if(!best)return msg("Игрок не найден");
+  const bp = players.find(p => p.id === t.best_player_id);
+  const hp = players.find(p => p.id === t.helper_player_id);
 
-  const hn=prompt("Номер Помощника",hp?.number??"");
-  if(hn===null)return;
-  const helper=players.find(p=>String(p.number)===String(hn).trim());
-  if(!helper)return msg("Игрок не найден");
+  const bn = prompt("Номер Лучшего", bp?.number ?? "");
+  if (bn === null) return;
+  const best = players.find(p => String(p.number) === String(bn).trim());
+  if (!best) return msg("Игрок не найден");
 
-  const white=prompt("Очки Белых",t.white_score??0);
-  if(white===null)return;
-  const blue=prompt("Очки Синих",t.blue_score??0);
-  if(blue===null)return;
-  const comment=prompt("Комментарий",t.comment||"");
-  if(comment===null)return;
+  const hn = prompt("Номер Помощника", hp?.number ?? "");
+  if (hn === null) return;
+  const helper = players.find(p => String(p.number) === String(hn).trim());
+  if (!helper) return msg("Игрок не найден");
 
-  const r=await sb.from("trainings").update({
-    date,
-    best_player_id:best.id,
-    helper_player_id:helper.id,
-    white_score:Number(white)||0,
-    blue_score:Number(blue)||0,
-    comment:comment.trim()||null
-  }).eq("id",id);
+  const white = prompt("Очки Белых", t.white_score ?? 0);
+  if (white === null) return;
+  const blue = prompt("Очки Синих", t.blue_score ?? 0);
+  if (blue === null) return;
+  const comment = prompt("Комментарий", t.comment || "");
+  if (comment === null) return;
 
-  if(r.error){
-    console.error(r.error);
-    return msg("Ошибка: "+r.error.message);
+  try {
+    const res = await fetch(`${API_URL}/trainings/${id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        date,
+        best_player_id: best.id,
+        helper_player_id: helper.id,
+        white_score: Number(white) || 0,
+        blue_score: Number(blue) || 0,
+        comment: comment.trim() || null
+      })
+    });
+    
+    if (!res.ok) throw new Error('Ошибка редактирования');
+    msg("Изменено");
+    await load();
+  } catch (err) {
+    msg("Ошибка: " + err.message);
   }
-  msg("Изменено");
-  await load();
 }
 
-async function deleteTraining(id){
-  if (!id) {
-    msg("Ошибка ID");
-    return;
-  }
+async function deleteTraining(id) {
+  if (!id) { msg("Ошибка ID"); return; }
   
   const t = trainings.find(x => x.id === id);
-  if (!t) {
-    msg("Тренировка не найдена");
-    return;
-  }
+  if (!t) { msg("Тренировка не найдена"); return; }
   
-  const confirmMessage = "Удалить от " + fmt(t.date) + "?\n\n" +
-                        "Лучший: " + (t.best?.name || "—") + "\n" +
-                        "Помощник: " + (t.helper?.name || "—") + "\n" +
-                        "Счёт: " + t.white_score + ":" + t.blue_score + "\n\n" +
-                        "⚠️ Без отмены!";
+  if (!confirm("Удалить от " + fmt(t.date) + "?")) return;
   
-  if (!confirm(confirmMessage)) {
-    return;
-  }
-  
-  const { error, count } = await sb
-    .from("trainings")
-    .delete({ count: 'exact' })
-    .eq("id", id);
-  
-  if (error) {
-    console.error("Ошибка удаления:", error);
-    msg("Ошибка: " + error.message);
-    return;
-  }
-  
-  if (count === 0) {
-    msg("Уже удалена");
-    return;
-  }
-  
-  msg("Удалено");
-  await load();
-}
-
-function renderRoster(){
-  $("roster").innerHTML =
-    players.map(player => `
-      <div class="person">
-        <img
-          class="avatar"
-          src="${player.photo_url || ""}"
-          onerror="this.style.visibility='hidden'"
-        >
-        <b>
-          №${player.number} — ${player.name}
-        </b>
-        <p class="muted">
-          Рост: ${player.height_cm ? player.height_cm + " см" : "—"}
-          <br>
-          Вес: ${player.weight_kg ? player.weight_kg + " кг" : "—"}
-        </p>
-        <button
-          class="btn small"
-          type="button"
-          onclick="editPlayer('${player.id}')"
-        >
-          ✎
-        </button>
-      </div>
-    `).join("");
-}
-
-async function editPlayer(id){
-  const player=players.find(x=>x.id===id);
-  if(!player)return;
-
-  const height=prompt("Рост, см",player.height_cm ?? "");
-  if(height===null)return;
-
-  const weight=prompt("Вес, кг",player.weight_kg ?? "");
-  if(weight===null)return;
-
-  const update=await sb.from("players").update({
-    height_cm:height.trim()===""?null:Number(height),
-    weight_kg:weight.trim()===""?null:Number(weight)
-  }).eq("id",id);
-
-  if(update.error){
-    console.error(update.error);
-    return msg("Ошибка: "+update.error.message);
-  }
-
-  msg("Сохранено");
-
-  if(!confirm("Изменить фото?")){
+  try {
+    const res = await fetch(`${API_URL}/trainings/${id}`, {
+      method: 'DELETE'
+    });
+    
+    if (!res.ok) throw new Error('Ошибка удаления');
+    msg("Удалено");
     await load();
-    return;
+  } catch (err) {
+    msg("Ошибка: " + err.message);
   }
-
-  const input=document.createElement("input");
-  input.type="file";
-  input.accept="image/*";
-
-  input.onchange=async()=>{
-    if(!input.files[0]){
-      await load();
-      return;
-    }
-
-    const file=input.files[0];
-    const path="players/"+id+"_"+Date.now()+"_"+file.name.replace(/[^a-zA-Z0-9._-]/g,"_");
-
-    const upload=await sb.storage.from("player-photos").upload(path,file,{upsert:false});
-    if(upload.error)return msg("Ошибка фото: "+upload.error.message);
-
-    const photo=sb.storage.from("player-photos").getPublicUrl(path).data.publicUrl;
-    const photoUpdate=await sb.from("players").update({photo_url:photo}).eq("id",id);
-
-    if(photoUpdate.error)return msg("Ошибка: "+photoUpdate.error.message);
-
-    msg("Профиль обновлён");
-    await load();
-  };
-
-  input.click();
 }
 
-function renderTours(data){
-  $("tourTable").innerHTML=data.length?`
+// ============================================================
+// СОСТАВ
+// ============================================================
+
+function renderRoster() {
+  $("roster").innerHTML = players.map(player => `
+    <div class="person">
+      <img class="avatar" src="${player.photo_url || ""}" onerror="this.style.visibility='hidden'">
+      <b>№${player.number} — ${player.name}</b>
+      <p class="muted">
+        Рост: ${player.height_cm ? player.height_cm + " см" : "—"}
+        <br>
+        Вес: ${player.weight_kg ? player.weight_kg + " кг" : "—"}
+      </p>
+      <button class="btn small" type="button" onclick="editPlayer('${player.id}')">✎</button>
+    </div>
+  `).join("");
+}
+
+async function editPlayer(id) {
+  const player = players.find(x => x.id === id);
+  if (!player) return;
+
+  const height = prompt("Рост, см", player.height_cm ?? "");
+  if (height === null) return;
+
+  const weight = prompt("Вес, кг", player.weight_kg ?? "");
+  if (weight === null) return;
+
+  try {
+    const res = await fetch(`${API_URL}/players/${id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        height_cm: height.trim() === "" ? null : Number(height),
+        weight_kg: weight.trim() === "" ? null : Number(weight)
+      })
+    });
+    
+    if (!res.ok) throw new Error('Ошибка сохранения');
+    msg("Сохранено");
+    await load();
+  } catch (err) {
+    msg("Ошибка: " + err.message);
+  }
+}
+
+// ============================================================
+// ТУРНИРЫ
+// ============================================================
+
+function renderTours(data) {
+  $("tourTable").innerHTML = data.length ? `
     <div class="table-wrap">
     <table>
       <tr><th>Турнир</th><th>Дата</th><th>Соперник</th><th>Счёт</th><th>MVP</th><th>Действия</th></tr>
-      ${data.map(item=>`
+      ${data.map(item => `
         <tr>
           <td>${item.name}</td>
           <td>${fmt(item.date)}</td>
-          <td>${item.opponent||"—"}</td>
-          <td>${item.score||"—"}</td>
-          <td>${item.mvp?.name||"—"}</td>
+          <td>${item.opponent || "—"}</td>
+          <td>${item.score || "—"}</td>
+          <td>${item.mvp_name || "—"}</td>
           <td>
             <button class="btn small" type="button" onclick="setTournamentMVP('${item.id}')">
-              ${item.mvp?.name?"✎":"+"}
+              ${item.mvp_name ? "✎" : "+"}
             </button>
           </td>
         </tr>
       `).join("")}
     </table>
-    </div>`:
+    </div>` :
     `<div class="empty">Пока нет турниров.</div>`;
 }
 
-async function setTournamentMVP(tournamentId){
-  const list=players.map(p=>`№${p.number} — ${p.name}`).join("\n");
-  const number=prompt("Номер MVP:\n\n"+list);
-  if(number===null)return;
+async function setTournamentMVP(tournamentId) {
+  const list = players.map(p => `№${p.number} — ${p.name}`).join("\n");
+  const number = prompt("Номер MVP:\n\n" + list);
+  if (number === null) return;
 
-  const player=players.find(p=>String(p.number)===String(number).trim());
-  if(!player)return msg("Игрок не найден");
+  const player = players.find(p => String(p.number) === String(number).trim());
+  if (!player) return msg("Игрок не найден");
 
-  const update=await sb.from("tournaments")
-    .update({mvp_player_id:player.id})
-    .eq("id",tournamentId);
-
-  if(update.error){
-    console.error(update.error);
-    return msg("Ошибка: "+update.error.message);
+  try {
+    const res = await fetch(`${API_URL}/tournaments/${tournamentId}/mvp`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ mvp_player_id: player.id })
+    });
+    
+    if (!res.ok) throw new Error('Ошибка назначения MVP');
+    msg("MVP назначен");
+    await load();
+  } catch (err) {
+    msg("Ошибка: " + err.message);
   }
-
-  msg("MVP назначен");
-  await load();
 }
 
-function renderMedia(data){
-  $("mediaGrid").innerHTML =
-    data.length
-      ? data.map(item =>
-          item.type === "video"
-            ? `
-              <video
-                src="${item.url}"
-                controls
-                style="
-                  width:100%;
-                  border-radius:8px;
-                  aspect-ratio:1;
-                  object-fit:cover;
-                "
-              ></video>
-            `
-            : `
-              <img
-                src="${item.url}"
-                alt="${item.caption || "Фото"}"
-                style="width:100%;aspect-ratio:1;object-fit:cover;border-radius:8px;"
-              >
-            `
-        ).join("")
-      : `
-        <div class="empty">
-          Медиа пока нет.
-        </div>
-      `;
+// ============================================================
+// МЕДИА
+// ============================================================
+
+$("mediaForm").onsubmit = async event => {
+  event.preventDefault();
+  
+  const file = $("mediaFile").files[0];
+  if (!file) return;
+
+  const formData = new FormData();
+  formData.append('file', file);
+  formData.append('caption', $("mediaCaption").value);
+
+  try {
+    const res = await fetch(`${API_URL}/media`, {
+      method: 'POST',
+      body: formData
+    });
+    
+    if (!res.ok) throw new Error('Ошибка загрузки');
+    event.target.reset();
+    msg("Медиа добавлено");
+    await load();
+  } catch (err) {
+    msg("Ошибка: " + err.message);
+  }
+};
+
+function renderMedia(data) {
+  $("mediaGrid").innerHTML = data.length ? data.map(item =>
+    item.type === "video" ?
+    `<video src="${item.url}" controls style="width:100%;border-radius:8px;aspect-ratio:1;object-fit:cover;"></video>` :
+    `<img src="${item.url}" alt="${item.caption || "Фото"}" style="width:100%;aspect-ratio:1;object-fit:cover;border-radius:8px;">`
+  ).join("") : `<div class="empty">Медиа пока нет.</div>`;
 }
+
+// ============================================================
+// ЗАПУСК
+// ============================================================
 
 nav();
-$("date").value =
-  new Date()
-    .toISOString()
-    .slice(0,10);
-$("td").value =
-  new Date()
-    .toISOString()
-    .slice(0,10);
+$("date").value = new Date().toISOString().slice(0,10);
+$("td").value = new Date().toISOString().slice(0,10);
 load();
 
 </script>
 
 <script>
-if("serviceWorker" in navigator){
-  window.addEventListener(
-    "load",
-    () => {
-      navigator
-        .serviceWorker
-        .register("./sw.js")
-        .catch(
-          console.error
-        );
-    }
-  );
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("./sw.js").catch(console.error);
+  });
 }
 </script>
 
