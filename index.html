@@ -43,7 +43,7 @@ body{
   margin:0;
   background:linear-gradient(135deg,#080d18,#111a2d);
   color:var(--text);
-  font:15px Arial,sans-serif;
+  font:15px -apple-system, BlinkMacSystemFont, Arial, sans-serif;
   min-height:100vh;
   min-height:100dvh;
   padding-top: env(safe-area-inset-top, 20px);
@@ -62,35 +62,35 @@ textarea{
 }
 
 .app{
-  max-width:1400px;
+  max-width:600px;
   margin:auto;
-  padding:16px;
-  padding-top: calc(env(safe-area-inset-top, 20px) + 10px);
+  padding:12px 12px 80px 12px;
+  padding-top: calc(env(safe-area-inset-top, 20px) + 6px);
 }
 
 .top{
   display:flex;
   justify-content:space-between;
-  gap:15px;
+  gap:10px;
   align-items:center;
-  margin-bottom:18px;
-  padding-top: 10px;
+  margin-bottom:14px;
+  padding-top: 6px;
 }
 
 .brand{
   display:flex;
-  gap:12px;
+  gap:10px;
   align-items:center;
 }
 
 .logo{
-  width:48px;
-  height:48px;
-  border-radius:14px;
+  width:42px;
+  height:42px;
+  border-radius:12px;
   background:linear-gradient(135deg,var(--a),var(--a2));
   display:grid;
   place-items:center;
-  font-size:25px;
+  font-size:22px;
   flex:none;
 }
 
@@ -99,16 +99,17 @@ h1,h2,h3{
 }
 
 h1{
-  font-size:24px;
+  font-size:20px;
 }
 
 .muted{
   color:var(--muted);
+  font-size:13px;
 }
 
 nav{
   display:flex;
-  gap:7px;
+  gap:5px;
   flex-wrap:wrap;
 }
 
@@ -117,9 +118,10 @@ nav{
   border:1px solid var(--line);
   background:#121c31;
   color:var(--text);
-  padding:10px 14px;
-  border-radius:10px;
+  padding:8px 12px;
+  border-radius:8px;
   cursor:pointer;
+  font-size:13px;
 }
 
 .navbtn.active,
@@ -130,7 +132,7 @@ nav{
 
 .navbtn:active,
 .btn:active{
-  transform:scale(.98);
+  transform:scale(.96);
 }
 
 .page.hidden{
@@ -139,27 +141,27 @@ nav{
 
 .grid{
   display:grid;
-  grid-template-columns:360px 1fr;
-  gap:16px;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
 }
 
 .card{
   background:rgba(17,26,45,.96);
   border:1px solid var(--line);
-  border-radius:17px;
-  padding:18px;
+  border-radius:14px;
+  padding:14px;
 }
 
 .form{
   display:grid;
-  gap:13px;
+  gap:10px;
 }
 
 .field label{
   display:block;
   color:var(--muted);
-  font-size:13px;
-  margin-bottom:6px;
+  font-size:12px;
+  margin-bottom:4px;
 }
 
 input,
@@ -169,22 +171,21 @@ textarea{
   background:#0c1426;
   color:var(--text);
   border:1px solid #30405f;
-  border-radius:10px;
-  padding:12px;
+  border-radius:8px;
+  padding:10px 12px;
   outline:none;
-  min-height:46px;
-  font-size:16px;
+  min-height:40px;
+  font-size:15px;
 }
 
 input[type="date"]{
-  min-height:46px;
-  padding:12px;
-  font-size:16px;
+  min-height:40px;
+  padding:10px 12px;
+  font-size:15px;
   -webkit-appearance:none;
   appearance:none;
 }
 
-/* Стили для date input на iPhone */
 input[type="date"]::-webkit-calendar-picker-indicator {
   filter: invert(1);
   opacity:0.6;
@@ -206,7 +207,7 @@ textarea:focus{
 .row{
   display:grid;
   grid-template-columns:1fr 1fr;
-  gap:10px;
+  gap:8px;
 }
 
 .hidden{
@@ -216,24 +217,44 @@ textarea:focus{
 table{
   width:100%;
   border-collapse:collapse;
+  font-size:13px;
 }
 
 th,
 td{
-  padding:11px 9px;
+  padding:8px 6px;
   border-bottom:1px solid var(--line);
   text-align:left;
 }
 
 th{
   color:var(--muted);
-  font-size:12px;
+  font-size:11px;
+  text-transform:uppercase;
+  letter-spacing:0.5px;
 }
 
 .badge{
-  padding:5px 8px;
+  padding:3px 8px;
   border-radius:99px;
   background:#22304c;
+  font-size:12px;
+  display:inline-block;
+}
+
+.badge.blue{
+  background:#1a2a5a;
+  color:#7aafff;
+}
+
+.badge.white{
+  background:#3a3a3a;
+  color:#dddddd;
+}
+
+.badge.draw{
+  background:#3a3a2a;
+  color:#ddddaa;
 }
 
 .gold{
@@ -244,57 +265,64 @@ th{
 .stats{
   display:grid;
   grid-template-columns:repeat(4,1fr);
-  gap:10px;
-  margin-bottom:16px;
+  gap:8px;
+  margin-bottom:12px;
 }
 
 .stat{
   background:var(--card);
   border:1px solid var(--line);
-  border-radius:14px;
-  padding:14px;
+  border-radius:12px;
+  padding:10px 12px;
+  text-align:center;
 }
 
 .stat b{
-  font-size:25px;
+  font-size:22px;
   display:block;
-  margin-top:5px;
+  margin-top:4px;
+}
+
+.stat .label{
+  font-size:11px;
+  color:var(--muted);
 }
 
 .roster{
   display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:12px;
+  grid-template-columns:repeat(2,1fr);
+  gap:10px;
 }
 
 .person{
   background:var(--card);
   border:1px solid var(--line);
-  border-radius:15px;
-  padding:14px;
+  border-radius:12px;
+  padding:12px;
 }
 
 .avatar{
-  width:72px;
-  height:72px;
+  width:60px;
+  height:60px;
   border-radius:50%;
   object-fit:cover;
   background:#263452;
   display:block;
-  margin-bottom:10px;
+  margin-bottom:8px;
 }
 
 .media{
   display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:12px;
+  grid-template-columns:repeat(2,1fr);
+  gap:8px;
 }
 
-.media img{
+.media img,
+.media video{
   width:100%;
   aspect-ratio:1;
   object-fit:cover;
-  border-radius:12px;
+  border-radius:10px;
 }
 
 .toast{
@@ -304,7 +332,7 @@ th{
   max-width:calc(100vw - 32px);
   background:#18243d;
   border:1px solid var(--line);
-  padding:13px 16px;
+  padding:12px 16px;
   border-radius:12px;
   display:none;
   z-index:9999;
@@ -315,30 +343,41 @@ th{
 }
 
 .status{
-  margin-top:12px;
-  padding:10px 12px;
-  border-radius:10px;
+  margin-top:10px;
+  padding:8px 12px;
+  border-radius:8px;
   background:#0c1426;
   border:1px solid var(--line);
-  font-size:13px;
+  font-size:12px;
+  display:none;
 }
 
 .status.ok{
   border-color:#276e59;
   color:#8ce5c5;
+  display:block;
 }
 
 .status.error{
   border-color:#71333d;
   color:#ff9aa7;
+  display:block;
+}
+
+.status.loading{
+  border-color:#3a4a6a;
+  color:#aabbdd;
+  display:block;
 }
 
 .empty{
-  padding:15px;
+  padding:12px;
   color:var(--muted);
+  text-align:center;
+  font-size:13px;
 }
 
-@media(max-width:900px){
+@media(max-width:700px){
   .grid{
     grid-template-columns:1fr;
   }
@@ -347,8 +386,7 @@ th{
     grid-template-columns:1fr 1fr;
   }
 
-  .roster,
-  .media{
+  .roster{
     grid-template-columns:1fr 1fr;
   }
 
@@ -363,45 +401,78 @@ th{
 
   .navbtn{
     flex:1;
+    text-align:center;
+    font-size:12px;
+    padding:6px 8px;
   }
 }
 
-@media(max-width:600px){
+@media(max-width:480px){
   .app{
-    padding:11px;
-    padding-top: calc(env(safe-area-inset-top, 20px) + 10px);
+    padding:8px 8px 70px 8px;
+    padding-top: calc(env(safe-area-inset-top, 20px) + 4px);
   }
 
   .row{
     grid-template-columns:1fr;
   }
 
-  .roster,
-  .media{
+  .roster{
     grid-template-columns:1fr;
   }
 
+  .media{
+    grid-template-columns:1fr 1fr;
+  }
+
   h1{
-    font-size:20px;
+    font-size:17px;
   }
 
   .card{
-    padding:14px;
+    padding:10px 12px;
   }
 
   table{
-    display:block;
-    overflow-x:auto;
-    white-space:nowrap;
+    font-size:12px;
+  }
+
+  th, td{
+    padding:6px 4px;
   }
 
   .stats{
     grid-template-columns:1fr 1fr;
   }
 
+  .stat b{
+    font-size:18px;
+  }
+
+  input, select, textarea{
+    font-size:14px;
+    padding:8px 10px;
+    min-height:36px;
+  }
+
   input[type="date"]{
-    font-size:16px;
-    min-height:46px;
+    font-size:14px;
+    min-height:36px;
+  }
+
+  .logo{
+    width:36px;
+    height:36px;
+    font-size:18px;
+  }
+
+  .brand{
+    gap:8px;
+  }
+
+  .navbtn{
+    font-size:11px;
+    padding:5px 6px;
   }
 }
 </style>
@@ -415,7 +486,7 @@ th{
   <div class="brand">
     <div class="logo">🏀</div>
     <div>
-      <h1>Баскетбольный клуб «5х5»</h1>
+      <h1>5х5</h1>
       <div class="muted">Мастерство не пропьёшь!</div>
     </div>
   </div>
@@ -434,11 +505,11 @@ th{
 
       <h2>Добавить тренировку</h2>
 
-      <p class="muted">
+      <p class="muted" style="font-size:12px;">
         Вход свободный — аккаунт не требуется.
       </p>
 
-      <form id="form" class="form" style="margin-top:16px">
+      <form id="form" class="form" style="margin-top:12px">
 
         <div class="field">
           <label for="date">Дата</label>
@@ -480,7 +551,7 @@ th{
         </div>
         <div class="field">
           <label for="comment">Комментарий <span class="muted">(необязательно)</span></label>
-          <textarea id="comment" rows="3" placeholder="Комментарий к тренировке"></textarea>
+          <textarea id="comment" rows="2" placeholder="Комментарий к тренировке"></textarea>
         </div>
 
 
@@ -534,14 +605,12 @@ th{
       </form>
 
 
-      <div class="status" id="dbStatus">
-        Подключение к базе...
-      </div>
+      <div class="status" id="dbStatus"></div>
 
 
       <p
         class="muted"
-        style="font-size:12px"
+        style="font-size:11px;margin-top:8px;"
       >
         Если Лучший и Помощник совпали —
         автоматически считается «Счастливчик».
@@ -576,7 +645,7 @@ th{
 
     <div
       id="trainings"
-      style="margin-top:14px"
+      style="margin-top:10px"
     ></div>
 
   </div>
@@ -605,7 +674,7 @@ th{
 
     <div
       id="statTable"
-      style="margin-top:14px"
+      style="margin-top:10px"
     ></div>
 
   </div>
@@ -624,7 +693,7 @@ th{
 
     <h2>Состав команды</h2>
 
-    <p class="muted">
+    <p class="muted" style="font-size:12px;">
       У каждого игрока можно заполнить рост,
       вес и фотографию.
     </p>
@@ -632,7 +701,7 @@ th{
     <div
       id="roster"
       class="roster"
-      style="margin-top:15px"
+      style="margin-top:12px"
     ></div>
 
   </div>
@@ -653,14 +722,14 @@ th{
 
       <h2>Добавить медиа</h2>
 
-      <p class="muted">
+      <p class="muted" style="font-size:12px;">
         Фото и видео команды в общей ленте.
       </p>
 
       <form
         id="mediaForm"
         class="form"
-        style="margin-top:15px"
+        style="margin-top:12px"
       >
 
         <input
@@ -691,7 +760,7 @@ th{
       <div
         id="mediaGrid"
         class="media"
-        style="margin-top:15px"
+        style="margin-top:12px"
       ></div>
 
     </div>
@@ -717,7 +786,7 @@ th{
       <form
         id="tourForm"
         class="form"
-        style="margin-top:15px"
+        style="margin-top:12px"
       >
 
         <input
@@ -834,9 +903,9 @@ const fmt = date => {
 
 const result = (white, blue) => {
 
-  if (white > blue) return "Победитель: Белые";
+  if (white > blue) return "Белые";
 
-  if (blue > white) return "Победитель: Синие";
+  if (blue > white) return "Синие";
 
   return "Ничья";
 
@@ -975,9 +1044,7 @@ function fillPlayerSelects(){
 
 async function load(){
 
-  status(
-    "Загружаем игроков из Supabase..."
-  );
+  status("", "");
 
 
   $("bestSelect").innerHTML =
@@ -1103,12 +1170,6 @@ async function load(){
   fillPlayerSelects();
 
   renderRoster();
-
-
-  status(
-    "База подключена",
-    "ok"
-  );
 
 
   /* TRAININGS */
@@ -1278,7 +1339,8 @@ async event => {
 
 
   status(
-    "Сохраняем тренировку..."
+    "Сохраняем тренировку...",
+    "loading"
   );
 
 
@@ -1326,10 +1388,7 @@ async event => {
   $("blue").value = 0;
 
 
-  status(
-    "База подключена",
-    "ok"
-  );
+  status("", "");
 
 
   msg(
@@ -1528,22 +1587,28 @@ function render(){
           <th>Дата</th><th>Лучший</th><th>Помощник</th><th>Счёт</th>
           <th>Победитель</th><th>Комментарий</th><th>Действия</th>
         </tr>
-        ${trainings.map(t=>`
+        ${trainings.map(t=>{
+          const win = result(t.white_score,t.blue_score);
+          let badgeClass = "badge";
+          if(win === "Белые") badgeClass += " white";
+          else if(win === "Синие") badgeClass += " blue";
+          else badgeClass += " draw";
+          return `
           <tr>
             <td>${fmt(t.date)}</td>
             <td>${t.best?.name||"—"}</td>
             <td>${t.helper?.name||"—"}</td>
             <td>${t.white_score}:${t.blue_score}</td>
-            <td><span class="badge">${result(t.white_score,t.blue_score)}</span></td>
+            <td><span class="${badgeClass}">${win}</span></td>
             <td>${t.comment||"—"}</td>
             <td>
-              <div style="display:flex;gap:6px;flex-wrap:wrap">
-                <button class="btn" type="button" onclick="editTraining('${t.id}')">Редактировать</button>
-                <button class="btn" type="button" style="border-color:#71333d;color:#ff9aa7" onclick="deleteTraining('${t.id}')">Удалить</button>
+              <div style="display:flex;gap:4px;flex-wrap:wrap">
+                <button class="btn" type="button" style="font-size:11px;padding:4px 8px;" onclick="editTraining('${t.id}')">✎</button>
+                <button class="btn" type="button" style="font-size:11px;padding:4px 8px;border-color:#71333d;color:#ff9aa7;" onclick="deleteTraining('${t.id}')">✕</button>
               </div>
             </td>
-          </tr>
-        `).join("")}
+          </tr>`
+        }).join("")}
       </table>` :
       `<div class="empty">Пока нет тренировок.</div>`;
 
@@ -1678,13 +1743,13 @@ function renderRoster(){
           onerror="this.style.visibility='hidden'"
         >
 
-        <b>
+        <b style="font-size:13px;">
           №${player.number} —
           ${player.name}
         </b>
 
 
-        <p class="muted">
+        <p class="muted" style="font-size:12px;margin-top:4px;">
 
           Рост:
           ${
@@ -1708,6 +1773,7 @@ function renderRoster(){
         <button
           class="btn"
           type="button"
+          style="font-size:12px;padding:4px 10px;"
           onclick="editPlayer('${player.id}')"
         >
           Изменить
@@ -1797,7 +1863,7 @@ function renderTours(data){
           <td>${item.score||"—"}</td>
           <td>${item.mvp?.name||"Не назначен"}</td>
           <td>
-            <button class="btn" type="button" onclick="setTournamentMVP('${item.id}')">
+            <button class="btn" type="button" style="font-size:11px;padding:4px 8px;" onclick="setTournamentMVP('${item.id}')">
               ${item.mvp?.name?"Изменить MVP":"Назначить MVP"}
             </button>
           </td>
@@ -1848,7 +1914,9 @@ function renderMedia(data){
                 controls
                 style="
                   width:100%;
-                  border-radius:12px
+                  border-radius:10px;
+                  aspect-ratio:1;
+                  object-fit:cover;
                 "
               ></video>
 
@@ -1859,6 +1927,7 @@ function renderMedia(data){
               <img
                 src="${item.url}"
                 alt="${item.caption || "Фото"}"
+                style="width:100%;aspect-ratio:1;object-fit:cover;border-radius:10px;"
               >
 
             `
