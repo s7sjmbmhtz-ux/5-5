@@ -408,24 +408,36 @@ function render() {
     ? `<table><tr><th>Дата</th><th>Лучший</th><th>Помощник</th><th>Счёт</th><th>Победитель</th><th>Комментарий</th><th>Действия</th></tr>${trainings.map(t => `<tr><td>${fmt(t.date)}</td><td>${t.best_name || '—'}</td><td>${t.helper_name || '—'}</td><td>${t.white_score}:${t.blue_score}</td><td><span class="badge">${t.white_score > t.blue_score ? 'Белые' : t.blue_score > t.white_score ? 'Синие' : 'Ничья'}</span></td><td>${t.comment || '—'}</td><td><button class="small" onclick="delTraining('${t.id}')">✕</button></td></tr>`).join('')}</table>` 
     : 'Нет тренировок';
   
-  // Статистика с СЧАСТЛИВЧИКАМИ
+  // ==========================================================
+  // СТАТИСТИКА: ЛУЧШИЙ, ПОМОЩНИК, СЧАСТЛИВЧИК (без суммы)
+  // ==========================================================
   const stats = players.map(p => {
-    // Лучший
     const bestCount = trainings.filter(t => t.best_player_id === p.id).length;
-    // Помощник
     const helperCount = trainings.filter(t => t.helper_player_id === p.id).length;
-    // Счастливчик (когда в одной тренировке = лучший И помощник)
     const luckyCount = trainings.filter(t => t.best_player_id === p.id && t.helper_player_id === p.id).length;
-    return {
-      ...p,
-      bestCount,
-      helperCount,
-      luckyCount,
-      total: bestCount + helperCount + luckyCount
-    };
-  }).sort((a, b) => b.total - a.total);
+    return { ...p, bestCount, helperCount, luckyCount };
+  }).sort((a, b) => (b.bestCount + b.helperCount + b.luckyCount) - (a.bestCount + a.helperCount + a.luckyCount));
   
-  $('statTable').innerHTML = `<table><tr><th>№</th><th>Игрок</th><th>Лучший</th><th>Помощник</th><th>🍀 Счастливчик</th><th>Всего</th></tr>${stats.map(p => `<tr><td>${p.number}</td><td>${p.name}</td><td>${p.bestCount}</td><td>${p.helperCount}</td><td>${p.luckyCount ? `<span class="badge gold">🍀 ${p.luckyCount}</span>` : '0'}</td><td><b>${p.total}</b></td></tr>`).join('')}</table>`;
+  $('statTable').innerHTML = `
+    <table>
+      <tr>
+        <th>№</th>
+        <th>Игрок</th>
+        <th>⭐ Лучший</th>
+        <th>🤝 Помощник</th>
+        <th>🍀 Счастливчик</th>
+      </tr>
+      ${stats.map(p => `
+        <tr>
+          <td>${p.number}</td>
+          <td>${p.name}</td>
+          <td><b>${p.bestCount}</b></td>
+          <td><b>${p.helperCount}</b></td>
+          <td>${p.luckyCount ? `<span class="badge gold">🍀 ${p.luckyCount}</span>` : '0'}</td>
+        </tr>
+      `).join('')}
+    </table>
+  `;
 }
 
 function renderRoster() {
