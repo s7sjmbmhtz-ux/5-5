@@ -14,7 +14,6 @@ button.danger{background:#71333d}
 table{width:100%;font-size:13px;border-collapse:collapse}
 th,td{padding:6px;border-bottom:1px solid #293858;text-align:left}
 .badge{background:#22304c;padding:3px 8px;border-radius:99px;font-size:11px}
-.gold{background:#3a3119;color:#f4c451}
 .nav{display:flex;gap:6px;overflow-x:auto;padding:4px 0}
 .nav button{flex:0 0 auto;background:#121c31;color:#fff;border:1px solid #293858;border-radius:8px;padding:8px 14px;font-size:13px;width:auto}
 .nav button.active{background:#5b8cff;border:0}
@@ -72,68 +71,175 @@ th,td{padding:6px;border-bottom:1px solid #293858;text-align:left}
 <div id="toast" class="toast"></div>
 
 <script>
-const DB = 'http://193.32.188.93:3000';
-let players=[], trainings=[], tournaments=[];
+// ============================================================
+// СПИСОК ИГРОКОВ (ВШИТ В КОД)
+// ============================================================
+const STATIC_PLAYERS = [
+  {id:'p1', number:4, name:'Угринов Дмитрий Аркадьевич'},
+  {id:'p2', number:5, name:'Мостовой Анатолий Владимирович'},
+  {id:'p3', number:7, name:'Шкапенко Данил Алексеевич'},
+  {id:'p4', number:8, name:'Шкапенко Артем Алексеевич'},
+  {id:'p5', number:11, name:'Хасанов Рамиль Назипович'},
+  {id:'p6', number:12, name:'Невоструев Михаил Алексеевич'},
+  {id:'p7', number:13, name:'Коваленко Виктор Грегорьевич'},
+  {id:'p8', number:17, name:'Косачев Дмитрий Николаевич'},
+  {id:'p9', number:18, name:'Кузнецов Олег Владимирович'},
+  {id:'p10', number:19, name:'Мелкомуков Григорий Игнатьевич'},
+  {id:'p11', number:20, name:'Шкапенко Алексей Алексеевич'},
+  {id:'p12', number:22, name:'Оглезнев Александр Валерьевич'},
+  {id:'p13', number:23, name:'Кицман Олег Всеволодович'},
+  {id:'p14', number:24, name:'Санников Андрей Александрович'},
+  {id:'p15', number:25, name:'Косачев Алексей Николаевич'},
+  {id:'p16', number:27, name:'Куртаев Алексей Александрович'},
+  {id:'p17', number:30, name:'Кирпичев Денис Игоревич'},
+  {id:'p18', number:33, name:'Чичелов Олег Викторович'},
+  {id:'p19', number:47, name:'Абашев Вячеслав Александрович'},
+  {id:'p20', number:59, name:'Килин Анатолий Сергеевич'}
+];
 
-const $=id=>document.getElementById(id);
-const msg=t=>{const a=$('toast');a.textContent=t;a.style.display='block';setTimeout(()=>a.style.display='none',3000)};
-const fmt=d=>d?new Date(d+'T00:00:00').toLocaleDateString('ru-RU'):'—';
+// ============================================================
+// РАБОТА С LOCALSTORAGE (ХРАНЕНИЕ НА ТЕЛЕФОНЕ)
+// ============================================================
+function loadData() {
+  try {
+    const data = JSON.parse(localStorage.getItem('basketball_data'));
+    if (data) return data;
+  } catch (e) {}
+  return { trainings: [], tournaments: [] };
+}
 
-function nav(){
-  const items=[['input','Добавить'],['training','Тренировки'],['stats','Статистика'],['players','Состав'],['media','Медиа'],['tournaments','Турниры']];
-  $('nav').innerHTML=items.map(([id,name],i)=>`<button class="${i===0?'active':''}" data-p="${id}">${name}</button>`).join('');
-  document.querySelectorAll('.nav button').forEach(b=>{
-    b.onclick=()=>{
-      document.querySelectorAll('.nav button').forEach(x=>x.classList.remove('active'));
+function saveData() {
+  localStorage.setItem('basketball_data', JSON.stringify({ trainings, tournaments }));
+}
+
+// ============================================================
+// ПЕРЕМЕННЫЕ
+// ============================================================
+let players = STATIC_PLAYERS;
+let trainings = [];
+let tournaments = [];
+
+// Загружаем данные из localStorage
+const saved = loadData();
+trainings = saved.trainings || [];
+tournaments = saved.tournaments || [];
+
+const $ = id => document.getElementById(id);
+const msg = t => { const a = $('toast'); a.textContent = t; a.style.display = 'block'; setTimeout(() => a.style.display = 'none', 3000); };
+const fmt = d => d ? new Date(d + 'T00:00:00').toLocaleDateString('ru-RU') : '—';
+const uid = () => Date.now().toString(36) + Math.random().toString(36).substr(2, 5);
+
+// ============================================================
+// НАВИГАЦИЯ
+// ============================================================
+function nav() {
+  const items = [['input', 'Добавить'], ['training', 'Тренировки'], ['stats', 'Статистика'], ['players', 'Состав'], ['media', 'Медиа'], ['tournaments', 'Турниры']];
+  $('nav').innerHTML = items.map(([id, name], i) => `<button class="${i === 0 ? 'active' : ''}" data-p="${id}">${name}</button>`).join('');
+  document.querySelectorAll('.nav button').forEach(b => {
+    b.onclick = () => {
+      document.querySelectorAll('.nav button').forEach(x => x.classList.remove('active'));
       b.classList.add('active');
-      document.querySelectorAll('.page').forEach(p=>p.classList.add('hidden'));
+      document.querySelectorAll('.page').forEach(p => p.classList.add('hidden'));
       $(b.dataset.p).classList.remove('hidden');
-    }
+    };
   });
 }
 
-async function load(){
-  try{
-    const pr=await fetch(DB+'/players'); players=await pr.json();
-    const opts=players.map(p=>`<option value="${p.id}">№${p.number} — ${p.name}</option>`).join('');
-    $('bestSelect').innerHTML='<option value="">Выберите</option>'+opts;
-    $('helperSelect').innerHTML='<option value="">Выберите</option>'+opts;
-    const tr=await fetch(DB+'/trainings'); trainings=await tr.json();
-    const to=await fetch(DB+'/tournaments'); tournaments=await to.json();
-    render();
-    $('status').textContent='✅ Готово';
-  }catch(e){
-    $('status').textContent='❌ Ошибка: '+e.message;
-    msg('Ошибка загрузки');
-  }
+// ============================================================
+// ЗАГРУЗКА
+// ============================================================
+function load() {
+  fillPlayerSelects();
+  render();
+  renderRoster();
+  renderTours();
+  $('status').textContent = '✅ Локальный режим (данные на телефоне)';
+  $('status').style.color = '#8ce5c5';
 }
 
-function render(){
-  $('recent').innerHTML=trainings.length?`<table><tr><th>Дата</th><th>Лучший</th><th>Счёт</th></tr>${trainings.slice(0,6).map(t=>`<tr><td>${fmt(t.date)}</td><td>${t.best_name||'—'}</td><td>${t.white_score}:${t.blue_score}</td></tr>`).join('')}</table>`:'Нет тренировок';
-  $('trainings').innerHTML=trainings.length?`<table><tr><th>Дата</th><th>Лучший</th><th>Помощник</th><th>Счёт</th><th>Победитель</th><th>Действия</th></tr>${trainings.map(t=>`<tr><td>${fmt(t.date)}</td><td>${t.best_name||'—'}</td><td>${t.helper_name||'—'}</td><td>${t.white_score}:${t.blue_score}</td><td><span class="badge">${t.white_score>t.blue_score?'Белые':t.blue_score>t.white_score?'Синие':'Ничья'}</span></td><td><button onclick="del('${t.id}')">✕</button></td></tr>`).join('')}</table>`:'Нет тренировок';
-  const stats=players.map(p=>({...p,best:trainings.filter(t=>t.best_player_id===p.id).length,helper:trainings.filter(t=>t.helper_player_id===p.id).length,total:trainings.filter(t=>t.best_player_id===p.id||t.helper_player_id===p.id).length})).sort((a,b)=>b.total-a.total);
-  $('statTable').innerHTML=`<table><tr><th>№</th><th>Игрок</th><th>Лучший</th><th>Помощник</th><th>Всего</th></tr>${stats.map(p=>`<tr><td>${p.number}</td><td>${p.name}</td><td>${p.best}</td><td>${p.helper}</td><td><b>${p.total}</b></td></tr>`).join('')}</table>`;
-  $('roster').innerHTML=players.map(p=>`<div><b>№${p.number}</b> ${p.name}</div>`).join('');
+function fillPlayerSelects() {
+  const opts = players.map(p => `<option value="${p.id}">№${p.number} — ${p.name}</option>`).join('');
+  $('bestSelect').innerHTML = '<option value="">Выберите</option>' + opts;
+  $('helperSelect').innerHTML = '<option value="">Выберите</option>' + opts;
 }
 
-async function del(id){
-  if(!confirm('Удалить?'))return;
-  await fetch(DB+'/trainings/'+id,{method:'DELETE'});
-  msg('Удалено');
-  await load();
-}
-
-$('form').onsubmit=async e=>{
+// ============================================================
+// ДОБАВЛЕНИЕ ТРЕНИРОВКИ
+// ============================================================
+$('form').onsubmit = e => {
   e.preventDefault();
-  const payload={date:$('date').value,best_player_id:$('bestSelect').value,helper_player_id:$('helperSelect').value,white_score:Number($('white').value),blue_score:Number($('blue').value),comment:$('comment').value};
-  await fetch(DB+'/trainings',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
-  msg('Добавлено');
-  await load();
+  
+  const best = $('bestSelect').value;
+  const helper = $('helperSelect').value;
+  if (!best || !helper) {
+    msg('Выберите игроков');
+    return;
+  }
+  
+  const training = {
+    id: uid(),
+    date: $('date').value,
+    best_player_id: best,
+    helper_player_id: helper,
+    white_score: Number($('white').value) || 0,
+    blue_score: Number($('blue').value) || 0,
+    comment: $('comment').value || '',
+    best_name: players.find(p => p.id === best)?.name || '',
+    helper_name: players.find(p => p.id === helper)?.name || ''
+  };
+  
+  trainings.unshift(training);
+  saveData();
+  msg('✅ Тренировка добавлена (локально)');
   $('form').reset();
+  render();
 };
 
+// ============================================================
+// УДАЛЕНИЕ
+// ============================================================
+function del(id) {
+  if (!confirm('Удалить тренировку?')) return;
+  trainings = trainings.filter(t => t.id !== id);
+  saveData();
+  msg('Удалено');
+  render();
+}
+
+// ============================================================
+// РЕНДЕРИНГ
+// ============================================================
+function render() {
+  // Последние
+  $('recent').innerHTML = trainings.length ? `<table><tr><th>Дата</th><th>Лучший</th><th>Счёт</th></tr>${trainings.slice(0, 6).map(t => `<tr><td>${fmt(t.date)}</td><td>${t.best_name || '—'}</td><td>${t.white_score}:${t.blue_score}</td></tr>`).join('')}</table>` : 'Нет тренировок';
+  
+  // Все тренировки
+  $('trainings').innerHTML = trainings.length ? `<table><tr><th>Дата</th><th>Лучший</th><th>Помощник</th><th>Счёт</th><th>Победитель</th><th>Действия</th></tr>${trainings.map(t => `<tr><td>${fmt(t.date)}</td><td>${t.best_name || '—'}</td><td>${t.helper_name || '—'}</td><td>${t.white_score}:${t.blue_score}</td><td><span class="badge">${t.white_score > t.blue_score ? 'Белые' : t.blue_score > t.white_score ? 'Синие' : 'Ничья'}</span></td><td><button onclick="del('${t.id}')">✕</button></td></tr>`).join('')}</table>` : 'Нет тренировок';
+  
+  // Статистика
+  const stats = players.map(p => ({
+    ...p,
+    best: trainings.filter(t => t.best_player_id === p.id).length,
+    helper: trainings.filter(t => t.helper_player_id === p.id).length,
+    total: trainings.filter(t => t.best_player_id === p.id || t.helper_player_id === p.id).length
+  })).sort((a, b) => b.total - a.total);
+  
+  $('statTable').innerHTML = `<table><tr><th>№</th><th>Игрок</th><th>Лучший</th><th>Помощник</th><th>Всего</th></tr>${stats.map(p => `<tr><td>${p.number}</td><td>${p.name}</td><td>${p.best}</td><td>${p.helper}</td><td><b>${p.total}</b></td></tr>`).join('')}</table>`;
+}
+
+function renderRoster() {
+  $('roster').innerHTML = players.map(p => `<div><b>№${p.number}</b> ${p.name}</div>`).join('');
+}
+
+function renderTours() {
+  $('tourTable').innerHTML = tournaments.length ? `<table><tr><th>Название</th><th>Дата</th><th>Соперник</th><th>Счёт</th><th>MVP</th></tr>${tournaments.map(t => `<tr><td>${t.name}</td><td>${fmt(t.date)}</td><td>${t.opponent || '—'}</td><td>${t.score || '—'}</td><td>${t.mvp || '—'}</td></tr>`).join('')}</table>` : 'Нет турниров';
+}
+
+// ============================================================
+// ЗАПУСК
+// ============================================================
 nav();
-$('date').value=new Date().toISOString().slice(0,10);
+$('date').value = new Date().toISOString().slice(0, 10);
 load();
 </script>
 </body>
