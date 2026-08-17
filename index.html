@@ -127,12 +127,18 @@ input, select, textarea {
   box-sizing: border-box;
   transition: background 0.25s, color 0.25s, border 0.25s;
   min-width: 0;
+  display: block;
 }
 input[type="date"] {
   max-width: 100%;
   min-width: 0;
   width: 100%;
   box-sizing: border-box;
+  -webkit-appearance: none;
+  appearance: none;
+}
+input[type="number"] {
+  width: 100%;
 }
 button {
   background: var(--btn-bg);
@@ -311,6 +317,23 @@ th { color: var(--muted); font-weight: 600; }
   background: var(--btn-bg);
   border-color: var(--btn-bg);
 }
+
+/* ===== ФОРМА ===== */
+.form-group {
+  margin-bottom: 8px;
+}
+.form-group label {
+  font-weight: 600;
+  color: var(--muted);
+  font-size: 0.9em;
+  display: block;
+  margin-bottom: 2px;
+}
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
 </style>
 </head>
 <body>
@@ -337,28 +360,37 @@ th { color: var(--muted); font-weight: 600; }
     <div class="card">
       <h3>Добавить тренировку</h3>
       <form id="form">
-        <label style="font-weight:600;color:var(--muted);font-size:0.9em;display:block;">Дата</label>
-        <input id="date" type="date" required style="max-width:100%;">
+        <div class="form-group">
+          <label for="date">Дата</label>
+          <input id="date" type="date" required>
+        </div>
         
-        <label style="font-weight:600;color:var(--muted);font-size:0.9em;margin-top:8px;display:block;">Лучший</label>
-        <select id="bestSelect"><option>Загрузка...</option></select>
+        <div class="form-group">
+          <label for="bestSelect">Лучший</label>
+          <select id="bestSelect"><option>Загрузка...</option></select>
+        </div>
         
-        <label style="font-weight:600;color:var(--muted);font-size:0.9em;margin-top:8px;display:block;">Помощник</label>
-        <select id="helperSelect"><option>Загрузка...</option></select>
+        <div class="form-group">
+          <label for="helperSelect">Помощник</label>
+          <select id="helperSelect"><option>Загрузка...</option></select>
+        </div>
         
-        <label style="font-weight:600;color:var(--muted);font-size:0.9em;margin-top:8px;display:block;">Комментарий</label>
-        <textarea id="comment" placeholder="Комментарий"></textarea>
+        <div class="form-group">
+          <label for="comment">Комментарий</label>
+          <textarea id="comment" placeholder="Комментарий"></textarea>
+        </div>
         
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:4px;">
-          <div>
-            <label style="font-weight:600;color:var(--muted);font-size:0.9em;display:block;">Белые</label>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="white">Белые</label>
             <input id="white" type="number" placeholder="Белые" value="0">
           </div>
-          <div>
-            <label style="font-weight:600;color:var(--muted);font-size:0.9em;display:block;">Синие</label>
+          <div class="form-group">
+            <label for="blue">Синие</label>
             <input id="blue" type="number" placeholder="Синие" value="0">
           </div>
         </div>
+        
         <button type="submit">Добавить</button>
       </form>
     </div>
