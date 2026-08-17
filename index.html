@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
 <head>
 <meta charset="utf-8">
@@ -7,15 +7,15 @@
 <style>
 body{background:#0b1220;color:#fff;font:16px sans-serif;padding:10px;max-width:480px;margin:auto}
 .card{background:#111a2d;border-radius:12px;padding:14px;margin-bottom:10px;border:1px solid #293858}
-input,select,textarea{width:100%;background:#0c1426;color:#fff;border:1px solid #30405f;border-radius:8px;padding:10px;font-size:16px;margin:4px 0}
-button{background:#5b8cff;color:#fff;border:0;border-radius:8px;padding:12px;font-size:16px;font-weight:bold;width:100%;cursor:pointer}
+input,select,textarea{width:100%;background:#0c1426;color:#fff;border:1px solid #30405f;border-radius:8px;padding:10px;font-size:16px;margin:4px 0;box-sizing:border-box}
+button{background:#5b8cff;color:#fff;border:0;border-radius:8px;padding:12px;font-size:16px;font-weight:bold;width:100%;cursor:pointer;margin:4px 0}
 button.danger{background:#71333d}
 .hidden{display:none}
 table{width:100%;font-size:13px;border-collapse:collapse}
 th,td{padding:6px;border-bottom:1px solid #293858;text-align:left}
 .badge{background:#22304c;padding:3px 8px;border-radius:99px;font-size:11px}
 .nav{display:flex;gap:6px;overflow-x:auto;padding:4px 0}
-.nav button{flex:0 0 auto;background:#121c31;color:#fff;border:1px solid #293858;border-radius:8px;padding:8px 14px;font-size:13px;width:auto}
+.nav button{flex:0 0 auto;background:#121c31;color:#fff;border:1px solid #293858;border-radius:8px;padding:8px 14px;font-size:13px;width:auto;cursor:pointer}
 .nav button.active{background:#5b8cff;border:0}
 .toast{position:fixed;bottom:20px;left:20px;right:20px;background:#18243d;padding:12px;border-radius:10px;display:none;z-index:999}
 </style>
@@ -28,6 +28,7 @@ th,td{padding:6px;border-bottom:1px solid #293858;text-align:left}
   
   <div class="nav" id="nav"></div>
   
+  <!-- ДОБАВИТЬ ТРЕНИРОВКУ -->
   <div id="input" class="page">
     <div class="card">
       <h3>Добавить тренировку</h3>
@@ -47,24 +48,47 @@ th,td{padding:6px;border-bottom:1px solid #293858;text-align:left}
     <div class="card"><h3>Последние</h3><div id="recent"></div></div>
   </div>
 
+  <!-- ТРЕНИРОВКИ -->
   <div id="training" class="page hidden">
     <div class="card"><h3>Все тренировки</h3><div id="trainings"></div></div>
   </div>
 
+  <!-- СТАТИСТИКА -->
   <div id="stats" class="page hidden">
     <div class="card"><h3>Статистика</h3><div id="statTable"></div></div>
   </div>
 
+  <!-- СОСТАВ -->
   <div id="players" class="page hidden">
     <div class="card"><h3>Состав</h3><div id="roster" style="display:grid;grid-template-columns:1fr 1fr;gap:8px"></div></div>
   </div>
 
+  <!-- МЕДИА -->
   <div id="media" class="page hidden">
-    <div class="card"><h3>Медиа</h3><div id="mediaGrid" style="display:grid;grid-template-columns:1fr 1fr;gap:6px"></div></div>
+    <div class="card">
+      <h3>Добавить медиа</h3>
+      <form id="mediaForm">
+        <input id="mediaFile" type="file" accept="image/*,video/*" required>
+        <input id="mediaCaption" placeholder="Подпись">
+        <button type="submit">Опубликовать</button>
+      </form>
+      <div id="mediaGrid" style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px"></div>
+    </div>
   </div>
 
+  <!-- ТУРНИРЫ -->
   <div id="tournaments" class="page hidden">
-    <div class="card"><h3>Турниры</h3><div id="tourTable"></div></div>
+    <div class="card">
+      <h3>Добавить турнир</h3>
+      <form id="tourForm">
+        <input id="tn" placeholder="Название турнира" required>
+        <input id="td" type="date" required>
+        <input id="to" placeholder="Соперник">
+        <input id="ts" placeholder="Счёт (например, 65:58)">
+        <button type="submit">Добавить турнир</button>
+      </form>
+      <div id="tourTable" style="margin-top:10px"></div>
+    </div>
   </div>
 </div>
 
@@ -72,69 +96,42 @@ th,td{padding:6px;border-bottom:1px solid #293858;text-align:left}
 
 <script>
 // ============================================================
-// СПИСОК ИГРОКОВ (ВШИТ В КОД)
+// 1. ПОДКЛЮЧЕНИЕ К API (РАБОТАЕТ ЧЕРЕЗ МОЙ СЕРВЕР)
 // ============================================================
-const STATIC_PLAYERS = [
-  {id:'p1', number:4, name:'Угринов Дмитрий Аркадьевич'},
-  {id:'p2', number:5, name:'Мостовой Анатолий Владимирович'},
-  {id:'p3', number:7, name:'Шкапенко Данил Алексеевич'},
-  {id:'p4', number:8, name:'Шкапенко Артем Алексеевич'},
-  {id:'p5', number:11, name:'Хасанов Рамиль Назипович'},
-  {id:'p6', number:12, name:'Невоструев Михаил Алексеевич'},
-  {id:'p7', number:13, name:'Коваленко Виктор Грегорьевич'},
-  {id:'p8', number:17, name:'Косачев Дмитрий Николаевич'},
-  {id:'p9', number:18, name:'Кузнецов Олег Владимирович'},
-  {id:'p10', number:19, name:'Мелкомуков Григорий Игнатьевич'},
-  {id:'p11', number:20, name:'Шкапенко Алексей Алексеевич'},
-  {id:'p12', number:22, name:'Оглезнев Александр Валерьевич'},
-  {id:'p13', number:23, name:'Кицман Олег Всеволодович'},
-  {id:'p14', number:24, name:'Санников Андрей Александрович'},
-  {id:'p15', number:25, name:'Косачев Алексей Николаевич'},
-  {id:'p16', number:27, name:'Куртаев Алексей Александрович'},
-  {id:'p17', number:30, name:'Кирпичев Денис Игоревич'},
-  {id:'p18', number:33, name:'Чичелов Олег Викторович'},
-  {id:'p19', number:47, name:'Абашев Вячеслав Александрович'},
-  {id:'p20', number:59, name:'Килин Анатолий Сергеевич'}
-];
+const API_URL = 'https://5x5-api.xyz';
 
 // ============================================================
-// РАБОТА С LOCALSTORAGE (ХРАНЕНИЕ НА ТЕЛЕФОНЕ)
+// 2. ДАННЫЕ
 // ============================================================
-function loadData() {
-  try {
-    const data = JSON.parse(localStorage.getItem('basketball_data'));
-    if (data) return data;
-  } catch (e) {}
-  return { trainings: [], tournaments: [] };
-}
-
-function saveData() {
-  localStorage.setItem('basketball_data', JSON.stringify({ trainings, tournaments }));
-}
-
-// ============================================================
-// ПЕРЕМЕННЫЕ
-// ============================================================
-let players = STATIC_PLAYERS;
+let players = [];
 let trainings = [];
 let tournaments = [];
+let media = [];
+let apiOnline = false;
 
-// Загружаем данные из localStorage
-const saved = loadData();
-trainings = saved.trainings || [];
-tournaments = saved.tournaments || [];
-
+// ============================================================
+// 3. ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ
+// ============================================================
 const $ = id => document.getElementById(id);
 const msg = t => { const a = $('toast'); a.textContent = t; a.style.display = 'block'; setTimeout(() => a.style.display = 'none', 3000); };
 const fmt = d => d ? new Date(d + 'T00:00:00').toLocaleDateString('ru-RU') : '—';
 const uid = () => Date.now().toString(36) + Math.random().toString(36).substr(2, 5);
 
 // ============================================================
-// НАВИГАЦИЯ
+// 4. НАВИГАЦИЯ
 // ============================================================
 function nav() {
-  const items = [['input', 'Добавить'], ['training', 'Тренировки'], ['stats', 'Статистика'], ['players', 'Состав'], ['media', 'Медиа'], ['tournaments', 'Турниры']];
-  $('nav').innerHTML = items.map(([id, name], i) => `<button class="${i === 0 ? 'active' : ''}" data-p="${id}">${name}</button>`).join('');
+  const items = [
+    ['input', 'Добавить'],
+    ['training', 'Тренировки'],
+    ['stats', 'Статистика'],
+    ['players', 'Состав'],
+    ['media', 'Медиа'],
+    ['tournaments', 'Турниры']
+  ];
+  $('nav').innerHTML = items.map(([id, name], i) => 
+    `<button class="${i === 0 ? 'active' : ''}" data-p="${id}">${name}</button>`
+  ).join('');
   document.querySelectorAll('.nav button').forEach(b => {
     b.onclick = () => {
       document.querySelectorAll('.nav button').forEach(x => x.classList.remove('active'));
@@ -146,15 +143,53 @@ function nav() {
 }
 
 // ============================================================
-// ЗАГРУЗКА
+// 5. ЗАГРУЗКА ДАННЫХ С СЕРВЕРА
 // ============================================================
-function load() {
+async function load() {
+  $('status').textContent = '⏳ Загрузка...';
+  
+  try {
+    // Проверяем API
+    const test = await fetch(API_URL + '/players', { signal: AbortSignal.timeout(5000) });
+    if (!test.ok) throw new Error('API не отвечает');
+    
+    // Загружаем игроков
+    const pr = await fetch(API_URL + '/players');
+    players = await pr.json();
+    if (!players || !players.length) throw new Error('Нет игроков');
+    
+    // Загружаем тренировки
+    const tr = await fetch(API_URL + '/trainings');
+    trainings = await tr.json();
+    
+    // Загружаем турниры
+    const to = await fetch(API_URL + '/tournaments');
+    tournaments = await to.json();
+    
+    // Загружаем медиа
+    const mr = await fetch(API_URL + '/media');
+    media = await mr.json();
+    
+    apiOnline = true;
+    $('status').textContent = '✅ Онлайн (данные с сервера)';
+    $('status').style.color = '#8ce5c5';
+    
+  } catch (err) {
+    apiOnline = false;
+    $('status').textContent = '❌ Ошибка: ' + err.message;
+    $('status').style.color = '#ff9aa7';
+    msg('⚠️ Не удалось загрузить данные с сервера');
+    players = [];
+    trainings = [];
+    tournaments = [];
+    media = [];
+  }
+  
   fillPlayerSelects();
   render();
   renderRoster();
+  renderMedia();
   renderTours();
-  $('status').textContent = '✅ Локальный режим (данные на телефоне)';
-  $('status').style.color = '#8ce5c5';
 }
 
 function fillPlayerSelects() {
@@ -164,57 +199,166 @@ function fillPlayerSelects() {
 }
 
 // ============================================================
-// ДОБАВЛЕНИЕ ТРЕНИРОВКИ
+// 6. ДОБАВЛЕНИЕ ТРЕНИРОВКИ
 // ============================================================
-$('form').onsubmit = e => {
+$('form').onsubmit = async e => {
   e.preventDefault();
   
-  const best = $('bestSelect').value;
-  const helper = $('helperSelect').value;
-  if (!best || !helper) {
-    msg('Выберите игроков');
+  if (!apiOnline) {
+    msg('❌ Сервер недоступен');
     return;
   }
   
-  const training = {
-    id: uid(),
+  const best = $('bestSelect').value;
+  const helper = $('helperSelect').value;
+  if (!best || !helper) { msg('Выберите игроков'); return; }
+  
+  const payload = {
     date: $('date').value,
     best_player_id: best,
     helper_player_id: helper,
     white_score: Number($('white').value) || 0,
     blue_score: Number($('blue').value) || 0,
-    comment: $('comment').value || '',
-    best_name: players.find(p => p.id === best)?.name || '',
-    helper_name: players.find(p => p.id === helper)?.name || ''
+    comment: $('comment').value || ''
   };
   
-  trainings.unshift(training);
-  saveData();
-  msg('✅ Тренировка добавлена (локально)');
-  $('form').reset();
-  render();
+  try {
+    const res = await fetch(API_URL + '/trainings', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    if (!res.ok) throw new Error('Ошибка');
+    msg('✅ Тренировка добавлена');
+    $('form').reset();
+    await load();
+  } catch (err) {
+    msg('❌ Ошибка: ' + err.message);
+  }
 };
 
 // ============================================================
-// УДАЛЕНИЕ
+// 7. УДАЛЕНИЕ ТРЕНИРОВКИ
 // ============================================================
-function del(id) {
+async function delTraining(id) {
+  if (!apiOnline) { msg('❌ Сервер недоступен'); return; }
   if (!confirm('Удалить тренировку?')) return;
-  trainings = trainings.filter(t => t.id !== id);
-  saveData();
-  msg('Удалено');
-  render();
+  try {
+    await fetch(API_URL + '/trainings/' + id, { method: 'DELETE' });
+    msg('Удалено');
+    await load();
+  } catch (err) {
+    msg('Ошибка: ' + err.message);
+  }
 }
 
 // ============================================================
-// РЕНДЕРИНГ
+// 8. РЕДАКТИРОВАНИЕ ИГРОКА (рост/вес)
+// ============================================================
+async function editPlayer(id) {
+  if (!apiOnline) { msg('❌ Сервер недоступен'); return; }
+  
+  const p = players.find(x => x.id === id);
+  if (!p) return;
+  
+  const h = prompt('Рост, см (оставьте пустым, чтобы удалить)', p.height_cm ?? '');
+  if (h === null) return;
+  const w = prompt('Вес, кг (оставьте пустым, чтобы удалить)', p.weight_kg ?? '');
+  if (w === null) return;
+  
+  try {
+    await fetch(API_URL + '/players/' + id, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        height_cm: h.trim() === '' ? null : Number(h),
+        weight_kg: w.trim() === '' ? null : Number(w)
+      })
+    });
+    msg('✅ Данные сохранены');
+    await load();
+  } catch (err) {
+    msg('❌ Ошибка: ' + err.message);
+  }
+}
+
+// ============================================================
+// 9. ДОБАВЛЕНИЕ МЕДИА
+// ============================================================
+$('mediaForm').onsubmit = async e => {
+  e.preventDefault();
+  
+  if (!apiOnline) { msg('❌ Сервер недоступен'); return; }
+  
+  const fileInput = $('mediaFile');
+  const caption = $('mediaCaption').value || '';
+  
+  if (!fileInput.files || !fileInput.files[0]) {
+    msg('Выберите файл');
+    return;
+  }
+  
+  const formData = new FormData();
+  formData.append('file', fileInput.files[0]);
+  formData.append('caption', caption);
+  
+  try {
+    const res = await fetch(API_URL + '/media', {
+      method: 'POST',
+      body: formData
+    });
+    if (!res.ok) throw new Error('Ошибка');
+    msg('✅ Медиа добавлено');
+    $('mediaForm').reset();
+    await load();
+  } catch (err) {
+    msg('❌ Ошибка: ' + err.message);
+  }
+};
+
+// ============================================================
+// 10. ДОБАВЛЕНИЕ ТУРНИРА
+// ============================================================
+$('tourForm').onsubmit = async e => {
+  e.preventDefault();
+  
+  if (!apiOnline) { msg('❌ Сервер недоступен'); return; }
+  
+  const name = $('tn').value.trim();
+  const date = $('td').value;
+  const opponent = $('to').value.trim();
+  const score = $('ts').value.trim();
+  
+  if (!name || !date) { msg('Заполните название и дату'); return; }
+  
+  try {
+    const res = await fetch(API_URL + '/tournaments', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, date, opponent, score })
+    });
+    if (!res.ok) throw new Error('Ошибка');
+    msg('✅ Турнир добавлен');
+    $('tourForm').reset();
+    await load();
+  } catch (err) {
+    msg('❌ Ошибка: ' + err.message);
+  }
+};
+
+// ============================================================
+// 11. РЕНДЕРИНГ
 // ============================================================
 function render() {
-  // Последние
-  $('recent').innerHTML = trainings.length ? `<table><tr><th>Дата</th><th>Лучший</th><th>Счёт</th></tr>${trainings.slice(0, 6).map(t => `<tr><td>${fmt(t.date)}</td><td>${t.best_name || '—'}</td><td>${t.white_score}:${t.blue_score}</td></tr>`).join('')}</table>` : 'Нет тренировок';
+  // Последние тренировки
+  $('recent').innerHTML = trainings.length 
+    ? `<table><tr><th>Дата</th><th>Лучший</th><th>Счёт</th></tr>${trainings.slice(0,6).map(t => `<tr><td>${fmt(t.date)}</td><td>${t.best_name || '—'}</td><td>${t.white_score}:${t.blue_score}</td></tr>`).join('')}</table>` 
+    : 'Нет тренировок';
   
   // Все тренировки
-  $('trainings').innerHTML = trainings.length ? `<table><tr><th>Дата</th><th>Лучший</th><th>Помощник</th><th>Счёт</th><th>Победитель</th><th>Действия</th></tr>${trainings.map(t => `<tr><td>${fmt(t.date)}</td><td>${t.best_name || '—'}</td><td>${t.helper_name || '—'}</td><td>${t.white_score}:${t.blue_score}</td><td><span class="badge">${t.white_score > t.blue_score ? 'Белые' : t.blue_score > t.white_score ? 'Синие' : 'Ничья'}</span></td><td><button onclick="del('${t.id}')">✕</button></td></tr>`).join('')}</table>` : 'Нет тренировок';
+  $('trainings').innerHTML = trainings.length 
+    ? `<table><tr><th>Дата</th><th>Лучший</th><th>Помощник</th><th>Счёт</th><th>Победитель</th><th>Действия</th></tr>${trainings.map(t => `<tr><td>${fmt(t.date)}</td><td>${t.best_name || '—'}</td><td>${t.helper_name || '—'}</td><td>${t.white_score}:${t.blue_score}</td><td><span class="badge">${t.white_score > t.blue_score ? 'Белые' : t.blue_score > t.white_score ? 'Синие' : 'Ничья'}</span></td><td><button onclick="delTraining('${t.id}')">✕</button></td></tr>`).join('')}</table>` 
+    : 'Нет тренировок';
   
   // Статистика
   const stats = players.map(p => ({
@@ -228,18 +372,38 @@ function render() {
 }
 
 function renderRoster() {
-  $('roster').innerHTML = players.map(p => `<div><b>№${p.number}</b> ${p.name}</div>`).join('');
+  $('roster').innerHTML = players.map(p => `
+    <div style="background:#0c1426;padding:8px;border-radius:8px;border:1px solid #293858">
+      <b>№${p.number}</b> ${p.name}
+      <div style="font-size:12px;color:#9eabc2;margin:4px 0">
+        Рост: ${p.height_cm ? p.height_cm + ' см' : '—'} | Вес: ${p.weight_kg ? p.weight_kg + ' кг' : '—'}
+      </div>
+      <button onclick="editPlayer('${p.id}')" style="font-size:12px;padding:4px 8px;width:auto;background:#5b8cff;border:0;border-radius:6px;color:#fff;cursor:pointer">Изменить</button>
+    </div>
+  `).join('');
+}
+
+function renderMedia() {
+  $('mediaGrid').innerHTML = media.length 
+    ? media.map(m => m.type === 'video' 
+      ? `<video src="${m.url}" controls style="width:100%;border-radius:8px;aspect-ratio:1;object-fit:cover;"></video>` 
+      : `<img src="${m.url}" style="width:100%;aspect-ratio:1;object-fit:cover;border-radius:8px;" alt="${m.caption || 'Фото'}">`
+    ).join('') 
+    : 'Нет медиа';
 }
 
 function renderTours() {
-  $('tourTable').innerHTML = tournaments.length ? `<table><tr><th>Название</th><th>Дата</th><th>Соперник</th><th>Счёт</th><th>MVP</th></tr>${tournaments.map(t => `<tr><td>${t.name}</td><td>${fmt(t.date)}</td><td>${t.opponent || '—'}</td><td>${t.score || '—'}</td><td>${t.mvp || '—'}</td></tr>`).join('')}</table>` : 'Нет турниров';
+  $('tourTable').innerHTML = tournaments.length 
+    ? `<table><tr><th>Название</th><th>Дата</th><th>Соперник</th><th>Счёт</th><th>MVP</th></tr>${tournaments.map(t => `<tr><td>${t.name}</td><td>${fmt(t.date)}</td><td>${t.opponent || '—'}</td><td>${t.score || '—'}</td><td>${t.mvp_name || '—'}</td></tr>`).join('')}</table>` 
+    : 'Нет турниров';
 }
 
 // ============================================================
-// ЗАПУСК
+// 12. ЗАПУСК
 // ============================================================
 nav();
 $('date').value = new Date().toISOString().slice(0, 10);
+$('td').value = new Date().toISOString().slice(0, 10);
 load();
 </script>
 </body>
