@@ -102,7 +102,7 @@ body {
   font-size: var(--font-size);
   font-family: sans-serif;
   padding: 10px;
-  max-width: 480px;
+  max-width: 100%;
   margin: auto;
   transition: background 0.25s, color 0.25s, font-size 0.2s;
 }
@@ -113,6 +113,7 @@ body {
   padding: var(--padding);
   margin-bottom: var(--gap);
   transition: background 0.25s, border 0.25s;
+  overflow: hidden;
 }
 input, select, textarea {
   width: 100%;
@@ -125,6 +126,7 @@ input, select, textarea {
   margin: 4px 0;
   box-sizing: border-box;
   transition: background 0.25s, color 0.25s, border 0.25s;
+  min-width: 0;
 }
 button {
   background: var(--btn-bg);
@@ -148,8 +150,18 @@ button.small {
 }
 button.danger { background: #71333d; }
 .hidden { display: none; }
+
+/* ===== ТАБЛИЦЫ НА ВСЮ ШИРИНУ ===== */
+.table-wrap {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  margin: 0 -4px;
+  padding: 0 4px;
+}
 table {
   width: 100%;
+  min-width: 100%;
   font-size: calc(var(--font-size) - 2px);
   border-collapse: collapse;
 }
@@ -157,6 +169,7 @@ th, td {
   padding: 6px;
   border-bottom: 1px solid var(--border);
   text-align: left;
+  white-space: nowrap;
 }
 th { color: var(--muted); font-weight: 600; }
 .badge {
@@ -292,6 +305,12 @@ th { color: var(--muted); font-weight: 600; }
   background: var(--btn-bg);
   border-color: var(--btn-bg);
 }
+
+/* ===== ДАТА НЕ ВЫХОДИТ ЗА ГРАНИЦЫ ===== */
+input[type="date"] {
+  max-width: 100%;
+  box-sizing: border-box;
+}
 </style>
 </head>
 <body>
@@ -318,13 +337,27 @@ th { color: var(--muted); font-weight: 600; }
     <div class="card">
       <h3>Добавить тренировку</h3>
       <form id="form">
+        <label style="font-weight:600;color:var(--muted);font-size:0.9em;">Дата</label>
         <input id="date" type="date" required>
+        
+        <label style="font-weight:600;color:var(--muted);font-size:0.9em;margin-top:8px;display:block;">⭐ Лучший</label>
         <select id="bestSelect"><option>Загрузка...</option></select>
+        
+        <label style="font-weight:600;color:var(--muted);font-size:0.9em;margin-top:8px;display:block;">🤝 Помощник</label>
         <select id="helperSelect"><option>Загрузка...</option></select>
+        
+        <label style="font-weight:600;color:var(--muted);font-size:0.9em;margin-top:8px;display:block;">Комментарий</label>
         <textarea id="comment" placeholder="Комментарий"></textarea>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
-          <input id="white" type="number" placeholder="Белые" value="0">
-          <input id="blue" type="number" placeholder="Синие" value="0">
+        
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:4px;">
+          <div>
+            <label style="font-weight:600;color:var(--muted);font-size:0.9em;">⚪ Белые</label>
+            <input id="white" type="number" placeholder="Белые" value="0">
+          </div>
+          <div>
+            <label style="font-weight:600;color:var(--muted);font-size:0.9em;">🔵 Синие</label>
+            <input id="blue" type="number" placeholder="Синие" value="0">
+          </div>
         </div>
         <button type="submit">Добавить</button>
       </form>
@@ -641,10 +674,10 @@ async function setMVP(id) {
 // ============================================================
 function render() {
   $('recent').innerHTML = trainings.length
-    ? `<table><tr><th>Дата</th><th>Лучший</th><th>Счёт</th></tr>${trainings.slice(0,6).map(t => `<tr><td>${fmt(t.date)}</td><td>${t.best_name || '—'}</td><td>${t.white_score}:${t.blue_score}</td></tr>`).join('')}</table>`
+    ? `<div class="table-wrap"><table><tr><th>Дата</th><th>Лучший</th><th>Счёт</th></tr>${trainings.slice(0,6).map(t => `<tr><td>${fmt(t.date)}</td><td>${t.best_name || '—'}</td><td>${t.white_score}:${t.blue_score}</td></tr>`).join('')}</table></div>`
     : 'Нет тренировок';
   $('trainings').innerHTML = trainings.length
-    ? `<table><tr><th>Дата</th><th>Лучший</th><th>Помощник</th><th>Счёт</th><th>Победитель</th><th>Комментарий</th><th>Действия</th></tr>${trainings.map(t => `<tr><td>${fmt(t.date)}</td><td>${t.best_name || '—'}</td><td>${t.helper_name || '—'}</td><td>${t.white_score}:${t.blue_score}</td><td><span class="badge">${t.white_score > t.blue_score ? 'Белые' : t.blue_score > t.white_score ? 'Синие' : 'Ничья'}</span></td><td>${t.comment || '—'}</td><td><button class="small" onclick="delTraining('${t.id}')">✕</button></td></tr>`).join('')}</table>`
+    ? `<div class="table-wrap"><table><tr><th>Дата</th><th>Лучший</th><th>Помощник</th><th>Счёт</th><th>Победитель</th><th>Комментарий</th><th>Действия</th></tr>${trainings.map(t => `<tr><td>${fmt(t.date)}</td><td>${t.best_name || '—'}</td><td>${t.helper_name || '—'}</td><td>${t.white_score}:${t.blue_score}</td><td><span class="badge">${t.white_score > t.blue_score ? 'Белые' : t.blue_score > t.white_score ? 'Синие' : 'Ничья'}</span></td><td>${t.comment || '—'}</td><td><button class="small" onclick="delTraining('${t.id}')">✕</button></td></tr>`).join('')}</table></div>`
     : 'Нет тренировок';
 
   const stats = players.map(p => {
@@ -655,6 +688,7 @@ function render() {
   }).sort((a, b) => (b.bestCount + b.helperCount + b.luckyCount) - (a.bestCount + a.helperCount + a.luckyCount));
 
   $('statTable').innerHTML = `
+    <div class="table-wrap">
     <table>
       <tr><th>№</th><th>Игрок</th><th>⭐ Лучший</th><th>🤝 Помощник</th><th>🍀 Счастливчик</th></tr>
       ${stats.map(p => `
@@ -667,6 +701,7 @@ function render() {
         </tr>
       `).join('')}
     </table>
+    </div>
   `;
 }
 
@@ -694,7 +729,7 @@ function renderMedia() {
 
 function renderTours() {
   $('tourTable').innerHTML = tournaments.length
-    ? `<table><tr><th>Название</th><th>Дата</th><th>Соперник</th><th>Счёт</th><th>MVP</th><th>Действия</th></tr>${tournaments.map(t => `<tr><td>${t.name}</td><td>${fmt(t.date)}</td><td>${t.opponent || '—'}</td><td>${t.score || '—'}</td><td>${t.mvp_name || '—'}</td><td><button class="small" onclick="setMVP('${t.id}')">${t.mvp_name ? '✎ MVP' : '+'}</button></td></tr>`).join('')}</table>`
+    ? `<div class="table-wrap"><table><tr><th>Название</th><th>Дата</th><th>Соперник</th><th>Счёт</th><th>MVP</th><th>Действия</th></tr>${tournaments.map(t => `<tr><td>${t.name}</td><td>${fmt(t.date)}</td><td>${t.opponent || '—'}</td><td>${t.score || '—'}</td><td>${t.mvp_name || '—'}</td><td><button class="small" onclick="setMVP('${t.id}')">${t.mvp_name ? '✎ MVP' : '+'}</button></td></tr>`).join('')}</table></div>`
     : 'Нет турниров';
 }
 
