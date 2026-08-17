@@ -1,0 +1,26 @@
+{
+  "id": "/5-5/",
+  "name": "5х5 — баскетбольный клуб",
+  "short_name": "5х5",
+  "start_url": "/5-5/",
+  "scope": "/5-5/",
+  "display": "standalone",
+  "background_color": "#0b1220",
+  "theme_color": "#0b1220",
+  "lang": "ru",
+  "description": "Баскетбольный клуб 5х5",
+  "icons": [
+    {
+      "src": "/5-5/icon-192.png?v=6",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/5-5/icon-512.png?v=6",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}
