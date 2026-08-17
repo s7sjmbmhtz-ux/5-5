@@ -9,7 +9,9 @@
 <meta name="apple-mobile-web-app-title" content="5х5">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" type="image/png" href="icon.png">
-<link rel="apple-touch-icon" href="icon.png">
+<link rel="apple-touch-icon" sizes="180x180" href="icon.png">
+<link rel="apple-touch-icon" sizes="152x152" href="icon.png">
+<link rel="apple-touch-icon" sizes="120x120" href="icon.png">
 <title>5х5 — баскетбольный клуб</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
@@ -243,7 +245,7 @@ th { color: var(--muted); font-weight: 600; }
 .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
 
 /* ============================================================
-   SPLASH SCREEN — НА ВЕСЬ ЭКРАН
+   SPLASH SCREEN
    ============================================================ */
 #splash {
   position: fixed;
@@ -307,9 +309,7 @@ th { color: var(--muted); font-weight: 600; }
 </head>
 <body>
 
-<!-- ============================================================
-     SPLASH SCREEN
-     ============================================================ -->
+<!-- ===== SPLASH ===== -->
 <div id="splash">
   <img class="splash-image" src="splash.png" alt="5х5">
   <div class="splash-content">
@@ -320,11 +320,8 @@ th { color: var(--muted); font-weight: 600; }
   </div>
 </div>
 
-<!-- ============================================================
-     ОСНОВНОЕ ПРИЛОЖЕНИЕ
-     ============================================================ -->
+<!-- ===== ПРИЛОЖЕНИЕ ===== -->
 <div id="app">
-  <!-- ШАПКА + УПРАВЛЕНИЕ -->
   <div class="top-bar">
     <h1 style="margin:0;">🏀 5х5</h1>
     <div class="controls">
@@ -340,7 +337,6 @@ th { color: var(--muted); font-weight: 600; }
   
   <div class="nav" id="nav"></div>
   
-  <!-- ДОБАВИТЬ ТРЕНИРОВКУ -->
   <div id="input" class="page">
     <div class="card">
       <h3>Добавить тренировку</h3>
@@ -349,22 +345,18 @@ th { color: var(--muted); font-weight: 600; }
           <label for="date">Дата</label>
           <input id="date" type="date" required>
         </div>
-        
         <div class="form-group">
           <label for="bestSelect">Лучший</label>
           <select id="bestSelect"><option>Загрузка...</option></select>
         </div>
-        
         <div class="form-group">
           <label for="helperSelect">Помощник</label>
           <select id="helperSelect"><option>Загрузка...</option></select>
         </div>
-        
         <div class="form-group">
           <label for="comment">Комментарий</label>
           <textarea id="comment" placeholder="Комментарий"></textarea>
         </div>
-        
         <div class="form-row">
           <div class="form-group">
             <label for="white">Белые</label>
@@ -375,24 +367,20 @@ th { color: var(--muted); font-weight: 600; }
             <input id="blue" type="number" placeholder="Синие" value="0">
           </div>
         </div>
-        
         <button type="submit">Добавить</button>
       </form>
     </div>
     <div class="card"><h3>Последние</h3><div id="recent"></div></div>
   </div>
 
-  <!-- ТРЕНИРОВКИ -->
   <div id="training" class="page hidden">
     <div class="card"><h3>Все тренировки</h3><div id="trainings"></div></div>
   </div>
 
-  <!-- СТАТИСТИКА -->
   <div id="stats" class="page hidden">
     <div class="card"><h3>Статистика</h3><div id="statTable"></div></div>
   </div>
 
-  <!-- СОСТАВ -->
   <div id="players" class="page hidden">
     <div class="card">
       <h3>Состав</h3>
@@ -400,7 +388,6 @@ th { color: var(--muted); font-weight: 600; }
     </div>
   </div>
 
-  <!-- МЕДИА -->
   <div id="media" class="page hidden">
     <div class="card">
       <h3>Добавить медиа</h3>
@@ -413,7 +400,6 @@ th { color: var(--muted); font-weight: 600; }
     </div>
   </div>
 
-  <!-- ТУРНИРЫ -->
   <div id="tournaments" class="page hidden">
     <div class="card">
       <h3>Добавить турнир</h3>
@@ -432,9 +418,7 @@ th { color: var(--muted); font-weight: 600; }
 <div id="toast" class="toast"></div>
 
 <script>
-// ============================================================
-// SPLASH SCREEN
-// ============================================================
+// ===== SPLASH =====
 function showSplash() {
   const splash = document.getElementById('splash');
   const progress = document.getElementById('splashProgress');
@@ -453,16 +437,12 @@ function showSplash() {
   }, 200);
 }
 
-// ============================================================
-// 1. ПОДКЛЮЧЕНИЕ К SUPABASE
-// ============================================================
+// ===== SUPABASE =====
 const SUPABASE_URL = 'https://sihixudkoxmksxgziary.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_LKWMnwcogf1c-hGQyjKuZg_LuHl9LR8';
 const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-// ============================================================
-// 2. ТЕМА + РЕЖИМ ДЛЯ СЛАБОВИДЯЩИХ
-// ============================================================
+// ===== ТЕМА =====
 function loadTheme() {
   const saved = localStorage.getItem('5x5-theme');
   const isDark = saved === null ? true : saved === 'dark';
@@ -499,9 +479,7 @@ document.getElementById('accessibilityIcon').addEventListener('click', toggleAcc
 loadTheme();
 loadAccessibility();
 
-// ============================================================
-// 3. ДАННЫЕ
-// ============================================================
+// ===== ДАННЫЕ =====
 let players = [];
 let trainings = [];
 let tournaments = [];
@@ -516,9 +494,7 @@ const msg = t => {
 };
 const fmt = d => d ? new Date(d + 'T00:00:00').toLocaleDateString('ru-RU') : '—';
 
-// ============================================================
-// 4. НАВИГАЦИЯ
-// ============================================================
+// ===== НАВИГАЦИЯ =====
 function nav() {
   const items = [
     ['input', 'Добавить'],
@@ -541,9 +517,7 @@ function nav() {
   });
 }
 
-// ============================================================
-// 5. ЗАГРУЗКА ДАННЫХ
-// ============================================================
+// ===== ЗАГРУЗКА ДАННЫХ =====
 async function loadData() {
   try {
     const pr = await sb.from('players').select('*').order('number');
@@ -592,9 +566,7 @@ function fillPlayerSelects() {
   $('helperSelect').innerHTML = '<option value="">Выберите</option>' + opts;
 }
 
-// ============================================================
-// 6. ДОБАВЛЕНИЕ ТРЕНИРОВКИ
-// ============================================================
+// ===== ДОБАВЛЕНИЕ =====
 $('form').onsubmit = async e => {
   e.preventDefault();
   const best = $('bestSelect').value;
@@ -615,9 +587,7 @@ $('form').onsubmit = async e => {
   await loadData();
 };
 
-// ============================================================
-// 7. УДАЛЕНИЕ ТРЕНИРОВКИ
-// ============================================================
+// ===== УДАЛЕНИЕ =====
 async function delTraining(id) {
   if (!confirm('Удалить тренировку?')) return;
   const result = await sb.from('trainings').delete().eq('id', id);
@@ -626,9 +596,7 @@ async function delTraining(id) {
   await loadData();
 }
 
-// ============================================================
-// 8. РЕДАКТИРОВАНИЕ ИГРОКА
-// ============================================================
+// ===== РЕДАКТИРОВАНИЕ ИГРОКА =====
 async function editPlayer(id) {
   const p = players.find(x => x.id === id);
   if (!p) return;
@@ -658,9 +626,7 @@ async function editPlayer(id) {
   input.click();
 }
 
-// ============================================================
-// 9. МЕДИА
-// ============================================================
+// ===== МЕДИА =====
 $('mediaForm').onsubmit = async e => {
   e.preventDefault();
   const fileInput = $('mediaFile');
@@ -678,9 +644,7 @@ $('mediaForm').onsubmit = async e => {
   await loadData();
 };
 
-// ============================================================
-// 10. ТУРНИРЫ
-// ============================================================
+// ===== ТУРНИРЫ =====
 $('tourForm').onsubmit = async e => {
   e.preventDefault();
   const name = $('tn').value.trim();
@@ -707,9 +671,7 @@ async function setMVP(id) {
   await loadData();
 }
 
-// ============================================================
-// 11. РЕНДЕРИНГ
-// ============================================================
+// ===== РЕНДЕРИНГ =====
 function render() {
   $('recent').innerHTML = trainings.length
     ? `<div class="table-wrap"><table><tr><th>Дата</th><th>Лучший</th><th>Счёт</th></tr>${trainings.slice(0,6).map(t => `<tr><td>${fmt(t.date)}</td><td>${t.best_name || '—'}</td><td>${t.white_score}:${t.blue_score}</td></tr>`).join('')}</table></div>`
@@ -771,9 +733,7 @@ function renderTours() {
     : 'Нет турниров';
 }
 
-// ============================================================
-// 12. ЗАПУСК
-// ============================================================
+// ===== ЗАПУСК =====
 nav();
 $('date').value = new Date().toISOString().slice(0, 10);
 $('td').value = new Date().toISOString().slice(0, 10);
