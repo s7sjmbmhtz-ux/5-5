@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <title>5х5</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 body{background:#0b1220;color:#fff;font:16px sans-serif;padding:10px;max-width:480px;margin:auto}
 .card{background:#111a2d;border-radius:12px;padding:14px;margin-bottom:10px;border:1px solid #293858}
@@ -28,7 +29,6 @@ th,td{padding:6px;border-bottom:1px solid #293858;text-align:left}
   
   <div class="nav" id="nav"></div>
   
-  <!-- ДОБАВИТЬ ТРЕНИРОВКУ -->
   <div id="input" class="page">
     <div class="card">
       <h3>Добавить тренировку</h3>
@@ -48,22 +48,18 @@ th,td{padding:6px;border-bottom:1px solid #293858;text-align:left}
     <div class="card"><h3>Последние</h3><div id="recent"></div></div>
   </div>
 
-  <!-- ТРЕНИРОВКИ -->
   <div id="training" class="page hidden">
     <div class="card"><h3>Все тренировки</h3><div id="trainings"></div></div>
   </div>
 
-  <!-- СТАТИСТИКА -->
   <div id="stats" class="page hidden">
     <div class="card"><h3>Статистика</h3><div id="statTable"></div></div>
   </div>
 
-  <!-- СОСТАВ -->
   <div id="players" class="page hidden">
     <div class="card"><h3>Состав</h3><div id="roster" style="display:grid;grid-template-columns:1fr 1fr;gap:8px"></div></div>
   </div>
 
-  <!-- МЕДИА -->
   <div id="media" class="page hidden">
     <div class="card">
       <h3>Добавить медиа</h3>
@@ -76,7 +72,6 @@ th,td{padding:6px;border-bottom:1px solid #293858;text-align:left}
     </div>
   </div>
 
-  <!-- ТУРНИРЫ -->
   <div id="tournaments" class="page hidden">
     <div class="card">
       <h3>Добавить турнир</h3>
@@ -96,9 +91,11 @@ th,td{padding:6px;border-bottom:1px solid #293858;text-align:left}
 
 <script>
 // ============================================================
-// 1. ПОДКЛЮЧЕНИЕ К API (РАБОТАЕТ ЧЕРЕЗ МОЙ СЕРВЕР)
+// 1. ПОДКЛЮЧЕНИЕ К SUPABASE
 // ============================================================
-const API_URL = 'https://5x5-api.xyz';
+const SUPABASE_URL = 'https://sihixudkoxmksxgziary.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_LKWMnwcogf1c-hGQyjKuZg_LuHl9LR8';
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 // ============================================================
 // 2. ДАННЫЕ
@@ -107,7 +104,6 @@ let players = [];
 let trainings = [];
 let tournaments = [];
 let media = [];
-let apiOnline = false;
 
 // ============================================================
 // 3. ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ
@@ -115,7 +111,6 @@ let apiOnline = false;
 const $ = id => document.getElementById(id);
 const msg = t => { const a = $('toast'); a.textContent = t; a.style.display = 'block'; setTimeout(() => a.style.display = 'none', 3000); };
 const fmt = d => d ? new Date(d + 'T00:00:00').toLocaleDateString('ru-RU') : '—';
-const uid = () => Date.now().toString(36) + Math.random().toString(36).substr(2, 5);
 
 // ============================================================
 // 4. НАВИГАЦИЯ
@@ -143,46 +138,52 @@ function nav() {
 }
 
 // ============================================================
-// 5. ЗАГРУЗКА ДАННЫХ С СЕРВЕРА
+// 5. ЗАГРУЗКА ДАННЫХ
 // ============================================================
 async function load() {
   $('status').textContent = '⏳ Загрузка...';
   
   try {
-    // Проверяем API
-    const test = await fetch(API_URL + '/players', { signal: AbortSignal.timeout(5000) });
-    if (!test.ok) throw new Error('API не отвечает');
+    // Игроки
+    const pr = await sb.from('players').select('*').order('number');
+    if (pr.error) throw new Error(pr.error.message);
+    players = pr.data || [];
     
-    // Загружаем игроков
-    const pr = await fetch(API_URL + '/players');
-    players = await pr.json();
-    if (!players || !players.length) throw new Error('Нет игроков');
+    // Тренировки
+    const tr = await sb.from('trainings').select(`
+      *,
+      best:players!best_player_id(name),
+      helper:players!helper_player_id(name)
+    `).order('date', { ascending: false });
+    if (tr.error) throw new Error(tr.error.message);
+    trainings = tr.data || [];
+    trainings.forEach(t => {
+      t.best_name = t.best?.name || null;
+      t.helper_name = t.helper?.name || null;
+    });
     
-    // Загружаем тренировки
-    const tr = await fetch(API_URL + '/trainings');
-    trainings = await tr.json();
+    // Турниры
+    const to = await sb.from('tournaments').select(`
+      *,
+      mvp:players!mvp_player_id(name)
+    `).order('date', { ascending: false });
+    if (to.error) throw new Error(to.error.message);
+    tournaments = to.data || [];
+    tournaments.forEach(t => {
+      t.mvp_name = t.mvp?.name || null;
+    });
     
-    // Загружаем турниры
-    const to = await fetch(API_URL + '/tournaments');
-    tournaments = await to.json();
+    // Медиа
+    const md = await sb.from('media').select('*').order('created_at', { ascending: false });
+    if (md.error) throw new Error(md.error.message);
+    media = md.data || [];
     
-    // Загружаем медиа
-    const mr = await fetch(API_URL + '/media');
-    media = await mr.json();
-    
-    apiOnline = true;
-    $('status').textContent = '✅ Онлайн (данные с сервера)';
+    $('status').textContent = '✅ Данные загружены';
     $('status').style.color = '#8ce5c5';
-    
   } catch (err) {
-    apiOnline = false;
     $('status').textContent = '❌ Ошибка: ' + err.message;
     $('status').style.color = '#ff9aa7';
-    msg('⚠️ Не удалось загрузить данные с сервера');
-    players = [];
-    trainings = [];
-    tournaments = [];
-    media = [];
+    msg('⚠️ Не удалось загрузить данные');
   }
   
   fillPlayerSelects();
@@ -204,11 +205,6 @@ function fillPlayerSelects() {
 $('form').onsubmit = async e => {
   e.preventDefault();
   
-  if (!apiOnline) {
-    msg('❌ Сервер недоступен');
-    return;
-  }
-  
   const best = $('bestSelect').value;
   const helper = $('helperSelect').value;
   if (!best || !helper) { msg('Выберите игроков'); return; }
@@ -222,42 +218,35 @@ $('form').onsubmit = async e => {
     comment: $('comment').value || ''
   };
   
-  try {
-    const res = await fetch(API_URL + '/trainings', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload)
-    });
-    if (!res.ok) throw new Error('Ошибка');
-    msg('✅ Тренировка добавлена');
-    $('form').reset();
-    await load();
-  } catch (err) {
-    msg('❌ Ошибка: ' + err.message);
+  const result = await sb.from('trainings').insert(payload);
+  if (result.error) {
+    msg('❌ Ошибка: ' + result.error.message);
+    return;
   }
+  
+  msg('✅ Тренировка добавлена');
+  $('form').reset();
+  await load();
 };
 
 // ============================================================
 // 7. УДАЛЕНИЕ ТРЕНИРОВКИ
 // ============================================================
 async function delTraining(id) {
-  if (!apiOnline) { msg('❌ Сервер недоступен'); return; }
   if (!confirm('Удалить тренировку?')) return;
-  try {
-    await fetch(API_URL + '/trainings/' + id, { method: 'DELETE' });
-    msg('Удалено');
-    await load();
-  } catch (err) {
-    msg('Ошибка: ' + err.message);
+  const result = await sb.from('trainings').delete().eq('id', id);
+  if (result.error) {
+    msg('❌ Ошибка: ' + result.error.message);
+    return;
   }
+  msg('Удалено');
+  await load();
 }
 
 // ============================================================
 // 8. РЕДАКТИРОВАНИЕ ИГРОКА (рост/вес)
 // ============================================================
 async function editPlayer(id) {
-  if (!apiOnline) { msg('❌ Сервер недоступен'); return; }
-  
   const p = players.find(x => x.id === id);
   if (!p) return;
   
@@ -266,20 +255,20 @@ async function editPlayer(id) {
   const w = prompt('Вес, кг (оставьте пустым, чтобы удалить)', p.weight_kg ?? '');
   if (w === null) return;
   
-  try {
-    await fetch(API_URL + '/players/' + id, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        height_cm: h.trim() === '' ? null : Number(h),
-        weight_kg: w.trim() === '' ? null : Number(w)
-      })
-    });
-    msg('✅ Данные сохранены');
-    await load();
-  } catch (err) {
-    msg('❌ Ошибка: ' + err.message);
+  const result = await sb.from('players')
+    .update({
+      height_cm: h.trim() === '' ? null : Number(h),
+      weight_kg: w.trim() === '' ? null : Number(w)
+    })
+    .eq('id', id);
+  
+  if (result.error) {
+    msg('❌ Ошибка: ' + result.error.message);
+    return;
   }
+  
+  msg('✅ Данные сохранены');
+  await load();
 }
 
 // ============================================================
@@ -287,8 +276,6 @@ async function editPlayer(id) {
 // ============================================================
 $('mediaForm').onsubmit = async e => {
   e.preventDefault();
-  
-  if (!apiOnline) { msg('❌ Сервер недоступен'); return; }
   
   const fileInput = $('mediaFile');
   const caption = $('mediaCaption').value || '';
@@ -298,22 +285,31 @@ $('mediaForm').onsubmit = async e => {
     return;
   }
   
-  const formData = new FormData();
-  formData.append('file', fileInput.files[0]);
-  formData.append('caption', caption);
+  const file = fileInput.files[0];
+  const path = Date.now() + '_' + file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
   
-  try {
-    const res = await fetch(API_URL + '/media', {
-      method: 'POST',
-      body: formData
-    });
-    if (!res.ok) throw new Error('Ошибка');
-    msg('✅ Медиа добавлено');
-    $('mediaForm').reset();
-    await load();
-  } catch (err) {
-    msg('❌ Ошибка: ' + err.message);
+  const upload = await sb.storage.from('club-media').upload(path, file);
+  if (upload.error) {
+    msg('❌ Ошибка загрузки: ' + upload.error.message);
+    return;
   }
+  
+  const url = sb.storage.from('club-media').getPublicUrl(path).data.publicUrl;
+  
+  const insert = await sb.from('media').insert({
+    url: url,
+    caption: caption,
+    type: file.type.startsWith('video') ? 'video' : 'image'
+  });
+  
+  if (insert.error) {
+    msg('❌ Ошибка: ' + insert.error.message);
+    return;
+  }
+  
+  msg('✅ Медиа добавлено');
+  $('mediaForm').reset();
+  await load();
 };
 
 // ============================================================
@@ -322,8 +318,6 @@ $('mediaForm').onsubmit = async e => {
 $('tourForm').onsubmit = async e => {
   e.preventDefault();
   
-  if (!apiOnline) { msg('❌ Сервер недоступен'); return; }
-  
   const name = $('tn').value.trim();
   const date = $('td').value;
   const opponent = $('to').value.trim();
@@ -331,23 +325,49 @@ $('tourForm').onsubmit = async e => {
   
   if (!name || !date) { msg('Заполните название и дату'); return; }
   
-  try {
-    const res = await fetch(API_URL + '/tournaments', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name, date, opponent, score })
-    });
-    if (!res.ok) throw new Error('Ошибка');
-    msg('✅ Турнир добавлен');
-    $('tourForm').reset();
-    await load();
-  } catch (err) {
-    msg('❌ Ошибка: ' + err.message);
+  const result = await sb.from('tournaments').insert({
+    name, date, opponent, score
+  });
+  
+  if (result.error) {
+    msg('❌ Ошибка: ' + result.error.message);
+    return;
   }
+  
+  msg('✅ Турнир добавлен');
+  $('tourForm').reset();
+  await load();
 };
 
 // ============================================================
-// 11. РЕНДЕРИНГ
+// 11. НАЗНАЧЕНИЕ MVP
+// ============================================================
+async function setMVP(id) {
+  const list = players.map(p => `№${p.number} — ${p.name}`).join('\n');
+  const number = prompt('Введите номер MVP:\n\n' + list);
+  if (number === null) return;
+  
+  const player = players.find(p => String(p.number) === String(number).trim());
+  if (!player) {
+    msg('Игрок с таким номером не найден');
+    return;
+  }
+  
+  const result = await sb.from('tournaments')
+    .update({ mvp_player_id: player.id })
+    .eq('id', id);
+  
+  if (result.error) {
+    msg('❌ Ошибка: ' + result.error.message);
+    return;
+  }
+  
+  msg('✅ MVP назначен');
+  await load();
+}
+
+// ============================================================
+// 12. РЕНДЕРИНГ
 // ============================================================
 function render() {
   // Последние тренировки
@@ -394,12 +414,12 @@ function renderMedia() {
 
 function renderTours() {
   $('tourTable').innerHTML = tournaments.length 
-    ? `<table><tr><th>Название</th><th>Дата</th><th>Соперник</th><th>Счёт</th><th>MVP</th></tr>${tournaments.map(t => `<tr><td>${t.name}</td><td>${fmt(t.date)}</td><td>${t.opponent || '—'}</td><td>${t.score || '—'}</td><td>${t.mvp_name || '—'}</td></tr>`).join('')}</table>` 
+    ? `<table><tr><th>Название</th><th>Дата</th><th>Соперник</th><th>Счёт</th><th>MVP</th><th>Действия</th></tr>${tournaments.map(t => `<tr><td>${t.name}</td><td>${fmt(t.date)}</td><td>${t.opponent || '—'}</td><td>${t.score || '—'}</td><td>${t.mvp_name || '—'}</td><td><button onclick="setMVP('${t.id}')" style="font-size:11px;padding:4px 8px;width:auto;background:#5b8cff;border:0;border-radius:4px;color:#fff;cursor:pointer">${t.mvp_name ? 'Изменить MVP' : 'Назначить MVP'}</button></td></tr>`).join('')}</table>` 
     : 'Нет турниров';
 }
 
 // ============================================================
-// 12. ЗАПУСК
+// 13. ЗАПУСК
 // ============================================================
 nav();
 $('date').value = new Date().toISOString().slice(0, 10);
