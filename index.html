@@ -128,6 +128,12 @@ input, select, textarea {
   transition: background 0.25s, color 0.25s, border 0.25s;
   min-width: 0;
 }
+input[type="date"] {
+  max-width: 100%;
+  min-width: 0;
+  width: 100%;
+  box-sizing: border-box;
+}
 button {
   background: var(--btn-bg);
   color: var(--btn-text);
@@ -305,12 +311,6 @@ th { color: var(--muted); font-weight: 600; }
   background: var(--btn-bg);
   border-color: var(--btn-bg);
 }
-
-/* ===== ДАТА НЕ ВЫХОДИТ ЗА ГРАНИЦЫ ===== */
-input[type="date"] {
-  max-width: 100%;
-  box-sizing: border-box;
-}
 </style>
 </head>
 <body>
@@ -337,13 +337,13 @@ input[type="date"] {
     <div class="card">
       <h3>Добавить тренировку</h3>
       <form id="form">
-        <label style="font-weight:600;color:var(--muted);font-size:0.9em;">Дата</label>
-        <input id="date" type="date" required>
+        <label style="font-weight:600;color:var(--muted);font-size:0.9em;display:block;">Дата</label>
+        <input id="date" type="date" required style="max-width:100%;">
         
-        <label style="font-weight:600;color:var(--muted);font-size:0.9em;margin-top:8px;display:block;">⭐ Лучший</label>
+        <label style="font-weight:600;color:var(--muted);font-size:0.9em;margin-top:8px;display:block;">Лучший</label>
         <select id="bestSelect"><option>Загрузка...</option></select>
         
-        <label style="font-weight:600;color:var(--muted);font-size:0.9em;margin-top:8px;display:block;">🤝 Помощник</label>
+        <label style="font-weight:600;color:var(--muted);font-size:0.9em;margin-top:8px;display:block;">Помощник</label>
         <select id="helperSelect"><option>Загрузка...</option></select>
         
         <label style="font-weight:600;color:var(--muted);font-size:0.9em;margin-top:8px;display:block;">Комментарий</label>
@@ -351,11 +351,11 @@ input[type="date"] {
         
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:4px;">
           <div>
-            <label style="font-weight:600;color:var(--muted);font-size:0.9em;">⚪ Белые</label>
+            <label style="font-weight:600;color:var(--muted);font-size:0.9em;display:block;">Белые</label>
             <input id="white" type="number" placeholder="Белые" value="0">
           </div>
           <div>
-            <label style="font-weight:600;color:var(--muted);font-size:0.9em;">🔵 Синие</label>
+            <label style="font-weight:600;color:var(--muted);font-size:0.9em;display:block;">Синие</label>
             <input id="blue" type="number" placeholder="Синие" value="0">
           </div>
         </div>
@@ -690,14 +690,14 @@ function render() {
   $('statTable').innerHTML = `
     <div class="table-wrap">
     <table>
-      <tr><th>№</th><th>Игрок</th><th>⭐ Лучший</th><th>🤝 Помощник</th><th>🍀 Счастливчик</th></tr>
+      <tr><th>№</th><th>Игрок</th><th>Лучший</th><th>Помощник</th><th>Счастливчик</th></tr>
       ${stats.map(p => `
         <tr>
           <td>${p.number}</td>
           <td>${p.name}</td>
           <td><b>${p.bestCount}</b></td>
           <td><b>${p.helperCount}</b></td>
-          <td>${p.luckyCount ? `<span class="badge gold">🍀 ${p.luckyCount}</span>` : '0'}</td>
+          <td>${p.luckyCount ? `<span class="badge gold">${p.luckyCount}</span>` : '0'}</td>
         </tr>
       `).join('')}
     </table>
@@ -713,7 +713,7 @@ function renderRoster() {
       <div style="font-size:calc(var(--font-size) - 4px);color:var(--muted);margin:4px 0">
         Рост: ${p.height_cm ? p.height_cm + ' см' : '—'} | Вес: ${p.weight_kg ? p.weight_kg + ' кг' : '—'}
       </div>
-      <button class="small" onclick="editPlayer('${p.id}')">✎ Изменить</button>
+      <button class="small" onclick="editPlayer('${p.id}')">Изменить</button>
     </div>
   `).join('');
 }
@@ -729,7 +729,7 @@ function renderMedia() {
 
 function renderTours() {
   $('tourTable').innerHTML = tournaments.length
-    ? `<div class="table-wrap"><table><tr><th>Название</th><th>Дата</th><th>Соперник</th><th>Счёт</th><th>MVP</th><th>Действия</th></tr>${tournaments.map(t => `<tr><td>${t.name}</td><td>${fmt(t.date)}</td><td>${t.opponent || '—'}</td><td>${t.score || '—'}</td><td>${t.mvp_name || '—'}</td><td><button class="small" onclick="setMVP('${t.id}')">${t.mvp_name ? '✎ MVP' : '+'}</button></td></tr>`).join('')}</table></div>`
+    ? `<div class="table-wrap"><table><tr><th>Название</th><th>Дата</th><th>Соперник</th><th>Счёт</th><th>MVP</th><th>Действия</th></tr>${tournaments.map(t => `<tr><td>${t.name}</td><td>${fmt(t.date)}</td><td>${t.opponent || '—'}</td><td>${t.score || '—'}</td><td>${t.mvp_name || '—'}</td><td><button class="small" onclick="setMVP('${t.id}')">${t.mvp_name ? 'Изменить MVP' : 'Назначить MVP'}</button></td></tr>`).join('')}</table></div>`
     : 'Нет турниров';
 }
 
