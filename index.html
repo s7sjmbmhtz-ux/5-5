@@ -11,14 +11,17 @@ body{background:#0b1220;color:#fff;font:16px sans-serif;padding:10px;max-width:4
 input,select,textarea{width:100%;background:#0c1426;color:#fff;border:1px solid #30405f;border-radius:8px;padding:10px;font-size:16px;margin:4px 0;box-sizing:border-box}
 button{background:#5b8cff;color:#fff;border:0;border-radius:8px;padding:12px;font-size:16px;font-weight:bold;width:100%;cursor:pointer;margin:4px 0}
 button.danger{background:#71333d}
+button.small{font-size:12px;padding:4px 10px;width:auto;margin:2px}
 .hidden{display:none}
 table{width:100%;font-size:13px;border-collapse:collapse}
 th,td{padding:6px;border-bottom:1px solid #293858;text-align:left}
 .badge{background:#22304c;padding:3px 8px;border-radius:99px;font-size:11px}
+.gold{background:#3a3119;color:#f4c451}
 .nav{display:flex;gap:6px;overflow-x:auto;padding:4px 0}
 .nav button{flex:0 0 auto;background:#121c31;color:#fff;border:1px solid #293858;border-radius:8px;padding:8px 14px;font-size:13px;width:auto;cursor:pointer}
 .nav button.active{background:#5b8cff;border:0}
 .toast{position:fixed;bottom:20px;left:20px;right:20px;background:#18243d;padding:12px;border-radius:10px;display:none;z-index:999}
+.avatar{width:48px;height:48px;border-radius:50%;object-fit:cover;background:#263452;display:block;margin-bottom:4px}
 </style>
 </head>
 <body>
@@ -29,6 +32,7 @@ th,td{padding:6px;border-bottom:1px solid #293858;text-align:left}
   
   <div class="nav" id="nav"></div>
   
+  <!-- ДОБАВИТЬ ТРЕНИРОВКУ -->
   <div id="input" class="page">
     <div class="card">
       <h3>Добавить тренировку</h3>
@@ -43,23 +47,29 @@ th,td{padding:6px;border-bottom:1px solid #293858;text-align:left}
         </div>
         <button type="submit">Добавить</button>
       </form>
-      <div id="status" style="margin-top:8px;font-size:13px;color:#9eabc2"></div>
     </div>
     <div class="card"><h3>Последние</h3><div id="recent"></div></div>
   </div>
 
+  <!-- ТРЕНИРОВКИ -->
   <div id="training" class="page hidden">
     <div class="card"><h3>Все тренировки</h3><div id="trainings"></div></div>
   </div>
 
+  <!-- СТАТИСТИКА -->
   <div id="stats" class="page hidden">
     <div class="card"><h3>Статистика</h3><div id="statTable"></div></div>
   </div>
 
+  <!-- СОСТАВ -->
   <div id="players" class="page hidden">
-    <div class="card"><h3>Состав</h3><div id="roster" style="display:grid;grid-template-columns:1fr 1fr;gap:8px"></div></div>
+    <div class="card">
+      <h3>Состав</h3>
+      <div id="roster" style="display:grid;grid-template-columns:1fr 1fr;gap:8px"></div>
+    </div>
   </div>
 
+  <!-- МЕДИА -->
   <div id="media" class="page hidden">
     <div class="card">
       <h3>Добавить медиа</h3>
@@ -72,6 +82,7 @@ th,td{padding:6px;border-bottom:1px solid #293858;text-align:left}
     </div>
   </div>
 
+  <!-- ТУРНИРЫ -->
   <div id="tournaments" class="page hidden">
     <div class="card">
       <h3>Добавить турнир</h3>
@@ -141,8 +152,6 @@ function nav() {
 // 5. ЗАГРУЗКА ДАННЫХ
 // ============================================================
 async function load() {
-  $('status').textContent = '⏳ Загрузка...';
-  
   try {
     // Игроки
     const pr = await sb.from('players').select('*').order('number');
@@ -178,12 +187,8 @@ async function load() {
     if (md.error) throw new Error(md.error.message);
     media = md.data || [];
     
-    $('status').textContent = '✅ Данные загружены';
-    $('status').style.color = '#8ce5c5';
   } catch (err) {
-    $('status').textContent = '❌ Ошибка: ' + err.message;
-    $('status').style.color = '#ff9aa7';
-    msg('⚠️ Не удалось загрузить данные');
+    msg('⚠️ Ошибка загрузки: ' + err.message);
   }
   
   fillPlayerSelects();
@@ -244,31 +249,54 @@ async function delTraining(id) {
 }
 
 // ============================================================
-// 8. РЕДАКТИРОВАНИЕ ИГРОКА (рост/вес)
+// 8. РЕДАКТИРОВАНИЕ ИГРОКА (рост/вес + ФОТО)
 // ============================================================
 async function editPlayer(id) {
   const p = players.find(x => x.id === id);
   if (!p) return;
   
+  // Сначала рост и вес
   const h = prompt('Рост, см (оставьте пустым, чтобы удалить)', p.height_cm ?? '');
   if (h === null) return;
   const w = prompt('Вес, кг (оставьте пустым, чтобы удалить)', p.weight_kg ?? '');
   if (w === null) return;
   
-  const result = await sb.from('players')
+  await sb.from('players')
     .update({
       height_cm: h.trim() === '' ? null : Number(h),
       weight_kg: w.trim() === '' ? null : Number(w)
     })
     .eq('id', id);
   
-  if (result.error) {
-    msg('❌ Ошибка: ' + result.error.message);
+  // Потом фото
+  if (!confirm('Изменить фото игрока?')) {
+    await load();
     return;
   }
   
-  msg('✅ Данные сохранены');
-  await load();
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.accept = 'image/*';
+  input.onchange = async () => {
+    if (!input.files[0]) { await load(); return; }
+    
+    const file = input.files[0];
+    const path = 'players/' + id + '_' + Date.now() + '_' + file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
+    
+    const upload = await sb.storage.from('player-photos').upload(path, file);
+    if (upload.error) {
+      msg('❌ Ошибка фото: ' + upload.error.message);
+      await load();
+      return;
+    }
+    
+    const photo = sb.storage.from('player-photos').getPublicUrl(path).data.publicUrl;
+    await sb.from('players').update({ photo_url: photo }).eq('id', id);
+    
+    msg('✅ Профиль обновлён');
+    await load();
+  };
+  input.click();
 }
 
 // ============================================================
@@ -377,28 +405,38 @@ function render() {
   
   // Все тренировки
   $('trainings').innerHTML = trainings.length 
-    ? `<table><tr><th>Дата</th><th>Лучший</th><th>Помощник</th><th>Счёт</th><th>Победитель</th><th>Действия</th></tr>${trainings.map(t => `<tr><td>${fmt(t.date)}</td><td>${t.best_name || '—'}</td><td>${t.helper_name || '—'}</td><td>${t.white_score}:${t.blue_score}</td><td><span class="badge">${t.white_score > t.blue_score ? 'Белые' : t.blue_score > t.white_score ? 'Синие' : 'Ничья'}</span></td><td><button onclick="delTraining('${t.id}')">✕</button></td></tr>`).join('')}</table>` 
+    ? `<table><tr><th>Дата</th><th>Лучший</th><th>Помощник</th><th>Счёт</th><th>Победитель</th><th>Комментарий</th><th>Действия</th></tr>${trainings.map(t => `<tr><td>${fmt(t.date)}</td><td>${t.best_name || '—'}</td><td>${t.helper_name || '—'}</td><td>${t.white_score}:${t.blue_score}</td><td><span class="badge">${t.white_score > t.blue_score ? 'Белые' : t.blue_score > t.white_score ? 'Синие' : 'Ничья'}</span></td><td>${t.comment || '—'}</td><td><button class="small" onclick="delTraining('${t.id}')">✕</button></td></tr>`).join('')}</table>` 
     : 'Нет тренировок';
   
-  // Статистика
-  const stats = players.map(p => ({
-    ...p,
-    best: trainings.filter(t => t.best_player_id === p.id).length,
-    helper: trainings.filter(t => t.helper_player_id === p.id).length,
-    total: trainings.filter(t => t.best_player_id === p.id || t.helper_player_id === p.id).length
-  })).sort((a, b) => b.total - a.total);
+  // Статистика с СЧАСТЛИВЧИКАМИ
+  const stats = players.map(p => {
+    // Лучший
+    const bestCount = trainings.filter(t => t.best_player_id === p.id).length;
+    // Помощник
+    const helperCount = trainings.filter(t => t.helper_player_id === p.id).length;
+    // Счастливчик (когда в одной тренировке = лучший И помощник)
+    const luckyCount = trainings.filter(t => t.best_player_id === p.id && t.helper_player_id === p.id).length;
+    return {
+      ...p,
+      bestCount,
+      helperCount,
+      luckyCount,
+      total: bestCount + helperCount + luckyCount
+    };
+  }).sort((a, b) => b.total - a.total);
   
-  $('statTable').innerHTML = `<table><tr><th>№</th><th>Игрок</th><th>Лучший</th><th>Помощник</th><th>Всего</th></tr>${stats.map(p => `<tr><td>${p.number}</td><td>${p.name}</td><td>${p.best}</td><td>${p.helper}</td><td><b>${p.total}</b></td></tr>`).join('')}</table>`;
+  $('statTable').innerHTML = `<table><tr><th>№</th><th>Игрок</th><th>Лучший</th><th>Помощник</th><th>🍀 Счастливчик</th><th>Всего</th></tr>${stats.map(p => `<tr><td>${p.number}</td><td>${p.name}</td><td>${p.bestCount}</td><td>${p.helperCount}</td><td>${p.luckyCount ? `<span class="badge gold">🍀 ${p.luckyCount}</span>` : '0'}</td><td><b>${p.total}</b></td></tr>`).join('')}</table>`;
 }
 
 function renderRoster() {
   $('roster').innerHTML = players.map(p => `
     <div style="background:#0c1426;padding:8px;border-radius:8px;border:1px solid #293858">
-      <b>№${p.number}</b> ${p.name}
+      <img class="avatar" src="${p.photo_url || ''}" onerror="this.style.display='none'">
+      <div><b>№${p.number}</b> ${p.name}</div>
       <div style="font-size:12px;color:#9eabc2;margin:4px 0">
         Рост: ${p.height_cm ? p.height_cm + ' см' : '—'} | Вес: ${p.weight_kg ? p.weight_kg + ' кг' : '—'}
       </div>
-      <button onclick="editPlayer('${p.id}')" style="font-size:12px;padding:4px 8px;width:auto;background:#5b8cff;border:0;border-radius:6px;color:#fff;cursor:pointer">Изменить</button>
+      <button class="small" onclick="editPlayer('${p.id}')">✎ Изменить</button>
     </div>
   `).join('');
 }
@@ -414,7 +452,7 @@ function renderMedia() {
 
 function renderTours() {
   $('tourTable').innerHTML = tournaments.length 
-    ? `<table><tr><th>Название</th><th>Дата</th><th>Соперник</th><th>Счёт</th><th>MVP</th><th>Действия</th></tr>${tournaments.map(t => `<tr><td>${t.name}</td><td>${fmt(t.date)}</td><td>${t.opponent || '—'}</td><td>${t.score || '—'}</td><td>${t.mvp_name || '—'}</td><td><button onclick="setMVP('${t.id}')" style="font-size:11px;padding:4px 8px;width:auto;background:#5b8cff;border:0;border-radius:4px;color:#fff;cursor:pointer">${t.mvp_name ? 'Изменить MVP' : 'Назначить MVP'}</button></td></tr>`).join('')}</table>` 
+    ? `<table><tr><th>Название</th><th>Дата</th><th>Соперник</th><th>Счёт</th><th>MVP</th><th>Действия</th></tr>${tournaments.map(t => `<tr><td>${t.name}</td><td>${fmt(t.date)}</td><td>${t.opponent || '—'}</td><td>${t.score || '—'}</td><td>${t.mvp_name || '—'}</td><td><button class="small" onclick="setMVP('${t.id}')">${t.mvp_name ? '✎ MVP' : '+'}</button></td></tr>`).join('')}</table>` 
     : 'Нет турниров';
 }
 
