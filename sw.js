@@ -2,7 +2,8 @@ const CACHE = "5x5-shell-v1";
 const ASSETS = [
   "./",
   "./index.html",
-  "./manifest.webmanifest"
+  "./manifest.webmanifest",
+  "./icon.png"
 ];
 
 self.addEventListener("install", e => {
@@ -17,13 +18,10 @@ self.addEventListener("activate", e => {
 });
 
 self.addEventListener("fetch", e => {
-  // Пропускаем запросы к API и внешним ресурсам
-  if (e.request.url.includes("5x5-api") || 
-      e.request.url.includes("supabase") ||
+  if (e.request.url.includes("supabase") ||
       e.request.method !== "GET") {
     return;
   }
-  
   e.respondWith(
     fetch(e.request).catch(() => caches.match(e.request))
   );
