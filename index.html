@@ -1728,7 +1728,7 @@ function renderHomePage() {
     </article>`;
 
   const birthdayData=appPlayers.map(getBirthdayInfo).filter(Boolean);
-  const birthdays=birthdayData.filter(item=>item.days<=30).sort((a,b)=>a.days-b.days||a.player.number-b.player.number).slice(0,3);
+  const birthdays=birthdayData.filter(item=>item.days<=3).sort((a,b)=>a.days-b.days||a.player.number-b.player.number).slice(0,3);
   el('homeBirthdays').innerHTML=birthdays.length?`<div class="birthday-list">${birthdays.map(item=>{
     const status=item.days===0?'Сегодня':item.days===1?'Завтра':`Через ${item.days} ${plural(item.days,'день','дня','дней')}`;
     return `<article class="birthday-card${item.days===0?' today':''}">
