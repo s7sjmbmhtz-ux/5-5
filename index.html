@@ -1736,7 +1736,7 @@ function renderHomePage() {
       <div><div class="birthday-name">${escapeHtml(getSurnameInitials(item.player.name))}</div><div class="birthday-date">${escapeHtml(new Intl.DateTimeFormat('ru-RU',{day:'numeric',month:'long'}).format(item.date))} · ${item.nextAge} ${plural(item.nextAge,'год','года','лет')}</div></div>
       <div class="birthday-status">${escapeHtml(status)}</div>
     </article>`;
-  }).join('')}</div>`:`<div class="empty-state">${birthdayData.length?'В ближайшие 30 дней никто не отмечает день рождения.':'Даты рождения пока не заполнены.'}</div>`;
+  }).join('')}</div>`:'';
 
   const latest=seasonTrainings[0];
   el('homeLatest').innerHTML=latest?`
